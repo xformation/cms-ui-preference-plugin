@@ -1,0 +1,36 @@
+{
+  "type": "app",
+  "name": "Preferences",
+  "id": "ems-preference",
+  "css": {
+    "dark": "css/dark.css",
+    "light": "css/light.css"
+  },
+  "info": {
+    "description": "Preference Plugin description",
+    "author": {
+      "name": "Synectiks",
+      "url": "https://xformation.com"
+    },
+    "keywords": ["cms", "panel"],
+    "version": "1.0",
+    "updated": "2018-10-12",
+    "logos": {
+      "small": "img/students.png",
+      "large": "img/students.png"
+    }
+  },
+  "includes": [
+    {
+      "type": "page",
+      "name": "Home",
+      "addToNav": true,
+      "defaultNav": true,
+      "component": "PreferenceMainClass"
+    }
+  ],
+  "dependencies": {
+    "grafanaVersion": "3.x 4.x 5.x",
+    "plugins": []
+  }
+}
