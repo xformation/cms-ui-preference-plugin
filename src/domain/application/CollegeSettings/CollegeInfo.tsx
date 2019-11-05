@@ -10,7 +10,8 @@ export class CollegeInfo extends React.Component<any, any> {
             logoSrc: "",
             backgroundSrc: "",
             shortName: "",
-            instructionInformation: ""
+            instructionInformation: "",
+            is_api_progress: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -48,6 +49,9 @@ export class CollegeInfo extends React.Component<any, any> {
             logoImage: logoSrc,
             bgImage: backgroundSrc
         };
+        this.setState({
+            is_api_progress: true
+        });
         collegeSettingsServices.saveCollege(sendData).then(
             response => {
                 if (response === 200 || response === 201) {
@@ -57,9 +61,15 @@ export class CollegeInfo extends React.Component<any, any> {
                 } else {
                     alert('Due to some error college data could not be saved!');
                 }
+                this.setState({
+                    is_api_progress: false
+                });
             },
             error => {
-                alert("Due to some error college data could not be saved!")
+                alert("Due to some error college data could not be saved!");
+                this.setState({
+                    is_api_progress: false
+                });
             }
         );
     }
@@ -81,7 +91,7 @@ export class CollegeInfo extends React.Component<any, any> {
     }
 
     render() {
-        const { logoSrc, backgroundSrc, shortName, instructionInformation } = this.state;
+        const { logoSrc, backgroundSrc, shortName, instructionInformation, is_api_progress } = this.state;
         return (
             <div className="info-container">
                 <div className="authorized-signatory-container m-b-1">
@@ -122,7 +132,7 @@ export class CollegeInfo extends React.Component<any, any> {
                             <textarea className="gf-form-input ht-150" maxLength={255} name="instructionInformation" value={instructionInformation} onChange={this.handleStateChange}></textarea>
                         </div>
                         <div className="gf-form-button-row">
-                            <button type="submit" className="btn bs">Save</button>
+                            <button type="submit" className="btn bs" disabled={is_api_progress}>Save</button>
                         </div>
                     </div>
                 </form>
