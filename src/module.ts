@@ -1,5 +1,3 @@
-import {PreferenceMainClass} from './ui/PreferenceMainClass';
+import { PreferenceMainClass } from './ui/PreferenceMainClass';
 
-export {
-  PreferenceMainClass
-};
+export { PreferenceMainClass };

@@ -3,6 +3,9 @@ import * as React from 'react';
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 
+import '../../../css/college-settings.css';
+import { CollegeInfo } from './CollegeInfo';
+
 export default class CollegeSettings extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
@@ -51,7 +54,7 @@ export default class CollegeSettings extends React.Component<any, any> {
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
                     <TabPane tabId={0}>
-                        Test 
+                        <CollegeInfo />
                     </TabPane>
                     <TabPane tabId={1}>
                         Test
