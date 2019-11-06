@@ -5,6 +5,7 @@ import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 
 import '../../../css/college-settings.css';
 import { CollegeInfo } from './CollegeInfo';
+import {CollegeBranches} from './CollegeBranches';
 
 export default class CollegeSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -57,7 +58,7 @@ export default class CollegeSettings extends React.Component<any, any> {
                         <CollegeInfo />
                     </TabPane>
                     <TabPane tabId={1}>
-                        Test
+                        <CollegeBranches />
                     </TabPane>
                     <TabPane tabId={2}>
                         Test
