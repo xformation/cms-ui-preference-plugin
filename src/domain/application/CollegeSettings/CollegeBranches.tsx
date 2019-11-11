@@ -94,7 +94,9 @@ export class CollegeBranches extends React.Component<any, any> {
                                             <option value="">
                                                 Select State
                                             </option>
-                                            {commonFunctions.createSelectbox(states, "id", "id", "stateName")}
+                                            {
+                                                // commonFunctions.createSelectbox(states, "id", "id", "stateName")
+                                                }
                                         </select>
                                     </div>
                                     <div className="fwidth-modal-text">
