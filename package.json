@@ -13,10 +13,7 @@
   "author": "Grafana Labs",
   "license": "Apache",
   "lint-staged": {
-    "*.{js,ts,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{js,ts,json,css,md}": ["prettier --write", "git add"]
   },
   "prettier": {
     "singleQuote": true,
@@ -27,6 +24,7 @@
     "semi": true
   },
   "dependencies": {
+    "@babel/core": "^7.7.2",
     "@devexpress/dx-react-core": "^1.10.0",
     "@devexpress/dx-react-grid": "^1.10.0",
     "@devexpress/dx-react-grid-bootstrap4": "^1.10.0",
