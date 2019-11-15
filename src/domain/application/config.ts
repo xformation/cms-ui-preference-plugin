@@ -1,5 +1,5 @@
 const secSrvUrl = 'http://100.81.3.26:8094';
-const apiUrl = 'http://100.81.3.26:8080/api';
+const apiUrl = 'http://100.81.3.26:9091/api';
 
 export const config = {
   COLLEGE_URL: apiUrl + '/cmscollege',
