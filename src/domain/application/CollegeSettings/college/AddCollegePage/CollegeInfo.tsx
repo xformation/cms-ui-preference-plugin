@@ -87,9 +87,13 @@ class CollegeInfo extends React.Component<any, CollegeState> {
         btn && btn.setAttribute("disabled", "true");
         let dataSavedMessage: any = document.querySelector(".data-saved-message");
         // dataSavedMessage.style.display = "none";
+        let logoFileString = collegeData.logoFile; 
+        if(collegeData.logoFile === this.DEFAULT_LOGO){
+            logoFileString = null;
+        }
         let collegeInput = {
             collegeName: collegeData.collegeName,
-            logoFile: collegeData.logoFile
+            logoFile: logoFileString
         };
         
         return this.props.addCollegeMutation({
@@ -97,7 +101,7 @@ class CollegeInfo extends React.Component<any, CollegeState> {
         }).then((data: any) => {
             btn && btn.removeAttribute("disabled");
             dataSavedMessage.style.display = "inline-block";
-            // location.href = `${location.origin}/plugins/ems-student/page/students`;
+            console.log("gql response --- : ",data);
         }).catch((error: any) => {
             btn && btn.removeAttribute("disabled");
             dataSavedMessage.style.display = "inline-block";
@@ -177,7 +181,8 @@ class CollegeInfo extends React.Component<any, CollegeState> {
                         </div>
                     </div>
                     <div className="gf-form-button-row">
-                        <input type="button" value="Save" onClick={this.handleSubmit} className="btn bs save-all-forms-btn"></input>
+                        {/* <input type="button" value="Save" onClick={this.handleSubmit} className="btn bs save-all-forms-btn"></input> */}
+                        <button type="submit" className="btn bs save-all-forms-btn">Save</button>
                     </div>
                 </form>
             </div>
