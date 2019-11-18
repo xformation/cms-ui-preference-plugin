@@ -2,6 +2,7 @@ import * as React from 'react';
 // import { graphql, QueryProps, MutationFunc, compose } from 'react-apollo';
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { CalendarSetup } from './CalendarSetup';
 
 export default class AcademicSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -56,7 +57,7 @@ export default class AcademicSettings extends React.Component<any, any> {
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
                     <TabPane tabId={0}>
-                        Test 
+                        Test
                     </TabPane>
                     <TabPane tabId={1}>
                         Test
@@ -71,7 +72,7 @@ export default class AcademicSettings extends React.Component<any, any> {
                         Test
                     </TabPane>
                     <TabPane tabId={5}>
-                        Test
+                        <CalendarSetup />
                     </TabPane>
                 </TabContent>
             </section>
