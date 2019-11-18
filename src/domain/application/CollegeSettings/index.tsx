@@ -2,10 +2,11 @@ import * as React from 'react';
 // import { graphql, QueryProps, MutationFunc, compose } from 'react-apollo';
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-
+import { graphql, MutationFunc } from 'react-apollo';
 import '../../../css/college-settings.css';
-import { CollegeInfo } from './CollegeInfo';
-import {CollegeBranches} from './CollegeBranches';
+import CollegeInfo  from './college/AddCollegePage/CollegeInfo';
+import {CollegeBranches} from './branch/CollegeBranches';
+import { any } from 'prop-types';
 
 export default class CollegeSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -44,7 +45,7 @@ export default class CollegeSettings extends React.Component<any, any> {
                     </NavItem>
                     <NavItem className="cursor-pointer">
                         <NavLink className={`vertical-nav-link ${activeTab === 3 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(3); }} >
-                            File Import
+                            Master Data Import
                         </NavLink>
                     </NavItem>
                     <NavItem className="cursor-pointer">

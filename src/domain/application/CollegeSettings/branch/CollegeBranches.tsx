@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import { collegeSettingsServices } from '../_services/collegeSettings.services';
-import { commonFunctions } from '../_utilites/common.functions';
+import { collegeSettingsServices } from '../../_services/collegeSettings.services';
+import { commonFunctions } from '../../_utilites/common.functions';
 
 export class CollegeBranches extends React.Component<any, any> {
     constructor(props: any) {
