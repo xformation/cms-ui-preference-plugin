@@ -13,7 +13,10 @@
   "author": "Grafana Labs",
   "license": "Apache",
   "lint-staged": {
-    "*.{js,ts,json,css,md}": ["prettier --write", "git add"]
+    "*.{js,ts,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "prettier": {
     "singleQuote": true,
@@ -29,6 +32,7 @@
     "@devexpress/dx-react-grid": "^1.10.0",
     "@devexpress/dx-react-grid-bootstrap4": "^1.10.0",
     "@types/node": "^10.12.18",
+    "@types/react-big-calendar": "^0.22.3",
     "@types/react-bootstrap-date-picker": "^4.0.6",
     "@types/react-datepicker": "^2.0.0",
     "@types/react-dom": "^16.0.9",
@@ -40,6 +44,7 @@
     "prismjs": "^1.6.0",
     "query-string": "^6.2.0",
     "react": "^16.9.0",
+    "react-big-calendar": "^0.23.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.1.1",
     "reactstrap": "^8.0.1",

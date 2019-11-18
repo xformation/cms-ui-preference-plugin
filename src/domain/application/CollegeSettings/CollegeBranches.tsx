@@ -58,13 +58,26 @@ export class CollegeBranches extends React.Component<any, any> {
 
     createCitySelectbox(selectedState: any) {
         const { cities } = this.state;
-        let retData = [];
+        let retData: any[] = [];
         selectedState = parseInt(selectedState);
         for (let i = 0; i < cities.length; i++) {
             let city = cities[i];
-            if( selectedState === city.stateId){
+            if (selectedState === city.stateId) {
                 retData.push(
                     <option key={city.id} value={city.id}>{city.cityName}</option>
+                );
+            }
+        }
+        return retData;
+    }
+
+    createStateSelectbox(stateList: any) {
+        let retData: any[] = [];
+        if (stateList.length > 0) {
+            for (let i = 0; i < stateList.length; i++) {
+                let item = stateList[i];
+                retData.push(
+                    <option value={item["id"]} key={item["id"]}>{item["stateName"]}</option>
                 );
             }
         }
@@ -95,8 +108,8 @@ export class CollegeBranches extends React.Component<any, any> {
                                                 Select State
                                             </option>
                                             {
-                                                // commonFunctions.createSelectbox(states, "id", "id", "stateName")
-                                                }
+                                                this.createStateSelectbox(states)
+                                            }
                                         </select>
                                     </div>
                                     <div className="fwidth-modal-text">

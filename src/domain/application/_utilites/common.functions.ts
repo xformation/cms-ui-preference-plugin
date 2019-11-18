@@ -1,8 +1,8 @@
-export const commonFunctions = {
+export const commonFunctions: any = {
     getRequestOptions
 };
 
-function getRequestOptions(type: any, extraHeaders: any, body: any) {
+function getRequestOptions(type: any, extraHeaders: any, body?: any) : any {
     let requestOptions: any = {};
     requestOptions = {
         method: type,
@@ -11,7 +11,7 @@ function getRequestOptions(type: any, extraHeaders: any, body: any) {
         }
     };
     if (body) {
-        requestOptions.body = body;
+        requestOptions['body'] = body;
     }
     return requestOptions;
 }
