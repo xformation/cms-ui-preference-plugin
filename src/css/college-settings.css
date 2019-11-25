@@ -26,3 +26,10 @@
     padding: 17px 10px;
     color: white;
 }
+
+/********************************** Calendar *******************************/
+
+.calendar-container{
+    min-height: max-content;
+    height: calc(100vh - 100px);
+}
