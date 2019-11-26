@@ -1,20 +1,26 @@
 import * as React from 'react';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import * as moment from 'moment';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { academicSettingsServices } from '../_services/academicSettings.service';
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Recoverable } from 'repl';
+import { EventUI } from "./CustomCalendarComponents";
 
 export class CalendarSetup extends React.Component<any, any> {
     globalizeLocalizer: any = null;
     constructor(props: any) {
         super(props);
+        let minTime = new Date();
+        minTime.setHours(6, 30, 0);
+        let maxTime = new Date();
+        maxTime.setHours(20, 30, 0);
         this.state = {
             events: [],
             isModalOpen: false,
-            selectedEvent: {}
+            selectedEvent: {},
+            minTime: minTime,
+            maxTime: maxTime
         };
         this.globalizeLocalizer = momentLocalizer(moment);
         this.onClickEvent = this.onClickEvent.bind(this);
@@ -24,9 +30,11 @@ export class CalendarSetup extends React.Component<any, any> {
     componentDidMount() {
         academicSettingsServices.getCmsLectures().then(
             response => {
-                let events = this.createCalendarEvents(response);
+                let { events, minTime, maxTime } = this.createCalendarEvents(response);
                 this.setState({
-                    events
+                    events,
+                    minTime,
+                    maxTime
                 });
             },
             error => {
@@ -42,14 +50,30 @@ export class CalendarSetup extends React.Component<any, any> {
         }));
     }
 
+    setMinMaxTime() {
+
+    }
+
     createCalendarEvents(response: any) {
         let events = [];
+        let minTime = null;
+        let maxTime = null;
         for (let i = 0; i < response.length; i++) {
             let res = response[i];
             let { lecDate, attendancemaster } = res;
             let startTime = new Date(lecDate + " " + res.startTime);
             let endTime = new Date(lecDate + " " + res.endTime);
             let title = "Techer: " + attendancemaster.teach.teacher.teacherName + " Subject: " + attendancemaster.teach.subject.subjectCode;
+            if (!minTime) {
+                minTime = startTime;
+            } else {
+                minTime = startTime < minTime ? startTime : minTime;
+            }
+            if (!maxTime) {
+                maxTime = endTime;
+            } else {
+                maxTime = endTime > maxTime ? endTime : maxTime;
+            }
             events.push({
                 title: title,
                 start: startTime,
@@ -59,7 +83,11 @@ export class CalendarSetup extends React.Component<any, any> {
                 subject: attendancemaster.teach.subject.subjectCode
             });
         }
-        return events;
+        return {
+            events,
+            minTime,
+            maxTime
+        };
     }
 
     onClickEvent(event: any, e: any) {
@@ -70,7 +98,7 @@ export class CalendarSetup extends React.Component<any, any> {
     }
 
     render() {
-        const { events, selectedEvent, isModalOpen } = this.state;
+        const { events, selectedEvent, isModalOpen, minTime, maxTime } = this.state;
         return (
             <div className="calendar-container">
                 <Calendar
@@ -80,6 +108,11 @@ export class CalendarSetup extends React.Component<any, any> {
                     endAccessor="end"
                     views={["month", "week", "work_week", "day", "agenda"]}
                     onSelectEvent={this.onClickEvent}
+                    min={minTime}
+                    max={maxTime}
+                    components={{
+                        event: EventUI,
+                    }}
                 />
                 <Modal isOpen={isModalOpen} className="react-strap-modal-container">
                     <ModalHeader>Add New</ModalHeader>
