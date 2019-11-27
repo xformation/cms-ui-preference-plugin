@@ -20,27 +20,119 @@ export class CalendarSetup extends React.Component<any, any> {
             isModalOpen: false,
             selectedEvent: {},
             minTime: minTime,
-            maxTime: maxTime
+            maxTime: maxTime,
+            terms: [],
+            selectedTerm: "",
+            batches: [],
+            selectedBatch: "",
+            academicYears: [],
+            selectedAcademicYear: "",
+            sections: [],
+            selectedSecion: "",
+            subjects: [],
+            selectedSubject: "",
+            teachers: [],
+            selectedTeacher: "",
+            attendanceMaster: [],
+            fromDate: "",
+            toDate: ""
         };
         this.globalizeLocalizer = momentLocalizer(moment);
         this.onClickEvent = this.onClickEvent.bind(this);
         this.showModal = this.showModal.bind(this);
+        this.handleStateChange = this.handleStateChange.bind(this);
+        this.getCmsSecions = this.getCmsSecions.bind(this);
+        this.createSubjectSelectbox = this.createSubjectSelectbox.bind(this);
+        this.createTeacherSelectbox = this.createTeacherSelectbox.bind(this);
+        this.onClickSearchButton = this.onClickSearchButton.bind(this);
+    }
+
+    handleStateChange(e: any) {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value
+        })
+        if (name === "selectedBatch") {
+            this.getCmsSecions(value);
+        }
+    }
+
+    getCmsSecions(batchId: any) {
+        academicSettingsServices.getCmsSections(batchId).then(
+            response => {
+                this.setState({
+                    sections: response
+                });
+            }
+        );
     }
 
     componentDidMount() {
-        academicSettingsServices.getCmsLectures().then(
+        academicSettingsServices.getGlobalConfiguration("admin").then(
             response => {
-                let { events, minTime, maxTime } = this.createCalendarEvents(response);
-                this.setState({
-                    events,
-                    minTime,
-                    maxTime
-                });
+                let academicYearId = null;
+                if (response.selectedAcademicYearId === null || response.selectedAcademicYearId === 0) {
+                    academicYearId = response.cmsAcademicYearVo.id;
+                } else {
+                    academicYearId = response.selectedAcademicYearId;
+                }
+                if (academicYearId) {
+                    academicSettingsServices.getCmsTerms(academicYearId).then(
+                        response => {
+                            this.setState({
+                                terms: response
+                            });
+                        }
+                    );
+                    let departmentId = response.selectedDepartmentId;
+                    departmentId = 2001;
+                    academicSettingsServices.getCmsBatches(departmentId).then(
+                        response => {
+                            this.setState({
+                                batches: response
+                            });
+                        }
+                    );
+                    academicSettingsServices.getCmsSubjects(departmentId).then(
+                        response => {
+                            this.setState({
+                                subjects: response
+                            });
+                        }
+                    );
+                    academicSettingsServices.getCmsTeachers(departmentId).then(
+                        response => {
+                            this.setState({
+                                teachers: response
+                            });
+                        }
+                    );
+                    academicSettingsServices.getFilterAttendanceMasterByDepartment(departmentId).then(
+                        response => {
+                            this.setState({
+                                attendanceMaster: response
+                            });
+                        }
+                    );
+                }
             },
             error => {
-                console.log(error);
+                alert("Error in getting global config");
             }
         );
+        // academicSettingsServices.getCmsLectures().then(
+        //     response => {
+        //         let { events, minTime, maxTime } = this.createCalendarEvents(response);
+        //         this.setState({
+        //             events,
+        //             minTime,
+        //             maxTime
+        //         });
+        //     },
+        //     error => {
+        //         console.log(error);
+        //     }
+        // );
     }
 
     showModal(e: any, bShow: boolean) {
@@ -97,45 +189,154 @@ export class CalendarSetup extends React.Component<any, any> {
         this.showModal(e, true);
     }
 
+    createSelectbox(data: any, value: any, label: any, uniqueKey: any) {
+        const retData = [];
+        for (let i = 0; i < data.length; i++) {
+            let option = data[i];
+            retData.push(
+                <option key={option[value] + "-" + uniqueKey} value={option[value]}>{option[label]}</option>
+            );
+        }
+        return retData;
+    }
+
+    createSubjectSelectbox(data: any) {
+        const { selectedBatch } = this.state;
+        const retData = [];
+        if (selectedBatch) {
+            for (let i = 0; i < data.length; i++) {
+                let option = data[i];
+                if (option.batch.id === parseInt(selectedBatch, 10)) {
+                    retData.push(
+                        <option key={option["id"] + "-subject"} value={option["id"]}>{option["subjectDesc"]}</option>
+                    );
+                }
+            }
+        }
+        return retData;
+    }
+
+    createTeacherSelectbox(data: any) {
+        const { selectedSubject, attendanceMaster } = this.state;
+        const retData = [];
+        if (selectedSubject) {
+            let addedTeachers: any = [];
+            for (let i = 0; i < attendanceMaster.length; i++) {
+                let master = attendanceMaster[i];
+                const subject = master.teach.subject;
+                if (subject.id === parseInt(selectedSubject, 10)) {
+                    if (addedTeachers.indexOf(master.teach.teacher.id) !== -1) {
+                        retData.push(
+                            <option value={master.teach.teacher.id} key={master.teach.teacher.id + "-teacher"}>{master.teach.teacher.teacherName} {master.teach.teacher.teacherLastName}</option>
+                        );
+                        addedTeachers.push(master.teach.teacher.id);
+                    }
+                }
+            }
+        }
+        return retData;
+    }
+
+    onClickSearchButton(e: any) {
+        // const { selected} = this.state;
+        // if()
+    }
+
     render() {
-        const { events, selectedEvent, isModalOpen, minTime, maxTime } = this.state;
+        const { events, selectedEvent, isModalOpen, minTime, maxTime, terms, selectedTerm, batches, selectedBatch, sections, selectedSection, subjects, selectedSubject, teachers, selectedTeacher, fromDate, toDate } = this.state;
         return (
-            <div className="calendar-container">
-                <Calendar
-                    localizer={this.globalizeLocalizer}
-                    events={events}
-                    startAccessor="start"
-                    endAccessor="end"
-                    views={["month", "week", "work_week", "day", "agenda"]}
-                    onSelectEvent={this.onClickEvent}
-                    min={minTime}
-                    max={maxTime}
-                    components={{
-                        event: EventUI,
-                    }}
-                />
-                <Modal isOpen={isModalOpen} className="react-strap-modal-container">
-                    <ModalHeader>Add New</ModalHeader>
-                    <ModalBody className="modal-content">
-                        <form className="gf-form-group section m-0 dflex">
-                            <div className="modal-fwidth">
+            <div>
+                <div className="gf-form-group row m-b-0 p-l-1">
+                    <div className="gf-form--grow form-control-container m-b-1">
+                        <label className="gf-form-label bg-transparent b-0">Term/Semester</label>
+                        <select className="gf-form-select-box" name="selectedTerm" value={selectedTerm} onChange={this.handleStateChange}>
+                            <option value="">Select Term</option>
+                            {this.createSelectbox(terms, "id", "termsDesc", "term")}
+                        </select>
+                    </div>
+                    <div className="gf-form--grow form-control-container m-b-1">
+                        <label className="gf-form-label bg-transparent b-0">Year</label>
+                        <select className="gf-form-select-box" name="selectedBatch" value={selectedBatch} onChange={this.handleStateChange}>
+                            <option value="">Select Year</option>
+                            {this.createSelectbox(batches, "id", "batch", "batch")}
+                        </select>
+                    </div>
+                    <div className="gf-form--grow form-control-container m-b-1">
+                        <label className="gf-form-label bg-transparent b-0">Section</label>
+                        <select className="gf-form-select-box" name="selectedSection" value={selectedSection} onChange={this.handleStateChange}>
+                            <option value="">Select Section</option>
+                            {this.createSelectbox(sections, "id", "section", "section")}
+                        </select>
+                    </div>
+                </div>
+                <div className="gf-form-group row m-b-0 p-l-1">
+                    <div className="gf-form--grow form-control-container m-b-1">
+                        <label className="gf-form-label bg-transparent b-0">Subject</label>
+                        <select className="gf-form-select-box" name="selectedSubject" value={selectedSubject} onChange={this.handleStateChange}>
+                            <option value="">Select Subject</option>
+                            {this.createSubjectSelectbox(subjects)}
+                        </select>
+                    </div>
+                    <div className="gf-form--grow form-control-container m-b-1">
+                        <label className="gf-form-label bg-transparent b-0">Year</label>
+                        <select className="gf-form-select-box" name="selectedTeacher" value={selectedTeacher} onChange={this.handleStateChange}>
+                            <option value="">Select Teacher</option>
+                            {this.createTeacherSelectbox(teachers)}
+                        </select>
+                    </div>
+                </div>
+                <div className="gf-form-group row p-l-1">
+                    <div className="gf-form--grow form-control-container m-b-1">
+                        <label className="gf-form-label bg-transparent b-0">From Date</label>
+                        <input type="date" className="gf-form-input" name="fromDate" value={fromDate} onChange={this.handleStateChange} />
+                    </div>
+                    <div className="gf-form--grow form-control-container m-b-1">
+                        <label className="gf-form-label bg-transparent b-0">To Date</label>
+                        <input type="date" className="gf-form-input" name="toDate" value={toDate} onChange={this.handleStateChange} />
+                    </div>
+                </div>
+                <div className="gf-form-group row p-l-1">
+                    <div className="gf-form--grow form-control-container cust-width-220">
+                        <input type="button" className="btn btn-primary gf-form-control" onClick={this.onClickSearchButton} value="Search" />
+                    </div>
+                </div>
+                <div className="calendar-container">
+                    <Calendar
+                        localizer={this.globalizeLocalizer}
+                        events={events}
+                        startAccessor="start"
+                        endAccessor="end"
+                        views={["month", "week", "work_week", "day", "agenda"]}
+                        onSelectEvent={this.onClickEvent}
+                        min={minTime}
+                        max={maxTime}
+                        components={{
+                            event: EventUI,
+                        }}
+                    />
+                    <Modal isOpen={isModalOpen} className="react-strap-modal-container">
+                        <ModalHeader>Add New</ModalHeader>
+                        <ModalBody className="modal-content">
+                            <form className="gf-form-group section m-0 dflex">
                                 <div className="modal-fwidth">
-                                    <div className="row">
-                                        <label className="col-sm-6">Teacher: </label>
-                                        <label className="col-sm-6"><b>{selectedEvent.teacher}</b></label>
+                                    <div className="modal-fwidth">
+                                        <div className="row">
+                                            <label className="col-sm-6">Teacher: </label>
+                                            <label className="col-sm-6"><b>{selectedEvent.teacher}</b></label>
+                                        </div>
+                                        <div className="row">
+                                            <label className="col-sm-6">Subject: </label>
+                                            <label className="col-sm-6"><b>{selectedEvent.subject}</b></label>
+                                        </div>
                                     </div>
-                                    <div className="row">
-                                        <label className="col-sm-6">Subject: </label>
-                                        <label className="col-sm-6"><b>{selectedEvent.subject}</b></label>
+                                    <div className="m-t-1 text-center">
+                                        <button className="btn btn-danger border-bottom" onClick={(e) => this.showModal(e, false)}>Close</button>
                                     </div>
                                 </div>
-                                <div className="m-t-1 text-center">
-                                    <button className="btn btn-danger border-bottom" onClick={(e) => this.showModal(e, false)}>Close</button>
-                                </div>
-                            </div>
-                        </form>
-                    </ModalBody>
-                </Modal>
+                            </form>
+                        </ModalBody>
+                    </Modal>
+                </div>
             </div>
         );
     }
