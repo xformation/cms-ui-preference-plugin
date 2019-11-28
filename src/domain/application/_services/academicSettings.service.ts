@@ -13,9 +13,9 @@ export const academicSettingsServices = {
     getFilterAttendanceMasterByDepartment
 }
 
-function getCmsLectures() {
+function getCmsLectures(data: any) {
     const requestOptions = commonFunctions.getRequestOptions("GET", {});
-    return fetch(config.LECTURES_URL + "?termId=1801&academicYearId=1701&sectionId=2052&batchId=2002&branchId=1901&departmentId=1951&subjectId=undefined&teacherId=undefined&fromDate=26-11-2019&toDate=undefined", requestOptions)
+    return fetch(config.LECTURES_URL + `?termId=${data.selectedTerm}&academicYearId=${data.academicYearId}&sectionId=${data.selectedSection}&batchId=${data.selectedBatch}&branchId=${data.selectedBranch}&departmentId=${data.departmentId}&subjectId=${data.selectedSubject}&teacherId=${data.selectedTeacher}&fromDate=${data.fromDate}&toDate=${data.toDate}`, requestOptions)
         .then(response => response.json());
 }
 
@@ -57,7 +57,7 @@ function getCmsTeachers(departmentId: any) {
 
 function getFilterAttendanceMasterByDepartment(departmentId: any) {
     const requestOptions = commonFunctions.getRequestOptions("GET", {});
-    return fetch(config.CMS_AM_BY_DEPARTMENT_URL + '?deptId=' + departmentId, requestOptions)
+    return fetch(config.CMS_AM_BY_DEPARTMENT_URL + '?departmentId=' + departmentId, requestOptions)
         .then(response => response.json());
   }
 

@@ -21,27 +21,28 @@ export class CalendarSetup extends React.Component<any, any> {
             selectedEvent: {},
             minTime: minTime,
             maxTime: maxTime,
+            academicYearId: "",
+            departmentId: "",
             terms: [],
             selectedTerm: "",
             batches: [],
             selectedBatch: "",
-            academicYears: [],
-            selectedAcademicYear: "",
             sections: [],
-            selectedSecion: "",
+            selectedSection: "",
             subjects: [],
             selectedSubject: "",
             teachers: [],
             selectedTeacher: "",
             attendanceMaster: [],
             fromDate: "",
-            toDate: ""
+            toDate: "",
+            isRequestMade: false
         };
         this.globalizeLocalizer = momentLocalizer(moment);
         this.onClickEvent = this.onClickEvent.bind(this);
         this.showModal = this.showModal.bind(this);
         this.handleStateChange = this.handleStateChange.bind(this);
-        this.getCmsSecions = this.getCmsSecions.bind(this);
+        this.getCmsSections = this.getCmsSections.bind(this);
         this.createSubjectSelectbox = this.createSubjectSelectbox.bind(this);
         this.createTeacherSelectbox = this.createTeacherSelectbox.bind(this);
         this.onClickSearchButton = this.onClickSearchButton.bind(this);
@@ -53,11 +54,11 @@ export class CalendarSetup extends React.Component<any, any> {
             [name]: value
         })
         if (name === "selectedBatch") {
-            this.getCmsSecions(value);
+            this.getCmsSections(value);
         }
     }
 
-    getCmsSecions(batchId: any) {
+    getCmsSections(batchId: any) {
         academicSettingsServices.getCmsSections(batchId).then(
             response => {
                 this.setState({
@@ -77,6 +78,9 @@ export class CalendarSetup extends React.Component<any, any> {
                     academicYearId = response.selectedAcademicYearId;
                 }
                 if (academicYearId) {
+                    this.setState({
+                        academicYearId
+                    });
                     academicSettingsServices.getCmsTerms(academicYearId).then(
                         response => {
                             this.setState({
@@ -86,6 +90,9 @@ export class CalendarSetup extends React.Component<any, any> {
                     );
                     let departmentId = response.selectedDepartmentId;
                     departmentId = 2001;
+                    this.setState({
+                        departmentId
+                    });
                     academicSettingsServices.getCmsBatches(departmentId).then(
                         response => {
                             this.setState({
@@ -120,19 +127,6 @@ export class CalendarSetup extends React.Component<any, any> {
                 alert("Error in getting global config");
             }
         );
-        // academicSettingsServices.getCmsLectures().then(
-        //     response => {
-        //         let { events, minTime, maxTime } = this.createCalendarEvents(response);
-        //         this.setState({
-        //             events,
-        //             minTime,
-        //             maxTime
-        //         });
-        //     },
-        //     error => {
-        //         console.log(error);
-        //     }
-        // );
     }
 
     showModal(e: any, bShow: boolean) {
@@ -140,10 +134,6 @@ export class CalendarSetup extends React.Component<any, any> {
         this.setState(() => ({
             isModalOpen: bShow
         }));
-    }
-
-    setMinMaxTime() {
-
     }
 
     createCalendarEvents(response: any) {
@@ -157,14 +147,20 @@ export class CalendarSetup extends React.Component<any, any> {
             let endTime = new Date(lecDate + " " + res.endTime);
             let title = "Techer: " + attendancemaster.teach.teacher.teacherName + " Subject: " + attendancemaster.teach.subject.subjectCode;
             if (!minTime) {
-                minTime = startTime;
+                minTime = new Date();
+                minTime.setHours(startTime.getHours(), startTime.getMinutes(), startTime.getSeconds());
             } else {
-                minTime = startTime < minTime ? startTime : minTime;
+                let tempDate = new Date();
+                tempDate.setHours(startTime.getHours(), startTime.getMinutes(), startTime.getSeconds());
+                minTime = tempDate < minTime ? tempDate : minTime;
             }
             if (!maxTime) {
-                maxTime = endTime;
+                maxTime = new Date();
+                maxTime.setHours(endTime.getHours(), endTime.getMinutes(), endTime.getSeconds());
             } else {
-                maxTime = endTime > maxTime ? endTime : maxTime;
+                let tempDate = new Date();
+                tempDate.setHours(endTime.getHours(), endTime.getMinutes(), endTime.getSeconds());
+                maxTime = tempDate > maxTime ? tempDate : maxTime;
             }
             events.push({
                 title: title,
@@ -225,7 +221,7 @@ export class CalendarSetup extends React.Component<any, any> {
                 let master = attendanceMaster[i];
                 const subject = master.teach.subject;
                 if (subject.id === parseInt(selectedSubject, 10)) {
-                    if (addedTeachers.indexOf(master.teach.teacher.id) !== -1) {
+                    if (addedTeachers.indexOf(master.teach.teacher.id) === -1) {
                         retData.push(
                             <option value={master.teach.teacher.id} key={master.teach.teacher.id + "-teacher"}>{master.teach.teacher.teacherName} {master.teach.teacher.teacherLastName}</option>
                         );
@@ -237,13 +233,53 @@ export class CalendarSetup extends React.Component<any, any> {
         return retData;
     }
 
+    convertInDDMMYYFormat(date: any){
+        let dateArr = date.split("-");
+        return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+    }
+
     onClickSearchButton(e: any) {
-        // const { selected} = this.state;
-        // if()
+        this.setState({
+            submitted: true
+        });
+        const { selectedTerm, selectedBatch, selectedSection, selectedSubject, selectedTeacher, fromDate, toDate, departmentId, academicYearId } = this.state;
+        if (selectedTerm && selectedBatch && selectedSection) {
+            this.setState({
+                isRequestMade: true
+            });
+            let data = {
+                selectedTerm,
+                academicYearId,
+                selectedSection,
+                selectedBatch,
+                departmentId,
+                selectedSubject,
+                selectedTeacher,
+                fromDate: this.convertInDDMMYYFormat(fromDate),
+                toDate: this.convertInDDMMYYFormat(toDate)
+            };
+            academicSettingsServices.getCmsLectures(data).then(
+                response => {
+                    let { events, minTime, maxTime } = this.createCalendarEvents(response);
+                    this.setState({
+                        events,
+                        minTime,
+                        maxTime,
+                        isRequestMade: false
+                    });
+                },
+                error => {
+                    console.log(error);
+                    this.setState({
+                        isRequestMade: false
+                    });
+                }
+            );
+        }
     }
 
     render() {
-        const { events, selectedEvent, isModalOpen, minTime, maxTime, terms, selectedTerm, batches, selectedBatch, sections, selectedSection, subjects, selectedSubject, teachers, selectedTeacher, fromDate, toDate } = this.state;
+        const { events, selectedEvent, isModalOpen, minTime, maxTime, terms, selectedTerm, batches, selectedBatch, sections, selectedSection, subjects, selectedSubject, teachers, selectedTeacher, fromDate, toDate, isRequestMade } = this.state;
         return (
             <div>
                 <div className="gf-form-group row m-b-0 p-l-1">
@@ -268,8 +304,6 @@ export class CalendarSetup extends React.Component<any, any> {
                             {this.createSelectbox(sections, "id", "section", "section")}
                         </select>
                     </div>
-                </div>
-                <div className="gf-form-group row m-b-0 p-l-1">
                     <div className="gf-form--grow form-control-container m-b-1">
                         <label className="gf-form-label bg-transparent b-0">Subject</label>
                         <select className="gf-form-select-box" name="selectedSubject" value={selectedSubject} onChange={this.handleStateChange}>
@@ -285,6 +319,8 @@ export class CalendarSetup extends React.Component<any, any> {
                         </select>
                     </div>
                 </div>
+                <div className="gf-form-group row m-b-0 p-l-1">
+                </div>
                 <div className="gf-form-group row p-l-1">
                     <div className="gf-form--grow form-control-container m-b-1">
                         <label className="gf-form-label bg-transparent b-0">From Date</label>
@@ -297,7 +333,7 @@ export class CalendarSetup extends React.Component<any, any> {
                 </div>
                 <div className="gf-form-group row p-l-1">
                     <div className="gf-form--grow form-control-container cust-width-220">
-                        <input type="button" className="btn btn-primary gf-form-control" onClick={this.onClickSearchButton} value="Search" />
+                        <input type="button" className="btn btn-primary gf-form-control" onClick={this.onClickSearchButton} value="Search" disabled={isRequestMade}/>
                     </div>
                 </div>
                 <div className="calendar-container">
