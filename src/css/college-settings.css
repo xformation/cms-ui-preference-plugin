@@ -1,3 +1,14 @@
+/*********************************** General ***********************************/
+
+.has-error .error{
+    display: block;
+}
+
+.error{
+    color: #e02f44;
+    display: none;
+}
+
 /********************************* College Info *******************************/
 
 .info-container .logo{

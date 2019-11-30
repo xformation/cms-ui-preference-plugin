@@ -36,7 +36,8 @@ export class CalendarSetup extends React.Component<any, any> {
             attendanceMaster: [],
             fromDate: "",
             toDate: "",
-            isRequestMade: false
+            isRequestMade: false,
+            submitted: false
         };
         this.globalizeLocalizer = momentLocalizer(moment);
         this.onClickEvent = this.onClickEvent.bind(this);
@@ -55,6 +56,13 @@ export class CalendarSetup extends React.Component<any, any> {
         })
         if (name === "selectedBatch") {
             this.getCmsSections(value);
+            this.setState({
+                selectedSection: ""
+            });
+        } else if(name === "selectedSubject"){
+            this.setState({
+                selectedTeacher: ""
+            });
         }
     }
 
@@ -233,9 +241,12 @@ export class CalendarSetup extends React.Component<any, any> {
         return retData;
     }
 
-    convertInDDMMYYFormat(date: any){
-        let dateArr = date.split("-");
-        return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+    convertInDDMMYYFormat(date: any) {
+        if (date) {
+            let dateArr = date.split("-");
+            return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+        }
+        return "";
     }
 
     onClickSearchButton(e: any) {
@@ -279,30 +290,42 @@ export class CalendarSetup extends React.Component<any, any> {
     }
 
     render() {
-        const { events, selectedEvent, isModalOpen, minTime, maxTime, terms, selectedTerm, batches, selectedBatch, sections, selectedSection, subjects, selectedSubject, teachers, selectedTeacher, fromDate, toDate, isRequestMade } = this.state;
+        const { events, selectedEvent, isModalOpen, minTime, maxTime, terms, selectedTerm, batches, selectedBatch, sections, selectedSection, subjects, selectedSubject, teachers, selectedTeacher, fromDate, toDate, isRequestMade, submitted } = this.state;
         return (
             <div>
                 <div className="gf-form-group row m-b-0 p-l-1">
-                    <div className="gf-form--grow form-control-container m-b-1">
+                    <div className={`gf-form--grow form-control-container m-b-1 ${submitted && !selectedTerm ? "has-error" : ""}`}>
                         <label className="gf-form-label bg-transparent b-0">Term/Semester</label>
                         <select className="gf-form-select-box" name="selectedTerm" value={selectedTerm} onChange={this.handleStateChange}>
                             <option value="">Select Term</option>
                             {this.createSelectbox(terms, "id", "termsDesc", "term")}
                         </select>
+                        {
+                            submitted && !selectedTerm &&
+                            <div className="error">Term is required.</div>
+                        }
                     </div>
-                    <div className="gf-form--grow form-control-container m-b-1">
+                    <div className={`gf-form--grow form-control-container m-b-1 ${submitted && !selectedBatch ? "has-error" : ""}`}>
                         <label className="gf-form-label bg-transparent b-0">Year</label>
                         <select className="gf-form-select-box" name="selectedBatch" value={selectedBatch} onChange={this.handleStateChange}>
                             <option value="">Select Year</option>
                             {this.createSelectbox(batches, "id", "batch", "batch")}
                         </select>
+                        {
+                            submitted && !selectedBatch &&
+                            <div className="error">Year is required.</div>
+                        }
                     </div>
-                    <div className="gf-form--grow form-control-container m-b-1">
+                    <div className={`gf-form--grow form-control-container m-b-1 ${submitted && !selectedSection ? "has-error" : ""}`}>
                         <label className="gf-form-label bg-transparent b-0">Section</label>
                         <select className="gf-form-select-box" name="selectedSection" value={selectedSection} onChange={this.handleStateChange}>
                             <option value="">Select Section</option>
                             {this.createSelectbox(sections, "id", "section", "section")}
                         </select>
+                        {
+                            submitted && !selectedSection &&
+                            <div className="error">Section is required.</div>
+                        }
                     </div>
                     <div className="gf-form--grow form-control-container m-b-1">
                         <label className="gf-form-label bg-transparent b-0">Subject</label>
@@ -333,7 +356,7 @@ export class CalendarSetup extends React.Component<any, any> {
                 </div>
                 <div className="gf-form-group row p-l-1">
                     <div className="gf-form--grow form-control-container cust-width-220">
-                        <input type="button" className="btn btn-primary gf-form-control" onClick={this.onClickSearchButton} value="Search" disabled={isRequestMade}/>
+                        <input type="button" className="btn btn-primary gf-form-control" onClick={this.onClickSearchButton} value="Search" disabled={isRequestMade} />
                     </div>
                 </div>
                 <div className="calendar-container">
