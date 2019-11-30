@@ -63,11 +63,3 @@
     display: inline-block;
     padding-left: 10px;
 }
-
-.m-photo{
-    background: url('../img/uicon_m.png') 0 0 no-repeat;
-}
-
-.w-photo{
-    background: url('../img/uicon_w.png') 0 0 no-repeat;
-}
