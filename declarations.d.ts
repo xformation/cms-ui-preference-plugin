@@ -10,3 +10,5 @@ declare module '*.graphql' {
 	export = value;
 }
 
+declare module '*.png';
+

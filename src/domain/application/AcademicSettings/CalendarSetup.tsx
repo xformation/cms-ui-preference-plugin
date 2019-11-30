@@ -176,7 +176,9 @@ export class CalendarSetup extends React.Component<any, any> {
                 end: endTime,
                 allDay: false,
                 teacher: attendancemaster.teach.teacher.teacherName + " " + attendancemaster.teach.teacher.teacherLastName,
-                subject: attendancemaster.teach.subject.subjectCode
+                subject: attendancemaster.teach.subject.subjectCode,
+                img: attendancemaster.teach.teacher.uploadPhoto,
+                sex: attendancemaster.teach.teacher.sex
             });
         }
         return {
