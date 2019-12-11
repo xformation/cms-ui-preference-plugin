@@ -164,7 +164,7 @@ class CollegeInfo extends React.Component<any, CollegeState> {
                     <hr></hr> */}
                 {/* </div> */}
                 <form name="collegeForm" className="gf-form-group section m-b-1" onSubmit={this.handleSubmit}>
-                    <h5 className="form-h5">Name</h5>
+                     <h5 className="form-h5">Name</h5>
                     <div className="gf-form m-b-1">
                         <input type="text" className="gf-form-input max-width-18" placeholder="College Name" maxLength={255} required={true} name="collegeName" value={collegeData.collegeName} onChange={this.handleStateChange} />
                     </div>
