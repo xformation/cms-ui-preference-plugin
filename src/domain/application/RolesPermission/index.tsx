@@ -2,7 +2,10 @@ import * as React from 'react';
 // import { graphql, QueryProps, MutationFunc, compose } from 'react-apollo';
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-
+import {Permissions} from './permissions/Permissions';
+import {Groups} from './groups/Groups';
+import {Users} from './users/Users';
+import {Roles} from './roles/Roles';
 export default class RolesPermission extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
@@ -46,16 +49,16 @@ export default class RolesPermission extends React.Component<any, any> {
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
                     <TabPane tabId={0}>
-                        Test 
+                    <Permissions />
                     </TabPane>
                     <TabPane tabId={1}>
-                        Test
+                    <Roles />
                     </TabPane>
                     <TabPane tabId={2}>
-                        Test
+                    <Groups />
                     </TabPane>
                     <TabPane tabId={3}>
-                        Test
+                    <Users />
                     </TabPane>
                     <TabPane tabId={4}>
                         Test
