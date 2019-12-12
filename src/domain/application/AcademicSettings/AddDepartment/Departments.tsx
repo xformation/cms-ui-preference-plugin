@@ -87,7 +87,7 @@ export class Departments extends React.Component<any, any> {
         return (
             <div className="info-container">
                 <div className="authorized-signatory-container m-b-1">
-                    <h3>Department Setup</h3>                   
+                    <h3>Department Setup</h3>
                 </div>
                 <button onClick={e => this.showModal(e, true)}>
                     <i className="fa fa-plus-circle"></i> Add new
@@ -97,47 +97,47 @@ export class Departments extends React.Component<any, any> {
                     <ModalBody className="modal-content">
                         <form className="gf-form-group section m-0 dflex">
                             <div className="modal-fwidth">
-                               
-                                
-                                <div className="fwidth-modal-text modal-fwidth m-r-2">
-							        <label className="gf-form-label b-0 bg-transparent">DEPARTMENT NAME</label>
-							        <input type="text" required  className="gf-form-input "	placeholder="department name" />
-						        </div>
-                                <div className="fwidth-modal-text modal-fwidth m-r-2">
-							        <label className="gf-form-label b-0 bg-transparent">DEPARTMENT HEAD</label>
-							        <input type="text" required  className="gf-form-input "	placeholder="department head" />
-						        </div>
 
-                                <div className="mdflex modal-fwidth">
-                                    <div className="fwidth-modal-text m-r-1">
-						                <label className="gf-form-label b-0 bg-transparent">COLLEGE BRANCH</label>
-							            <select className="gf-form-input" required  >
-								            <option value="">
-								            Select College Branch</option>
-								            {/* <option ng-repeat="branch in branches" value="{{branch.id}}">
-								            </option> */}
-							            </select>
-					              </div>
+
+                                <div className="fwidth-modal-text modal-fwidth m-r-2">
+                                    <label className="gf-form-label b-0 bg-transparent">DEPARTMENT NAME</label>
+                                    <input type="text" required className="gf-form-input " placeholder="department name" />
+                                </div>
+                                <div className="fwidth-modal-text modal-fwidth m-r-2">
+                                    <label className="gf-form-label b-0 bg-transparent">DEPARTMENT HEAD</label>
+                                    <input type="text" required className="gf-form-input " placeholder="department head" />
                                 </div>
 
                                 <div className="mdflex modal-fwidth">
-						            <div className="fwidth-modal-text m-r-1">
-						                <label className="gf-form-label b-0 bg-transparent">ACADEMIC YEAR</label>
-							                <select className="gf-form-input" required ng-model="department.academicyearId" >
-								                <option value="">
-								                    Select AcademicYear</option>
-								                    <option ng-repeat="academicYear in academicYears" value="{{academicYear.id}}">
-								                    </option>
-							                </select>
-						            </div>
-					            </div>
+                                    <div className="fwidth-modal-text m-r-1">
+                                        <label className="gf-form-label b-0 bg-transparent">COLLEGE BRANCH</label>
+                                        <select className="gf-form-input" required  >
+                                            <option value="">
+                                                Select College Branch</option>
+                                            {/* <option ng-repeat="branch in branches" value="{{branch.id}}">
+								            </option> */}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="mdflex modal-fwidth">
+                                    <div className="fwidth-modal-text m-r-1">
+                                        <label className="gf-form-label b-0 bg-transparent">ACADEMIC YEAR</label>
+                                        <select className="gf-form-input" required ng-model="department.academicyearId" >
+                                            <option value="">
+                                                Select AcademicYear</option>
+                                            <option ng-repeat="academicYear in academicYears" value="{{academicYear.id}}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div className="modal-fwidth fwidth-modal-text m-r-1">
-						            <label className="gf-form-label b-0 bg-transparent">Comments</label>
-						                <input type="text" required  className="gf-form-input "
-							            placeholder="description" />
-					            </div>
-					            
-                            
+                                    <label className="gf-form-label b-0 bg-transparent">Comments</label>
+                                    <input type="text" required className="gf-form-input "
+                                        placeholder="description" />
+                                </div>
+
+
                                 <div className="m-t-1 text-center">
                                     <button type="submit" className="btn btn-success border-bottom">Save</button>
                                     <button type="submit" className="btn btn-success border-bottom">Update</button>

@@ -4,9 +4,12 @@ import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import { graphql, MutationFunc } from 'react-apollo';
 import '../../../css/college-settings.css';
-import CollegeInfo  from './college/AddCollegePage/CollegeInfo';
-import {CollegeBranches} from './branch/CollegeBranches';
+import CollegeInfo from './college/AddCollegePage/CollegeInfo';
+import { CollegeBranches } from './branch/CollegeBranches';
 import { any } from 'prop-types';
+import { LegalEntities } from './legalentity/LegalEntities';
+import { MasterDataimport } from './fileimport/MasterDataimport';
+import { Payment } from './payment/Payment';
 
 export default class CollegeSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -62,13 +65,13 @@ export default class CollegeSettings extends React.Component<any, any> {
                         <CollegeBranches />
                     </TabPane>
                     <TabPane tabId={2}>
-                        Test
+                        <LegalEntities />
                     </TabPane>
                     <TabPane tabId={3}>
-                        Test
+                        <MasterDataimport />
                     </TabPane>
                     <TabPane tabId={4}>
-                        Test
+                        <Payment />
                     </TabPane>
                 </TabContent>
             </section>

@@ -4,10 +4,10 @@ import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import { CalendarSetup } from './CalendarSetup';
 import { YearSettings } from './YearSettings';
-import { Departments } from './Departments';
 import { Courses } from './AddCoursePage/Courses';
 import { StaffSetup } from './StaffSetup';
 import { Subjects } from './SubjectSetup';
+import { Departments } from './AddDepartment/Departments';
 
 export default class AcademicSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -62,19 +62,19 @@ export default class AcademicSettings extends React.Component<any, any> {
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
                     <TabPane tabId={0}>
-                        <YearSettings/>
+                        <YearSettings />
                     </TabPane>
                     <TabPane tabId={1}>
-                        <Departments/>
+                        <Departments />
                     </TabPane>
                     <TabPane tabId={2}>
-                        <Courses/>
+                        <Courses />
                     </TabPane>
                     <TabPane tabId={3}>
-                        <StaffSetup/>
+                        <StaffSetup />
                     </TabPane>
                     <TabPane tabId={4}>
-                        <Subjects/>
+                        <Subjects />
                     </TabPane>
                     <TabPane tabId={5}>
                         <CalendarSetup />
