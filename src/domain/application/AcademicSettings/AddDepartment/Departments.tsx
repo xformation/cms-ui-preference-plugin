@@ -88,40 +88,42 @@ export class Departments extends React.Component<any, any> {
         <div className="authorized-signatory-container m-b-1">
           <h3>Department Setup</h3>
         </div>
-        <button onClick={e => this.showModal(e, true)}>
-          <i className="fa fa-plus-circle" /> Add new
+        <button className="btn btn-primary m-b-1" onClick={e => this.showModal(e, true)}>
+          <i className="fa fa-plus-circle " /> Add new
         </button>
         <Modal isOpen={isModalOpen} className="react-strap-modal-container">
           <ModalHeader>Add New</ModalHeader>
           <ModalBody className="modal-content">
             <form className="gf-form-group section m-0 dflex">
               <div className="modal-fwidth">
-                <div className="fwidth-modal-text modal-fwidth m-r-2">
-                  <label className="gf-form-label b-0 bg-transparent">
-                    DEPARTMENT NAME
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="gf-form-input "
-                    maxLength={255}
-                    placeholder="department name"
-                  />
+                <div className="dflex">
+                  <div className="fwidth-modal-text modal-fwidth m-r-2">
+                    <label className="gf-form-label b-0 bg-transparent">
+                      DEPARTMENT NAME
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input "
+                      maxLength={255}
+                      placeholder="department name"
+                    />
+                  </div>
+                  <div className="fwidth-modal-text modal-fwidth m-r-2">
+                    <label className="gf-form-label b-0 bg-transparent">
+                      DEPARTMENT HEAD
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input "
+                      maxLength={255}
+                      placeholder="department head"
+                    />
+                  </div>
                 </div>
-                <div className="fwidth-modal-text modal-fwidth m-r-2">
-                  <label className="gf-form-label b-0 bg-transparent">
-                    DEPARTMENT HEAD
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="gf-form-input "
-                    maxLength={255}
-                    placeholder="department head"
-                  />
-                </div>
-
-                <div className="mdflex modal-fwidth">
+                {/* <div className="dflex"> */}{' '}
+                <div className="mdflex modal-fwidth ">
                   <div className="fwidth-modal-text m-r-1">
                     <label className="gf-form-label b-0 bg-transparent">
                       COLLEGE BRANCH
@@ -133,8 +135,7 @@ export class Departments extends React.Component<any, any> {
                     </select>
                   </div>
                 </div>
-
-                <div className="mdflex modal-fwidth">
+                <div className="mdflex modal-fwidth ">
                   <div className="fwidth-modal-text m-r-1">
                     <label className="gf-form-label b-0 bg-transparent">
                       ACADEMIC YEAR
@@ -152,6 +153,7 @@ export class Departments extends React.Component<any, any> {
                     </select>
                   </div>
                 </div>
+                {/* </div> */}
                 <div className="modal-fwidth fwidth-modal-text m-r-1">
                   <label className="gf-form-label b-0 bg-transparent">Comments</label>
                   <input
@@ -162,12 +164,11 @@ export class Departments extends React.Component<any, any> {
                     placeholder="description"
                   />
                 </div>
-
                 <div className="m-t-1 text-center">
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Save
                   </button>
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Update
                   </button>
                   <button
@@ -181,6 +182,7 @@ export class Departments extends React.Component<any, any> {
             </form>
           </ModalBody>
         </Modal>
+        <span />
         <table className="fwidth">
           <thead>
             <th>Name</th>

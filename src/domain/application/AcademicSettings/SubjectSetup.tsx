@@ -88,7 +88,7 @@ export class Subjects extends React.Component<any, any> {
         <div className="authorized-signatory-container m-b-1">
           <h3>subject Setup</h3>
         </div>
-        <button onClick={e => this.showModal(e, true)}>
+        <button className="btn btn-primary m-b-1" onClick={e => this.showModal(e, true)}>
           <i className="fa fa-plus-circle" /> Add new
         </button>
         <Modal isOpen={isModalOpen} className="react-strap-modal-container">
@@ -96,29 +96,36 @@ export class Subjects extends React.Component<any, any> {
           <ModalBody className="modal-content">
             <form className="gf-form-group section m-0 dflex">
               <div className="modal-fwidth">
-                <div className="fwidth-modal-text modal-fwidth m-r-1">
-                  <label className="gf-form-label b-0 bg-transparent">SUBJECT NAME</label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={255}
-                    className="gf-form-input "
-                    placeholder="subject name"
-                  />
+                <div className="dflex">
+                  <div className="fwidth-modal-text modal-fwidth m-r-1">
+                    <label className="gf-form-label b-0 bg-transparent">
+                      SUBJECT NAME
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      maxLength={255}
+                      className="gf-form-input "
+                      placeholder="subject name"
+                    />
+                  </div>
+                  <div className="fwidth-modal-text modal-fwidth">
+                    <label className="gf-form-label b-0 bg-transparent">
+                      SUBJECT CODE
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      placeholder="subject Code"
+                    />
+                  </div>
                 </div>
-                <div className="fwidth-modal-text modal-fwidth">
-                  <label className="gf-form-label b-0 bg-transparent">SUBJECT CODE</label>
-                  <input
-                    type="text"
-                    required
-                    className="gf-form-input"
-                    placeholder="subject Code"
-                  />
-                </div>
+
                 <div className="mdflex modal-fwidth">
                   <div className="fwidth-modal-text m-r-1">
                     <label className="gf-form-label b-0 bg-transparent">DEPARTMENT</label>
-                    <select className="gf-form-select-wrapper" required>
+                    <select className="gf-form-select-wrapper fwidth" required>
                       <option value="">Select Department</option>
                       {/* <option ng-repeat="department in departments" value="{{department.id}}">{{}}</option> */}
                     </select>
@@ -126,7 +133,7 @@ export class Subjects extends React.Component<any, any> {
                   <div className="fwidth-modal-text">
                     <label className="gf-form-label b-0 bg-transparent">YEAR</label>
                     <select
-                      className="gf-form-select-wrapper"
+                      className="gf-form-select-wrapper fwidth"
                       ng-model="subject.batchId"
                       required
                     >
@@ -141,7 +148,7 @@ export class Subjects extends React.Component<any, any> {
                       ASSIGN TEACHER
                     </label>
                     <select
-                      className="gf-form-select-wrapper"
+                      className="gf-form-select-wrapper fwidth"
                       ng-model="subject.teacherId"
                       required
                     >
@@ -219,10 +226,10 @@ export class Subjects extends React.Component<any, any> {
                   </div>
                 </div>
                 <div className="m-t-1 text-center">
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Save
                   </button>
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Update
                   </button>
                   <button

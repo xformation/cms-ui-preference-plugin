@@ -92,7 +92,7 @@ export class YearSettings extends React.Component<any, any> {
         <div className="authorized-signatory-container m-b-1">
           <h3>Year Settings</h3>
         </div>
-        <button onClick={e => this.showModal(e, true)}>
+        <button className="btn btn-primary m-b-1" onClick={e => this.showModal(e, true)}>
           <i className="fa fa-plus-circle" /> Add new
         </button>
         <Modal isOpen={isModalOpen} className="react-strap-modal-container">
@@ -114,11 +114,15 @@ export class YearSettings extends React.Component<any, any> {
                 </div>
 
                 <div className="mdflex modal-fwidth">
-                  <div className="fwidth-modal-text">
-                    {/* <label class="switch"> <input disabled type="checkbox" ng-model="academicYear.status"
-                            ng-true-value="'ACTIVE'" ng-false-value="'DEACTIVE'" /> 
-                            <span class="slider disabledCursor"></span>
-                        </label> */}
+                  <div className="fwidth-modal-text mr-1">
+                    <label className="gf-form-label b-0 bg-transparent">START DATE</label>
+                    <input type="date" required className="gf-form-input" />
+                  </div>
+                  <div className="fwidth-modal-text mr-1">
+                    <label className="gf-form-label b-0 bg-transparent">END DATE</label>
+                    <input type="date" required className="gf-form-input" />
+                  </div>
+                  <div className="mr-1">
                     <label className="gf-form-label b-0 bg-transparent" htmlFor="">
                       STATUS
                     </label>
@@ -128,31 +132,17 @@ export class YearSettings extends React.Component<any, any> {
                       <span className="slider" />{' '}
                     </label>
                   </div>
-                  {/* <td class="text-center link-td">
-              <input type="date" required ng-model="term.startDate" maxlength="10" class="gf-form-input" />
-            </td>
-            <td class="text-center link-td">
-              <input type="date" required ng-model="term.endDate" maxlength="10" class="gf-form-input" />
-            </td> */}
-                  <div className="fwidth-modal-text">
-                    <label className="gf-form-label b-0 bg-transparent">START DATE</label>
-                    <input type="date" required className="gf-form-input" />
-                  </div>
-                  <div className="fwidth-modal-text">
-                    <label className="gf-form-label b-0 bg-transparent">END DATE</label>
-                    <input type="date" required className="gf-form-input" />
-                  </div>
                 </div>
 
                 <div className="m-t-1 text-center">
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Save
                   </button>
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Update
                   </button>
                   <button
-                    className="btn btn-danger border-bottom"
+                    className="btn btn-danger border-bottom mr-1"
                     onClick={e => this.showModal(e, false)}
                   >
                     Cancel

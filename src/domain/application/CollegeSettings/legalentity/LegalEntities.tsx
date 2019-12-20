@@ -1,142 +1,151 @@
 import * as React from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { collegeSettingsServices } from '../../_services/collegeSettings.services';
-
-
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  TabContent,
+  TabPane,
+  Nav,
+  NavItem,
+  NavLink,
+} from 'reactstrap';
+import {collegeSettingsServices} from '../../_services/collegeSettings.services';
 
 export class LegalEntities extends React.Component<any, any> {
-	DEFAULT_LOGO = '/public/img/college_logo.png';
-	constructor(props: any) {
-		super(props);
-		this.state = {
-			activeTab: 0,
-			logoSrc: '',
-			isModalOpen: false,
-			isModalOpen1: false,
-			states: [],
-			cities: [],
-			selectedState: '',
-			selectedCity: ''
-		};
-		this.toggleTab = this.toggleTab.bind(this);
-		this.showModal = this.showModal.bind(this);
-		this.showModalNew = this.showModalNew.bind(this);
-		this.handleStateChange = this.handleStateChange.bind(this);
-		this.createCitySelectbox = this.createCitySelectbox.bind(this);
-		this.handleImageChange = this.handleImageChange.bind(this);
-	}
+  DEFAULT_LOGO = '/public/img/college_logo.png';
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      activeTab: 0,
+      logoSrc: '',
+      isModalOpen: false,
+      isModalOpen1: false,
+      states: [],
+      cities: [],
+      selectedState: '',
+      selectedCity: '',
+    };
+    this.toggleTab = this.toggleTab.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.showModalNew = this.showModalNew.bind(this);
+    this.handleStateChange = this.handleStateChange.bind(this);
+    this.createCitySelectbox = this.createCitySelectbox.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
+  }
 
-	toggleTab(tabNo: any) {
-		this.setState({
-			activeTab: tabNo
-		});
-	}
+  toggleTab(tabNo: any) {
+    this.setState({
+      activeTab: tabNo,
+    });
+  }
 
-	componentDidMount() {
-		collegeSettingsServices.getStates().then(
-			(response) => {
-				this.setState({
-					states: response
-				});
-			},
-			(error) => {
-				console.log(error);
-			}
-		);
-		collegeSettingsServices.getCities().then(
-			(response) => {
-				this.setState({
-					cities: response
-				});
-			},
-			(error) => {
-				console.log(error);
-			}
-		);
-	}
+  componentDidMount() {
+    collegeSettingsServices.getStates().then(
+      response => {
+        this.setState({
+          states: response,
+        });
+      },
+      error => {
+        console.log(error);
+      }
+    );
+    collegeSettingsServices.getCities().then(
+      response => {
+        this.setState({
+          cities: response,
+        });
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
 
-	handleImageChange(e: any) {
-		const { files, name } = e.target;
-		if (files.length > 0) {
-			const result = this.toBase64(files[0]);
-			result
-				.then((base64) => {
-					this.setState({
-						[name]: base64
-					});
-				})
-				.catch(() => { });
-		} else {
-			this.setState({
-				[name]: null
-			});
-		}
-	}
+  handleImageChange(e: any) {
+    const {files, name} = e.target;
+    if (files.length > 0) {
+      const result = this.toBase64(files[0]);
+      result
+        .then(base64 => {
+          this.setState({
+            [name]: base64,
+          });
+        })
+        .catch(() => {});
+    } else {
+      this.setState({
+        [name]: null,
+      });
+    }
+  }
 
-	toBase64(file: any) {
-		return new Promise((resolve: any, reject: any) => {
-			const reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.onload = () => resolve(reader.result);
-			reader.onerror = (error) => reject(error);
-		});
-	}
+  toBase64(file: any) {
+    return new Promise((resolve: any, reject: any) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
 
-	showModal(e: any, bShow: boolean) {
-		e && e.preventDefault();
-		this.setState(() => ({
-			isModalOpen: bShow
-		}));
-	}
+  showModal(e: any, bShow: boolean) {
+    e && e.preventDefault();
+    this.setState(() => ({
+      isModalOpen: bShow,
+    }));
+  }
 
-	showModalNew(e: any, bShow: boolean) {
-		e && e.preventDefault();
-		this.setState(() => ({
-			isModalOpen1: bShow
-		}));
-	}
+  showModalNew(e: any, bShow: boolean) {
+    e && e.preventDefault();
+    this.setState(() => ({
+      isModalOpen1: bShow,
+    }));
+  }
 
-	handleStateChange(e: any) {
-		const { name, value } = e.target;
-		this.setState({
-			[name]: value
-		});
-	}
+  handleStateChange(e: any) {
+    const {name, value} = e.target;
+    this.setState({
+      [name]: value,
+    });
+  }
 
-	createCitySelectbox(selectedState: any) {
-		const { cities } = this.state;
-		let retData = [];
-		selectedState = parseInt(selectedState);
-		for (let i = 0; i < cities.length; i++) {
-			let city = cities[i];
-			if (selectedState === city.stateId) {
-				retData.push(
-					<option key={city.id} value={city.id}>
-						{city.cityName}
-					</option>
-				);
-			}
-		}
-		return retData;
-	}
+  createCitySelectbox(selectedState: any) {
+    const {cities} = this.state;
+    let retData = [];
+    selectedState = parseInt(selectedState);
+    for (let i = 0; i < cities.length; i++) {
+      let city = cities[i];
+      if (selectedState === city.stateId) {
+        retData.push(
+          <option key={city.id} value={city.id}>
+            {city.cityName}
+          </option>
+        );
+      }
+    }
+    return retData;
+  }
 
-	render() {
-		const {
-			logoSrc,
-			isModalOpen,
-			isModalOpen1,
-			states,
-			cities,
-			selectedState,
-			selectedCity,
-			activeTab
-		} = this.state;
-		return <div className="info-container">
+  render() {
+    const {
+      logoSrc,
+      isModalOpen,
+      isModalOpen1,
+      states,
+      cities,
+      selectedState,
+      selectedCity,
+      activeTab,
+    } = this.state;
+    return (
+      <div className="info-container">
         <div className="authorized-signatory-container m-b-1">
           <h3>Legal Entity</h3>
           <small>
-            A Legal Entity is the registered name of your institution. This name is
-            used in all documents such as pay slip, offer letter etc.
+            A Legal Entity is the registered name of your institution. This name is used
+            in all documents such as pay slip, offer letter etc.
           </small>
         </div>
         <div className="max-width-18">
@@ -149,7 +158,14 @@ export class LegalEntities extends React.Component<any, any> {
           <img className="logo m-b-1" src={logoSrc || this.DEFAULT_LOGO} />
           <div className="gf-form m-b-1">
             <label className="upload-cursor">
-              <input id="d-none" type="file" className="gf-form-file-input" accept="image/*" onChange={this.handleImageChange} name="logoSrc" />
+              <input
+                id="d-none"
+                type="file"
+                className="gf-form-file-input"
+                accept="image/*"
+                onChange={this.handleImageChange}
+                name="logoSrc"
+              />
               LEGAL ENTITY
             </label>
           </div>
@@ -186,42 +202,102 @@ export class LegalEntities extends React.Component<any, any> {
                     <label className="gf-form-label b-0 bg-transparent">
                       SIGNATORY NAME
                     </label>
-                    <input type="text" required className="gf-form-input" maxLength={255} placeholder="signatory name" />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      maxLength={255}
+                      placeholder="signatory name"
+                    />
                   </div>
                   <div className="fwidth-modal-text m-r-1">
                     <label className="gf-form-label b-0 bg-transparent">
                       SIGNATORY FATHER NAME
                     </label>
-                    <input type="text" required className="gf-form-input" placeholder="signatory father name" maxLength={255} />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      placeholder="signatory father name"
+                      maxLength={255}
+                    />
                   </div>
                   <div className="fwidth-modal-text">
                     <label className="gf-form-label b-0 bg-transparent">
                       SIGNATORY DESIGNATION
                     </label>
-                    <input type="text" required className="gf-form-input" placeholder="signatory designation" maxLength={255} />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      placeholder="signatory designation"
+                      maxLength={255}
+                    />
                   </div>
                 </div>
                 <div className="fwidth-modal-text modal-fwidth">
                   <label className="gf-form-label b-0 bg-transparent">ADDRESS</label>
-                  <input type="text" required className="gf-form-input " placeholder="" maxLength={255} />
-                  <input type="text" required className="gf-form-input m-t-1 " placeholder="" maxLength={255} />
+                  <input
+                    type="text"
+                    required
+                    className="gf-form-input "
+                    placeholder=""
+                    maxLength={255}
+                  />
+                  <input
+                    type="text"
+                    required
+                    className="gf-form-input m-t-1 "
+                    placeholder=""
+                    maxLength={255}
+                  />
                   <div className="mdflex modal-fwidth m-t-1">
-                    <input type="text" required className="gf-form-input m-r-1" placeholder="" maxLength={255} />
-                    <input type="text" required className="gf-form-input m-r-1" placeholder="" maxLength={255} />
-                    <input type="text" required className="gf-form-input " placeholder="" maxLength={255} />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input m-r-1"
+                      placeholder=""
+                      maxLength={255}
+                    />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input m-r-1"
+                      placeholder=""
+                      maxLength={255}
+                    />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input "
+                      placeholder=""
+                      maxLength={255}
+                    />
                   </div>
                 </div>
 
                 <div className="mdflex modal-fwidth">
                   <div className="fwidth-modal-text m-r-1">
                     <label className="gf-form-label b-0 bg-transparent">EMAIL</label>
-                    <input type="text" required className="gf-form-input" maxLength={255} placeholder="email" />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      maxLength={255}
+                      placeholder="email"
+                    />
                   </div>
                   <div className="fwidth-modal-text">
                     <label className="gf-form-label b-0 bg-transparent">
                       PAN CARD NUMBER
                     </label>
-                    <input type="text" required className="gf-form-input" placeholder="pancard number" maxLength={255} />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      placeholder="pancard number"
+                      maxLength={255}
+                    />
                   </div>
                 </div>
                 <div className="mdflex modal-fwidth">
@@ -233,13 +309,16 @@ export class LegalEntities extends React.Component<any, any> {
                   </div>
                 </div>
                 <div className="m-t-1 text-center">
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Save
                   </button>
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Update
                   </button>
-                  <button className="btn btn-danger border-bottom" onClick={e => this.showModalNew(e, false)}>
+                  <button
+                    className="btn btn-danger border-bottom"
+                    onClick={e => this.showModalNew(e, false)}
+                  >
                     Cancel
                   </button>
                 </div>
@@ -287,7 +366,13 @@ export class LegalEntities extends React.Component<any, any> {
                     <label className="gf-form-label b-0 bg-transparent">
                       ACCOUNT NUMBER
                     </label>
-                    <input type="number" required className="gf-form-input" placeholder="" maxLength={255} />
+                    <input
+                      type="number"
+                      required
+                      className="gf-form-input"
+                      placeholder=""
+                      maxLength={255}
+                    />
                   </div>
                 </div>
                 <div className="mdflex modal-fwidth">
@@ -300,10 +385,14 @@ export class LegalEntities extends React.Component<any, any> {
                     </select>
                   </div>
                   <div className="fwidth-modal-text">
-                    <label className="gf-form-label b-0 bg-transparent">
-                      IFSC CODE
-                    </label>
-                    <input type="text" required className="gf-form-input" placeholder="" maxLength={255} />
+                    <label className="gf-form-label b-0 bg-transparent">IFSC CODE</label>
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      placeholder=""
+                      maxLength={255}
+                    />
                   </div>
                 </div>
                 <div className="mdflex modal-fwidth">
@@ -311,13 +400,25 @@ export class LegalEntities extends React.Component<any, any> {
                     <label className="gf-form-label b-0 bg-transparent">
                       BRANCH ADDRESS
                     </label>
-                    <input type="text" required className="gf-form-input" placeholder="" maxLength={255} />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      placeholder=""
+                      maxLength={255}
+                    />
                   </div>
                   <div className="fwidth-modal-text">
                     <label className="gf-form-label b-0 bg-transparent">
                       CORPORATE ID
                     </label>
-                    <input type="text" required className="gf-form-input" placeholder="" maxLength={255} />
+                    <input
+                      type="text"
+                      required
+                      className="gf-form-input"
+                      placeholder=""
+                      maxLength={255}
+                    />
                   </div>
                 </div>
 
@@ -329,13 +430,16 @@ export class LegalEntities extends React.Component<any, any> {
                 </div>
 
                 <div className="m-t-1 text-center">
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Save
                   </button>
-                  <button type="submit" className="btn btn-success border-bottom">
+                  <button type="submit" className="btn btn-success border-bottom mr-1">
                     Update
                   </button>
-                  <button className="btn btn-danger border-bottom" onClick={e => this.showModal(e, false)}>
+                  <button
+                    className="btn btn-danger border-bottom"
+                    onClick={e => this.showModal(e, false)}
+                  >
                     Cancel
                   </button>
                 </div>
@@ -360,37 +464,52 @@ export class LegalEntities extends React.Component<any, any> {
         </div>
         <Nav tabs className="" id="rmfloat">
           <NavItem className="cursor-pointer">
-            <NavLink className={`${activeTab === 0 ? 'active' : ''}`} onClick={() => {
+            <NavLink
+              className={`${activeTab === 0 ? 'active' : ''}`}
+              onClick={() => {
                 this.toggleTab(0);
-              }}>
+              }}
+            >
               College Info
             </NavLink>
           </NavItem>
           <NavItem className="cursor-pointer">
-            <NavLink className={`${activeTab === 1 ? 'active' : ''}`} onClick={() => {
+            <NavLink
+              className={`${activeTab === 1 ? 'active' : ''}`}
+              onClick={() => {
                 this.toggleTab(1);
-              }}>
+              }}
+            >
               IT Info
             </NavLink>
           </NavItem>
           <NavItem className="cursor-pointer">
-            <NavLink className={`${activeTab === 2 ? 'active' : ''}`} onClick={() => {
+            <NavLink
+              className={`${activeTab === 2 ? 'active' : ''}`}
+              onClick={() => {
                 this.toggleTab(2);
-              }}>
+              }}
+            >
               PF Info
             </NavLink>
           </NavItem>
           <NavItem className="cursor-pointer">
-            <NavLink className={`${activeTab === 3 ? 'active' : ''}`} onClick={() => {
+            <NavLink
+              className={`${activeTab === 3 ? 'active' : ''}`}
+              onClick={() => {
                 this.toggleTab(3);
-              }}>
+              }}
+            >
               ESI Info
             </NavLink>
           </NavItem>
           <NavItem className="cursor-pointer">
-            <NavLink className={`${activeTab === 4 ? 'active' : ''}`} onClick={() => {
+            <NavLink
+              className={`${activeTab === 4 ? 'active' : ''}`}
+              onClick={() => {
                 this.toggleTab(4);
-              }}>
+              }}
+            >
               PT Info
             </NavLink>
           </NavItem>
@@ -405,59 +524,113 @@ export class LegalEntities extends React.Component<any, any> {
                       <label className="gf-form-label b-0 bg-white">
                         LEGAL NAME OF COLLEGE
                       </label>
-                      <input type="text" className="gf-form-input text-uppercase" name="college" placeholder="College Name" required maxLength={255} />
+                      <input
+                        type="text"
+                        className="gf-form-input text-uppercase"
+                        name="college"
+                        placeholder="College Name"
+                        required
+                        maxLength={255}
+                      />
                     </div>
                     <div className="m-b-1 ">
                       <div className="m-b-1 ">
                         <label className="gf-form-label b-0 bg-white">
                           DATE OF INCORPORATION
                         </label>
-                        <input type="date" className="gf-form-input " required maxLength={255} />
+                        <input
+                          type="date"
+                          className="gf-form-input "
+                          required
+                          maxLength={255}
+                        />
                       </div>
                       <div className="m-b-1 ">
                         <label className="gf-form-label b-0 bg-white">
                           COLLEGE IDENTIFICATION NUMBER
                         </label>
-                        <input type="text" name="idnumber" className="gf-form-input text-uppercase" placeholder="CIN1234567" required maxLength={255} />
+                        <input
+                          type="text"
+                          name="idnumber"
+                          className="gf-form-input text-uppercase"
+                          placeholder="CIN1234567"
+                          required
+                          maxLength={255}
+                        />
                       </div>
                     </div>
-                    <div className="form-right">
-                      <div className="m-b-1 ">
-                        <label className="gf-form-label b-0 bg-white ">
-                          TYPE OF COLLEGE
-                        </label>
-                        <div className="gf-form-select-wrapper">
-                          <select ng-model="legalEntity.typeOfCollege" ng-options="f for f in ['PRIVATE', 'PUBLIC']" className="gf-form-input" required />
-                        </div>
+                  </div>
+                  <div className="form-right">
+                    <div className="m-b-1 ">
+                      <label className="gf-form-label b-0 bg-white ">
+                        TYPE OF COLLEGE
+                      </label>
+                      <div className="gf-form-select-wrapper">
+                        <select
+                          ng-model="legalEntity.typeOfCollege"
+                          ng-options="f for f in ['PRIVATE', 'PUBLIC']"
+                          className="gf-form-input"
+                          required
+                        />
                       </div>
-                      <div className="m-b-1 ">
-                        <label className="gf-form-label b-0 bg-white ">
-                          REGISTERED OFFICE ADDRESS
-                        </label>
-                        <input type="text" className="gf-form-input" placeholder="ADDRESS LINE 1" required name="addr1" ng-pattern="/^[\/#.0-9a-zA-Z\s,-]+$/" />
+                    </div>
+                    <div className="m-b-1 ">
+                      <label className="gf-form-label b-0 bg-white ">
+                        REGISTERED OFFICE ADDRESS
+                      </label>
+                      <input
+                        type="text"
+                        className="gf-form-input"
+                        placeholder="ADDRESS LINE 1"
+                        required
+                        name="addr1"
+                        ng-pattern="/^[\/#.0-9a-zA-Z\s,-]+$/"
+                      />
+                    </div>
+                    <div className="m-b-1 ">
+                      <input
+                        type="text"
+                        className="gf-form-input"
+                        placeholder="ADDRESS LINE 2"
+                        name="addr2"
+                      />
+                    </div>
+                    <div className="m-b-1 ">
+                      <input
+                        type="text"
+                        className="gf-form-input legalWidth"
+                        name="addr3"
+                        required
+                        placeholder="ADDRESS LINE 3"
+                      />
+                    </div>
+                    <div className="flex">
+                      <div>
+                        <input
+                          type="text"
+                          className="gf-form-input legalWidth"
+                          name="addr4"
+                          required
+                          placeholder="ADDRESS LINE 4"
+                        />
                       </div>
-                      <div className="m-b-1 ">
-                        <input type="text" className="gf-form-input" placeholder="ADDRESS LINE 2" name="addr2" />
+                      <div>
+                        <input
+                          type="text"
+                          className="gf-form-input legalWidth"
+                          placeholder="Pincode"
+                          name="pincode"
+                          required
+                        />
                       </div>
-                      <div className="m-b-1 ">
-                        <input type="text" className="gf-form-input legalWidth" name="addr3" required placeholder="ADDRESS LINE 3" />
-                      </div>
-                      <div className="flex">
-                        <div>
-                          <input type="text" className="gf-form-input legalWidth" name="addr4" required placeholder="ADDRESS LINE 4" />
-                        </div>
-                        <div>
-                          <input type="text" className="gf-form-input legalWidth" placeholder="Pincode" name="pincode" required />
-                        </div>
-                      </div>
-                      <div className="gf-form-button-row p-r-0">
-                        <button type="submit" className="btn btn-success border-bottom">
-                          Continue
-                        </button>
-                        <button type="reset" className="btn btn-danger border-bottom">
-                          Clear
-                        </button>
-                      </div>
+                    </div>
+                    <div className="gf-form-button-row p-r-0">
+                      <button type="submit" className="btn btn-success border-bottom">
+                        Continue
+                      </button>
+                      <button type="reset" className="btn btn-danger border-bottom">
+                        Clear
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -471,24 +644,50 @@ export class LegalEntities extends React.Component<any, any> {
                 <div className="gf-form-group section fwidth">
                   <div className="m-b-1 width-18">
                     <label className="gf-form-label b-0 bg-white ">PAN</label>
-                    <input type="text" className="gf-form-input text-uppercase" placeholder="ABCDE1234H" required name="pan" />
+                    <input
+                      type="text"
+                      className="gf-form-input text-uppercase"
+                      placeholder="ABCDE1234H"
+                      required
+                      name="pan"
+                    />
                   </div>
                   <div className="flex">
                     <div className="m-b-1 width-18">
                       <label className="gf-form-label b-0 bg-white ">TAN</label>
-                      <input type="text" className="gf-form-input text-uppercase" placeholder="TASN12345H" required name="tan" />
+                      <input
+                        type="text"
+                        className="gf-form-input text-uppercase"
+                        placeholder="TASN12345H"
+                        required
+                        name="tan"
+                      />
                     </div>
                     <div className="m-b-1 width-18 mx">
                       <label className="gf-form-label b-0 bg-white">
                         TAN CIRCLE NUMBER
                       </label>
-                      <input type="text" className="gf-form-input text-uppercase" placeholder="12345678" name="tancircle" required />
+                      <input
+                        type="text"
+                        className="gf-form-input text-uppercase"
+                        placeholder="12345678"
+                        name="tancircle"
+                        required
+                      />
                     </div>
                     <div className="m-b-1 width-18">
                       <label className="gf-form-label b-0 bg-white ">
                         CIT(TDS) LOCATION
                       </label>
-                      <input type="text" ng-model="legalEntity.citTdsLocation" className="gf-form-input text-uppercase" placeholder="CITY NAME" name="city" required ng-pattern="/^[a-zA-Z0-9 ]+$/" />
+                      <input
+                        type="text"
+                        ng-model="legalEntity.citTdsLocation"
+                        className="gf-form-input text-uppercase"
+                        placeholder="CITY NAME"
+                        name="city"
+                        required
+                        ng-pattern="/^[a-zA-Z0-9 ]+$/"
+                      />
                     </div>
                   </div>
                   <div className="m-b-1 width-18">
@@ -519,15 +718,17 @@ export class LegalEntities extends React.Component<any, any> {
                   <div className="dflex">
                     <div className="form-left">
                       <div className="m-b-1">
-                        <label className="gf-form-label b-0 bg-white ">
-                          PF NUMBER
-                        </label>
-                        <input type="text" className="gf-form-input text-uppercase" name="pfNumber" placeholder="AP/HYD/1234567" required />
+                        <label className="gf-form-label b-0 bg-white ">PF NUMBER</label>
+                        <input
+                          type="text"
+                          className="gf-form-input text-uppercase"
+                          name="pfNumber"
+                          placeholder="AP/HYD/1234567"
+                          required
+                        />
                       </div>
                       <div className="m-b-1">
-                        <label className="gf-form-label b-0 bg-white ">
-                          SIGNATORY
-                        </label>
+                        <label className="gf-form-label b-0 bg-white ">SIGNATORY</label>
                         <div className="gf-form-select-wrapper">
                           <select className="gf-form-input" required />
                         </div>
@@ -545,23 +746,22 @@ export class LegalEntities extends React.Component<any, any> {
                           REGISTRATION DATE
                         </label>
                         <input type="date" className="gf-form-input" required />
-
-                        <div className="m-b-1">
-                          <label className="gf-form-label b-0 bg-white">
-                            SIGNATORY DESIGNATION
-                          </label>
-                          <input type="text" disabled className="gf-form-input" />
-                        </div>
+                      </div>
+                      <div className="m-b-1">
+                        <label className="gf-form-label b-0 bg-white">
+                          SIGNATORY DESIGNATION
+                        </label>
+                        <input type="text" disabled className="gf-form-input" />
                       </div>
                     </div>
-                    <div className="gf-form-button-row p-r-0">
-                      <button type="submit" className="btn btn-success border-bottom">
-                        Continue
-                      </button>
-                      <button type="reset" className="btn btn-danger border-bottom">
-                        Clear
-                      </button>
-                    </div>
+                  </div>
+                  <div className="gf-form-button-row p-r-0 p-t-1">
+                    <button type="submit" className="btn btn-success border-bottom">
+                      Continue
+                    </button>
+                    <button type="reset" className="btn btn-danger border-bottom">
+                      Clear
+                    </button>
                   </div>
                 </div>
               </div>
@@ -574,15 +774,17 @@ export class LegalEntities extends React.Component<any, any> {
                   <div className="dflex">
                     <div className="form-left">
                       <div className="m-b-1">
-                        <label className="gf-form-label b-0 bg-white">
-                          ESI NUMBER
-                        </label>
-                        <input type="text" className="gf-form-input" placeholder="454876877985465" required name="esi" />
+                        <label className="gf-form-label b-0 bg-white">ESI NUMBER</label>
+                        <input
+                          type="text"
+                          className="gf-form-input"
+                          placeholder="454876877985465"
+                          required
+                          name="esi"
+                        />
                       </div>
                       <div className="m-b-1">
-                        <label className="gf-form-label b-0 bg-white ">
-                          SIGNATORY
-                        </label>
+                        <label className="gf-form-label b-0 bg-white ">SIGNATORY</label>
                         <div className="gf-form-select-wrapper">
                           <select className="gf-form-input" required />
                         </div>
@@ -593,31 +795,30 @@ export class LegalEntities extends React.Component<any, any> {
                           <input type="text" disabled className="gf-form-input" />
                         </div>
                       </div>
-                      <div className="form-right">
+                    </div>
+                    <div className="form-right">
+                      <div className="m-b-1">
+                        <label className="gf-form-label b-0 bg-white">
+                          REGISTRATION DATE
+                        </label>
+                        <input type="date" className="gf-form-input" required />
+
                         <div className="m-b-1">
                           <label className="gf-form-label b-0 bg-white">
-                            REGISTRATION DATE
+                            SIGNATORY DESIGNATION
                           </label>
-                          <input type="date" className="gf-form-input" required />
-
-                          <div className="m-b-1">
-                            <label className="gf-form-label b-0 bg-white">
-                              SIGNATORY DESIGNATION
-                            </label>
-                            <input type="text" disabled className="gf-form-input" />
-                          </div>
+                          <input type="text" disabled className="gf-form-input" />
                         </div>
                       </div>
-
-                      <div className="gf-form-button-row p-r-0">
-                        <button type="submit" className="btn btn-success border-bottom">
-                          Continue
-                        </button>
-                        <button type="reset" className="btn btn-danger border-bottom">
-                          Clear
-                        </button>
-                      </div>
                     </div>
+                  </div>
+                  <div className="gf-form-button-row p-r-0">
+                    <button type="submit" className="btn btn-success border-bottom">
+                      Continue
+                    </button>
+                    <button type="reset" className="btn btn-danger border-bottom">
+                      Clear
+                    </button>
                   </div>
                 </div>
               </div>
@@ -631,10 +832,14 @@ export class LegalEntities extends React.Component<any, any> {
                   <div className="gf-form-group">
                     <div className="flex">
                       <div className="m-b-1 width-18">
-                        <label className="gf-form-label b-0 bg-white">
-                          PT NUMBER
-                        </label>
-                        <input type="text" className="gf-form-input text-uppercase" placeholder="4548768779" name="pt" required />
+                        <label className="gf-form-label b-0 bg-white">PT NUMBER</label>
+                        <input
+                          type="text"
+                          className="gf-form-input text-uppercase"
+                          placeholder="4548768779"
+                          name="pt"
+                          required
+                        />
                       </div>
                       <div className="m-b-1 width-18 mx">
                         <label className="gf-form-label b-0 bg-white">
@@ -643,19 +848,20 @@ export class LegalEntities extends React.Component<any, any> {
                         <input type="date" className="gf-form-input" required />
                       </div>
                       <div className="m-b-1 width-18">
-                        <label className="gf-form-label b-0 bg-white">
-                          PT SIGNATORY
-                        </label>
+                        <label className="gf-form-label b-0 bg-white">PT SIGNATORY</label>
                         <div className="gf-form-select-wrapper">
                           <select className="gf-form-input" />
                         </div>
                       </div>
                     </div>
-                    <div className="gf-form-button-row p-r-0">
-                      <button type="submit" className="btn btn-success border-bottom">
+                    <div className="gf-form-button-row p-r-0 p-t-1">
+                      <button
+                        type="submit"
+                        className="btn btn-success border-bottom mr-1"
+                      >
                         Save
                       </button>
-                      <button type="reset" className="btn btn-danger border-bottom">
+                      <button type="reset" className="btn btn-danger border-bottom mr-1">
                         Clear
                       </button>
                     </div>
@@ -665,6 +871,7 @@ export class LegalEntities extends React.Component<any, any> {
             </div>
           </TabPane>
         </TabContent>
-      </div>;
-	}
+      </div>
+    );
+  }
 }

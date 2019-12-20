@@ -66,18 +66,20 @@ export class StaffSetup extends React.Component<any, any> {
       <div className="info-container">
         <div className="authorized-signatory-container m-b-1">
           <h3>Staff Setup</h3>
-          <a className="btn btn-primary" ng-click="">
+          {/* <a className="btn btn-primary" ng-click="">
             Assign
-          </a>
+          </a> */}
         </div>
         <div className="authorized-signatory-container m-b-1 dflex ht bg-heading">
           <h4 className="ptl-06">Staff Details</h4>
-          <button className="btn btn-primary" onClick={this.create} ng-click="">
-            Create
-          </button>
-          <button className="btn btn-primary" onClick={this.back} ng-click="">
-            Back
-          </button>
+          <div className="">
+            <button className="btn btn-primary m-r-1" onClick={this.create} ng-click="">
+              Create
+            </button>
+            <button className="btn btn-primary m-r-1" onClick={this.back} ng-click="">
+              Back
+            </button>
+          </div>
         </div>
 
         {/* <div  id="crdiv" className="hide" >sgfsdgfsd</div> */}

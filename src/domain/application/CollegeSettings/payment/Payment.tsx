@@ -85,7 +85,7 @@ export class Payment extends React.Component<any, any> {
                 ng-model="pmt.amount"
               />
               <input
-                className="btn btn-primary cust-h-w"
+                className="btn btn-primary cust-h-w mr-1"
                 type="button"
                 id="btnPay"
                 value="Pay"
