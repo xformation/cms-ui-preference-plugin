@@ -697,9 +697,7 @@ export class StaffSetup extends React.Component<any, any> {
                     id="chk"
                   />
                 </td>
-                <td ng-search=" filter:search">
-                  {/* {{ teacher.teacherName + ' ' + teacher.teacherLastName }} */}
-                </td>
+                <td ng-search=" filter:search" />
                 <td />
                 <td />
                 <td />

@@ -86,81 +86,89 @@ export class CollegeBranches extends React.Component<any, any> {
 
     render() {
         const { isModalOpen, states, cities, selectedState, selectedCity } = this.state;
-        return (
-            <div className="info-container">
-                <div className="authorized-signatory-container m-b-1">
-                    <h3>Colleges Branches</h3>
-                    <small> Create and manage college branches.</small>
-                </div>
-                <button onClick={e => this.showModal(e, true)}>
-                    <i className="fa fa-plus-circle"></i> Add new
-                </button>
-                <Modal isOpen={isModalOpen} className="react-strap-modal-container">
-                    <ModalHeader>Add New</ModalHeader>
-                    <ModalBody className="modal-content">
-                        <form className="gf-form-group section m-0 dflex">
-                            <div className="modal-fwidth">
-                                <div className="mdflex modal-fwidth">
-                                    <div className="fwidth-modal-text m-r-1">
-                                        <label className="gf-form-label b-0 bg-transparent">STATE</label>
-                                        <select className="gf-form-input" name="selectedState" value={selectedState} onChange={this.handleStateChange} required>
-                                            <option value="">
-                                                Select State
-                                            </option>
-                                            {
-                                                this.createStateSelectbox(states)
-                                            }
-                                        </select>
-                                    </div>
-                                    <div className="fwidth-modal-text">
-                                        <label className="gf-form-label b-0 bg-transparent">CITY</label>
-                                        <select className="gf-form-input" name="selectedCity" value={selectedCity} onChange={this.handleStateChange} required>
-                                            <option value="">
-                                                Select City
-                                            </option>
-                                            {this.createCitySelectbox(selectedState)}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="fwidth-modal-text modal-fwidth">
-                                    <label className="gf-form-label b-0 bg-transparent">BRANCH NAME</label>
-                                    <input type="text" required className="gf-form-input " placeholder="branch name" />
-                                </div>
-
-                                <div className="mdflex modal-fwidth">
-                                    <div className="fwidth-modal-text m-r-1">
-                                        <label className="gf-form-label b-0 bg-transparent">ADDRESS</label>
-                                        <input type="text" required className="gf-form-input" placeholder="address line 2" />
-                                    </div>
-                                    <div className="fwidth-modal-text">
-                                        <label className="gf-form-label b-0 bg-transparent"></label>
-                                        <input type="text" required className="gf-form-input" placeholder="addresss line 1" />
-                                    </div>
-                                </div>
-                                <div className="mdflex modal-fwidth">
-                                    <div className="fwidth-modal-text m-r-1">
-                                        <label className="gf-form-label b-0 bg-transparent">BRANCH HEAD</label>
-                                        <input type="text" required className="gf-form-input" placeholder="branch head" />
-                                    </div>
-                                    <div className="fwidth-modal-text">
-                                        <label className="gf-form-label b-0 bg-transparent">COLLEGE</label>
-                                        <select className="gf-form-input" required>
-                                            <option value="">
-                                                Select College
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="m-t-1 text-center">
-                                    <button type="submit" className="btn btn-success border-bottom">Save</button>
-                                    <button type="submit" className="btn btn-success border-bottom">Update</button>
-                                    <button className="btn btn-danger border-bottom" onClick={(e) => this.showModal(e, false)}>Cancel</button>
-                                </div>
-                            </div>
-                        </form>
-                    </ModalBody>
-                </Modal>
+        return <div className="info-container">
+            <div className="authorized-signatory-container m-b-1">
+              <h3>Colleges Branches</h3>
+              <small> Create and manage college branches.</small>
             </div>
-        );
+            <button onClick={e => this.showModal(e, true)}>
+              <i className="fa fa-plus-circle" /> Add new
+            </button>
+            <Modal isOpen={isModalOpen} className="react-strap-modal-container">
+              <ModalHeader>Add New</ModalHeader>
+              <ModalBody className="modal-content">
+                <form className="gf-form-group section m-0 dflex">
+                  <div className="modal-fwidth">
+                    <div className="mdflex modal-fwidth">
+                      <div className="fwidth-modal-text m-r-1">
+                        <label className="gf-form-label b-0 bg-transparent">
+                          STATE
+                        </label>
+                        <select className="gf-form-input" name="selectedState" value={selectedState} onChange={this.handleStateChange} required>
+                          <option value="">Select State</option>
+                          {this.createStateSelectbox(states)}
+                        </select>
+                      </div>
+                      <div className="fwidth-modal-text">
+                        <label className="gf-form-label b-0 bg-transparent">
+                          CITY
+                        </label>
+                        <select className="gf-form-input" name="selectedCity" value={selectedCity} onChange={this.handleStateChange} required>
+                          <option value="">Select City</option>
+                          {this.createCitySelectbox(selectedState)}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="fwidth-modal-text modal-fwidth">
+                      <label className="gf-form-label b-0 bg-transparent">
+                        BRANCH NAME
+                      </label>
+                      <input type="text" required className="gf-form-input " maxLength={255}  placeholder="branch name" />
+                    </div>
+
+                    <div className="mdflex modal-fwidth">
+                      <div className="fwidth-modal-text m-r-1">
+                        <label className="gf-form-label b-0 bg-transparent">
+                          ADDRESS
+                        </label>
+                                    <input type="text" required className="gf-form-input" maxLength={255} placeholder="address line 2" />
+                      </div>
+                      <div className="fwidth-modal-text">
+                        <label className="gf-form-label b-0 bg-transparent" />
+                                    <input type="text" required className="gf-form-input" maxLength={255} placeholder="addresss line 1" />
+                      </div>
+                    </div>
+                    <div className="mdflex modal-fwidth">
+                      <div className="fwidth-modal-text m-r-1">
+                        <label className="gf-form-label b-0 bg-transparent">
+                          BRANCH HEAD
+                        </label>
+                                    <input type="text" required className="gf-form-input" placeholder="branch head" maxLength={255}/>
+                      </div>
+                      <div className="fwidth-modal-text">
+                        <label className="gf-form-label b-0 bg-transparent">
+                          COLLEGE
+                        </label>
+                        <select className="gf-form-input" required>
+                          <option value="">Select College</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="m-t-1 text-center">
+                      <button type="submit" className="btn btn-success border-bottom">
+                        Save
+                      </button>
+                      <button type="submit" className="btn btn-success border-bottom">
+                        Update
+                      </button>
+                      <button className="btn btn-danger border-bottom" onClick={e => this.showModal(e, false)}>
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </ModalBody>
+            </Modal>
+          </div>;
     }
 }
