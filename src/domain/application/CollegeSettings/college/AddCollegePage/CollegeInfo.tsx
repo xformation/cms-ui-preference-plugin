@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { collegeSettingsServices } from '../../../_services/collegeSettings.services';
-import { graphql, withApollo } from 'react-apollo';
+// import { collegeSettingsServices } from '../../../_services/collegeSettings.services';
+import { withApollo } from 'react-apollo';
 
-import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
+// import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { ADD_COLLEGE} from '../../../_queries';
 // import { validators } from '../_services/commonValidation';
 // import withLoadingHandler from '../../withLoadingHandler';
@@ -98,7 +98,9 @@ class CollegeInfo extends React.Component<any, CollegeState> {
         };
         
         return this.props.client.mutate({
+            mutation: ADD_COLLEGE,
             variables: { input: collegeInput },
+            fetchPolicy: 'no-cache'
         }).then((data: any) => {
             btn && btn.removeAttribute("disabled");
             dataSavedMessage.style.display = "inline-block";
@@ -191,12 +193,5 @@ class CollegeInfo extends React.Component<any, CollegeState> {
         );
     }
 };
-
-// export default (
-//     graphql(ADD_COLLEGE, {
-//         name: "addCollegeMutation",
-//     })
-//     (CollegeInfo)
-// );
 
 export default withApollo(CollegeInfo)
