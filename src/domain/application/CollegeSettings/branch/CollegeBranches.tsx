@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import { collegeSettingsServices } from '../_services/collegeSettings.services';
-import { commonFunctions } from '../_utilites/common.functions';
+import { collegeSettingsServices } from '../../_services/collegeSettings.services';
+import { commonFunctions } from '../../_utilites/common.functions';
 
 export class CollegeBranches extends React.Component<any, any> {
     constructor(props: any) {
@@ -58,26 +58,13 @@ export class CollegeBranches extends React.Component<any, any> {
 
     createCitySelectbox(selectedState: any) {
         const { cities } = this.state;
-        let retData: any[] = [];
+        let retData = [];
         selectedState = parseInt(selectedState);
         for (let i = 0; i < cities.length; i++) {
             let city = cities[i];
-            if (selectedState === city.stateId) {
+            if( selectedState === city.stateId){
                 retData.push(
                     <option key={city.id} value={city.id}>{city.cityName}</option>
-                );
-            }
-        }
-        return retData;
-    }
-
-    createStateSelectbox(stateList: any) {
-        let retData: any[] = [];
-        if (stateList.length > 0) {
-            for (let i = 0; i < stateList.length; i++) {
-                let item = stateList[i];
-                retData.push(
-                    <option value={item["id"]} key={item["id"]}>{item["stateName"]}</option>
                 );
             }
         }
@@ -108,8 +95,8 @@ export class CollegeBranches extends React.Component<any, any> {
                                                 Select State
                                             </option>
                                             {
-                                                this.createStateSelectbox(states)
-                                            }
+                                                // commonFunctions.createSelectbox(states, "id", "id", "stateName")
+                                                }
                                         </select>
                                     </div>
                                     <div className="fwidth-modal-text">
