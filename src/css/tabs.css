@@ -141,42 +141,13 @@
     #3697ef 100%
   );
 }
-
 .legal-gf-tabs-link.active--panel {
   background: #212124 !important;
 }
-
 .ltab-contianer {
   border: 1px solid #b3b3b3 !important;
   margin-top: -10px;
   min-height: 30vh;
   margin-bottom: 10px;
   padding: 1.3rem 0.8rem;
-}
-
-.tile {
-  width: 240px;
-  float: left;
-  margin-bottom: 1rem;
-}
-.tile > .tile-circle {
-  display: table-cell;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  text-align: center;
-  vertical-align: middle;
-  color: white;
-  font-size: 27px;
-}
-.tile > .tile-right-part {
-  padding-left: 20px;
-  display: table-cell;
-}
-.tile > .tile-right-part > .tile-name {
-  font-size: 15px;
-}
-
-.algn-item-center {
-  align-items: baseline !important;
 }

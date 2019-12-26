@@ -1,20 +1,29 @@
 import * as React from 'react';
+import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 import {graphql, MutationFunc} from 'react-apollo';
 
 export class StaffSetup extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
+      activeTab: 0,
       isModalOpen: false,
       states: [],
       cities: [],
       selectedState: '',
       selectedCity: '',
     };
+    this.toggleTab = this.toggleTab.bind(this);
     this.showModal = this.showModal.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.create = this.create.bind(this);
     this.back = this.back.bind(this);
+  }
+
+  toggleTab(tabNo: any) {
+    this.setState({
+      activeTab: tabNo,
+    });
   }
 
   // componentDidMount() {
@@ -45,6 +54,10 @@ export class StaffSetup extends React.Component<any, any> {
     fCatGrid.setAttribute('class', 'grid');
     let fCatGrida: any = document.querySelector('#lidiv');
     fCatGrida.setAttribute('class', 'hide');
+    let createbtns: any = document.querySelector('#createbtn');
+    createbtns.setAttribute('class', 'hide');
+    let savebtns: any = document.querySelector('#savebtn');
+    savebtns.setAttribute('class', 'btn bs save-all-forms-btn m-r-1 height-33');
   }
   back() {
     let {count, countParticularDiv} = this.state;
@@ -58,25 +71,36 @@ export class StaffSetup extends React.Component<any, any> {
     fCatGrid.setAttribute('class', 'hide');
     let fCatGrida: any = document.querySelector('#lidiv');
     fCatGrida.setAttribute('class', 'p-1 page-body legal-entities-main-container');
+    let createbtns: any = document.querySelector('#createbtn');
+    createbtns.setAttribute('class', 'btn btn-primary m-r-1');
+    let savebtns: any = document.querySelector('#savebtn');
+    savebtns.setAttribute('class', 'hide');
   }
 
   render() {
-    const {isModalOpen} = this.state;
+    const {isModalOpen, activeTab} = this.state;
     return (
       <div className="info-container">
         <div className="authorized-signatory-container m-b-1">
           <h3>Staff Setup</h3>
-          {/* <a className="btn btn-primary" ng-click="">
+          {/* <a className="btn btn-primary"  >
             Assign
           </a> */}
         </div>
         <div className="authorized-signatory-container m-b-1 dflex ht bg-heading">
           <h4 className="ptl-06">Staff Details</h4>
           <div className="">
-            <button className="btn btn-primary m-r-1" onClick={this.create} ng-click="">
+            <button
+              id="createbtn"
+              className="btn btn-primary m-r-1"
+              onClick={this.create}
+            >
               Create
             </button>
-            <button className="btn btn-primary m-r-1" onClick={this.back} ng-click="">
+            <button id="savebtn" className="hide" onClick={this.create}>
+              Save
+            </button>
+            <button className="btn btn-primary m-r-1" onClick={this.back}>
               Back
             </button>
           </div>
@@ -84,9 +108,18 @@ export class StaffSetup extends React.Component<any, any> {
 
         {/* <div  id="crdiv" className="hide" >sgfsdgfsd</div> */}
 
-        <div id="crdiv" className="hide grid">
+        <div id="crdiv" className="hide">
           <div className="leftbar">
-            <img src="{{ ctrl.profileSrc }}" alt="" className="img-width" />
+            <div className="row p-1">
+              <div className="col-md-6 col-lg-12 col-xs-12 col-sm-6">
+                <img
+                  className="student-photo"
+                  id="stPhoto"
+                  src={this.state.uploadPhoto}
+                />
+              </div>
+            </div>
+            {/* <img src="{{ ctrl.profileSrc }}" alt="" className="img-width" /> */}
             <div className="gf-form m-b-1">
               <label className="upload-cursor">
                 <input
@@ -102,8 +135,7 @@ export class StaffSetup extends React.Component<any, any> {
             <div className="form-justify">
               <label htmlFor="">*Upload photo:</label>
               <input
-                ng-model="teacher.uploadPhoto"
-                className="border-plugin input-width"
+                className="gf-form-input width-11 m-b-1"
                 type="text"
                 maxLength={255}
               />
@@ -111,8 +143,7 @@ export class StaffSetup extends React.Component<any, any> {
             <div className="form-justify">
               <label htmlFor="">*Employee Id:</label>
               <input
-                ng-model="teacher.employeeId"
-                className="border-plugin input-width"
+                className="gf-form-input width-11 m-b-1"
                 required
                 type="number"
                 name="employeeid"
@@ -121,8 +152,7 @@ export class StaffSetup extends React.Component<any, any> {
             <div className="form-justify">
               <label htmlFor="">*Designation:</label>
               <input
-                ng-model="teacher.designation"
-                className="border-plugin input-width"
+                className="gf-form-input width-11 m-b-1"
                 type="text"
                 maxLength={255}
                 required
@@ -131,507 +161,450 @@ export class StaffSetup extends React.Component<any, any> {
             </div>
             <div className="form-justify">
               <label htmlFor="">*Staff Type:</label>
-              <select
-                ng-model="teacher.staffType"
-                ng-options="f for f in ['TEACHING', 'NONTEACHING', 'GUEST']"
-                className="border-plugin"
-              />
+              <select className="gf-form-input width-11 b-r" required>
+                <option value="">Select Staff Type</option>
+              </select>
             </div>
             <div className="form-justify">
               <label htmlFor="">*Department:</label>
-              <select
-                className="gf-form-input border-plugin"
-                ng-model="teacher.departmentId"
-              >
-                {/* <option ng-repeat="department in ctrl.departments" value="{{ department.id }}"> {{ department.name }}</option> */}
+              <select className="gf-form-input width-11" required>
+                <option value="">Select Department</option>
               </select>
             </div>
             <div className="form-justify">
               <label htmlFor="">*Branch:</label>
-              <select className="gf-form-input border-plugin" ng-model="teacher.branchId">
-                {/* <option ng-repeat="branch in ctrl.branches" value="{{ branch.id }}"> {{ branch.branchName }}</option> */}
+              <select className="gf-form-input width-11" required>
+                <option value="">Select Branch</option>
               </select>
             </div>
             <div className="form-justify">
               <span>*Status:</span>
               <label className="switch">
-                <input
-                  type="checkbox"
-                  ng-model="teacher.status"
-                  ng-true-value="'ACTIVE'"
-                  ng-false-value="'DEACTIVE'"
-                />{' '}
-                <span className="slider" />
+                <input type="checkbox" /> <span className="slider" />
               </label>
             </div>
           </div>
-          <div className="rightbar">
-            <div className="bg-heading p-s5 b-1 staff-flex">
-              <h6 className="pt-bold">Personal Details</h6>
-              {/* <div>
-          <a ng-className="{'hide':ctrl.activeTabPersonalIndex === 1}" ng-click="ctrl.activateTabPersonal(1)"><i
-              className="fa fa-plus"></i></a>
-          <a ng-className="{'hide':ctrl.activeTabPersonalIndex !== 1}" ng-click="ctrl.activateTabPersonal(0)"><i
-              className="fa fa-minus"></i></a>
-        </div> */}
-            </div>
-            <div>
-              <div className="form-grid">
+          <div className="">
+            <Nav tabs className="" id="rmfloat">
+              <NavItem className="cursor-pointer">
+                <NavLink
+                  className={`${activeTab === 0 ? 'active' : ''}`}
+                  onClick={() => {
+                    this.toggleTab(0);
+                  }}
+                >
+                  Personal Details
+                </NavLink>
+              </NavItem>
+              <NavItem className="cursor-pointer">
+                <NavLink
+                  className={`${activeTab === 1 ? 'active' : ''}`}
+                  onClick={() => {
+                    this.toggleTab(1);
+                  }}
+                >
+                  Contact Details
+                </NavLink>
+              </NavItem>
+              <NavItem className="cursor-pointer">
+                <NavLink
+                  className={`${activeTab === 2 ? 'active' : ''}`}
+                  onClick={() => {
+                    this.toggleTab(2);
+                  }}
+                >
+                  Primary & Emergency Contact
+                </NavLink>
+              </NavItem>
+            </Nav>
+            <TabContent activeTab={activeTab} className="ltab-contianer p-0">
+              <TabPane tabId={0}>
                 <div>
-                  <label htmlFor="">Name*</label>
-                  <input
-                    ng-model="teacher.teacherName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="sfname"
-                    maxLength={255}
-                  />
+                  <div className="form-grid">
+                    <div>
+                      <label htmlFor="">Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="sfname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Middle Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="mname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Last Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="lname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Father Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="ffname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Father Middle Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="fmname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Father Last Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="flname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Spouse Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="sname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Spouse Middle Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="smname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Spouse Last Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="slname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Mother Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="mfname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Mother Middle Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="mmname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Mother Last Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="mlname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Adhar No*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        name="adhar"
+                        required
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Date Of Birth*</label>
+                      <input className="gf-form-input fwidth" type="date" />
+                    </div>
+                    <div>
+                      <label htmlFor="">Place Of Birth*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="pob"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Religion*</label>
+                      <select className="gf-form-input fwidth" required>
+                        <option value="">Select Religion</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="">Caste*</label>
+                      <select className="gf-form-input fwidth" required>
+                        <option value="">Select Caste</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="">Subcaste*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="subcaste"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Age*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        required
+                        name="age"
+                        type="text"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Sex*</label>
+                      <select className="gf-form-input fwidth" required>
+                        <option value="">Select Gender</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="">Blood Group*</label>
+                      <select className="gf-form-input fwidth" required>
+                        <option value="">Select Blood Group</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="">Middle Name*</label>
-                  <input
-                    ng-model="teacher.teacherMiddleName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="mname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Last Name*</label>
-                  <input
-                    ng-model="teacher.teacherLastName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="lname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Father Name*</label>
-                  <input
-                    ng-model="teacher.fatherName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="ffname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Father Middle Name*</label>
-                  <input
-                    ng-model="teacher.fatherMiddleName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="fmname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Father Last Name*</label>
-                  <input
-                    ng-model="teacher.fatherLastName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="flname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Spouse Name*</label>
-                  <input
-                    ng-model="teacher.spouseName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="sname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Spouse Middle Name*</label>
-                  <input
-                    ng-model="teacher.spouseMiddleName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="smname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Spouse Last Name*</label>
-                  <input
-                    ng-model="teacher.spouseLastName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="slname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Mother Name*</label>
-                  <input
-                    ng-model="teacher.motherName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="mfname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Mother Middle Name*</label>
-                  <input
-                    ng-model="teacher.motherMiddleName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="mmname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Mother Last Name*</label>
-                  <input
-                    ng-model="teacher.motherLastName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="mlname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Adhar No*</label>
-                  <input
-                    ng-model="teacher.aadharNo"
-                    className="border-plugin fwidth"
-                    type="text"
-                    name="adhar"
-                    required
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Date Of Birth*</label>
-                  <input
-                    ng-model="teacher.dateOfBirth"
-                    className="border-plugin fwidth"
-                    type="date"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Place Of Birth*</label>
-                  <input
-                    ng-model="teacher.placeOfBirth"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="pob"
-                    ng-pattern="/^[a-zA-Z ]+$/"
-                  />
-                  {/* <span className="form-error" ng-show="teacherForm.pob.$error.pattern">Place Of Birth</span> */}
-                </div>
-                <div>
-                  <label htmlFor="">Religion*</label>
-                  <select
-                    ng-model="teacher.religion"
-                    ng-options="f for f in ['HINDU', 'MUSLIM', 'CHRISTIAN']"
-                    className="gf-form-input border-plugin"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Caste*</label>
-                  <select
-                    ng-model="teacher.caste"
-                    ng-options="f for f in ['OC', 'BC', 'SC', 'ST']"
-                    className="gf-form-input border-plugin"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Subcaste*</label>
-                  <input
-                    ng-model="teacher.subCaste"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="subcaste"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Age*</label>
-                  <input
-                    ng-model="teacher.age"
-                    className="border-plugin fwidth"
-                    required
-                    name="age"
-                    type="text"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Sex*</label>
-                  <select
-                    ng-model="teacher.sex"
-                    ng-options="f for f in ['MALE', 'FEMALE']"
-                    className="gf-form-input border-plugin"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Blood Group*</label>
-                  <select
-                    ng-model="teacher.bloodGroup"
-                    ng-options="f for f in ['ABPOSITIVE','ABNEGATIVE','OPOSITIVE','BPOSITIVE','BNEGATIVE']"
-                    className="gf-form-input border-plugin"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="bg-heading p-s5 b-1 staff-flex">
-              <h6 className="pt-bold">Contact Details</h6>
-              {/* <div>
-          <a ng-className="{'hide':ctrl.activeTabContactIndex === 1}" ng-click="ctrl.activateTabContact(1)"><i
-              className="fa fa-plus"></i></a>
-          <a ng-className="{'hide':ctrl.activeTabContactIndex !== 1}" ng-click="ctrl.activateTabContact(0)"><i
-              className="fa fa-minus"></i></a>
-        </div> */}
-            </div>
-            <div>
-              <div className="form-grid">
-                <div>
-                  <label htmlFor="">Address Line 1*</label>
-                  <input
-                    ng-model="teacher.addressLineOne"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="adr1"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Address Line 2</label>
-                  <input
-                    ng-model="teacher.addressLineTwo"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="adr2"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Address Line 3</label>
-                  <input
-                    ng-model="teacher.addressLineThree"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="adr3"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Town*</label>
-                  <input
-                    ng-model="teacher.town"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="stftown"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">State*</label>
-                  <input
-                    ng-model="teacher.state"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="stfstate"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Country*</label>
-                  <input
-                    ng-model="teacher.country"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="stfcountry"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Pin Code*</label>
-                  <input
-                    ng-model="teacher.pincode"
-                    className="border-plugin fwidth"
-                    type="number"
-                    name="stfpin"
-                    required
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Contact Number*</label>
-                  <input
-                    ng-model="teacher.teacherContactNumber"
-                    className="border-plugin fwidth"
-                    type="number"
-                    name="stfcont"
-                    required
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Alternate Contact Number 1</label>
-                  <input
-                    ng-model="teacher.alternateContactNumber"
-                    className="border-plugin fwidth"
-                    type="number"
-                    name="stfaltcont"
-                    required
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Email Address*</label>
-                  <input
-                    ng-model="teacher.teacherEmailAddress"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="stfemail"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Alternate Email Address</label>
-                  <input
-                    ng-model="teacher.alternateEmailAddress"
-                    className="border-plugin fwidth"
-                    type="email"
-                    required
-                    name="stfaltemail"
-                    maxLength={255}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="bg-heading p-s5 b-1 staff-flex">
-              <h6 className="pt-bold">Primary And Emergency contact Details</h6>
-              {/* <div>
-          <a ng-className="{'hide':ctrl.activeTabPrimaryIndex === 1}" ng-click="ctrl.activateTabPrimary(1)"><i
-              className="fa fa-plus"></i></a>
-          <a ng-className="{'hide':ctrl.activeTabPrimaryIndex !== 1}" ng-click="ctrl.activateTabPrimary(0)"><i
-              className="fa fa-minus"></i></a>
-        </div> */}
-            </div>
+              </TabPane>
 
-            <div>
-              <div className="reln">
-                <label htmlFor="">Relation with Staff*</label>
-                <select
-                  ng-model="teacher.relationWithStaff"
-                  ng-options="f for f in ['FATHER','MOTHER','GUARDIAN']"
-                  className="gf-form-input border-plugin"
-                />
-              </div>
-              <div className="form-grid">
+              <TabPane tabId={1}>
                 <div>
-                  <label htmlFor="">Name*</label>
-                  <input
-                    ng-model="teacher.emergencyContactName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="stfpname"
-                    maxLength={255}
-                  />
+                  <div className="form-grid">
+                    <div>
+                      <label htmlFor="">Address Line 1*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="adr1"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Address Line 2</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="adr2"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Address Line 3</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="adr3"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Town*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="stftown"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">State*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="stfstate"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Country*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="stfcountry"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Pin Code*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="number"
+                        name="stfpin"
+                        required
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Contact Number*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="number"
+                        name="stfcont"
+                        required
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Alternate Contact Number 1</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="number"
+                        name="stfaltcont"
+                        required
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Email Address*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="stfemail"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Alternate Email Address</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="email"
+                        required
+                        name="stfaltemail"
+                        maxLength={255}
+                      />
+                    </div>
+                  </div>
                 </div>
+              </TabPane>
+              <TabPane tabId={2}>
                 <div>
-                  <label htmlFor="">Middle Name*</label>
-                  <input
-                    ng-model="teacher.emergencyContactMiddleName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="stfpmname"
-                    maxLength={255}
-                  />
+                  <div className="staff-p">
+                    <label htmlFor="">Relation with Staff*</label>
+                    <select className="gf-form-input fwidth" required>
+                      <option value="">Select Relation</option>
+                    </select>
+                  </div>
+                  <div className="form-grid m-t-1">
+                    <div>
+                      <label htmlFor="">Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="stfpname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Middle Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="stfpmname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Last Name*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="stfplname"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Contact Number*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="text"
+                        required
+                        name="stfpcn"
+                        maxLength={255}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="">Email Address*</label>
+                      <input
+                        className="gf-form-input fwidth"
+                        type="email"
+                        required
+                        name="stfpemail"
+                        maxLength={255}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="">Last Name*</label>
-                  <input
-                    ng-model="teacher.emergencyContactLastName"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="stfplname"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Contact Number*</label>
-                  <input
-                    ng-model="teacher.emergencyContactNo"
-                    className="border-plugin fwidth"
-                    type="text"
-                    required
-                    name="stfpcn"
-                    maxLength={255}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="">Email Address*</label>
-                  <input
-                    ng-model="teacher.emergencyContactEmailAddress"
-                    className="border-plugin fwidth"
-                    type="email"
-                    required
-                    name="stfpemail"
-                    maxLength={255}
-                  />
-                </div>
-              </div>
-            </div>
+              </TabPane>
+            </TabContent>
           </div>
         </div>
-
-        {/* direct page */}
-        <div id="lidiv" className="hide p-1 page-body legal-entities-main-container">
+        <div id="lidiv" className="p-1 page-body legal-entities-main-container">
           <div className="staff-management">
             <div>
               <label htmlFor="">Department</label>
-              <select
-                className="gf-form-input"
-                ng-model="ctrl.departmentId"
-                ng-change="ctrl.onChangeFilter()"
-              >
+              <select className="gf-form-input">
                 <option value="">Select Department</option>
-                {/* <option ng-repeat="department in ctrl.departments" value="{{department.id}}">{{ department.name }}</option> */}
               </select>
             </div>
             <div />
             <div>
               <label htmlFor="">Gender</label>
-              <select
-                className="gf-form-input"
-                ng-model="ctrl.sex"
-                ng-change="ctrl.onChangeFilter()"
-              >
+              <select className="gf-form-input">
                 <option value="">Select Gender</option>
                 <option value="MALE">MALE</option>
                 <option value="FEMALE">FEMALE</option>
@@ -640,11 +613,7 @@ export class StaffSetup extends React.Component<any, any> {
             </div>
             <div>
               <label htmlFor="">Staff Type</label>
-              <select
-                className="gf-form-input"
-                ng-model="ctrl.staffType"
-                ng-change="ctrl.onChangeFilter()"
-              >
+              <select className="gf-form-input">
                 <option value="">Select Staff Type</option>
                 <option value="TEACHING">TEACHING</option>
                 <option value="NONTEACHING">NONTEACHING</option>
@@ -653,13 +622,9 @@ export class StaffSetup extends React.Component<any, any> {
             </div>
             <div className="margin-bott">
               <label htmlFor="">Search</label>
-              <input
-                type="search"
-                ng-model="search.teacherName"
-                placeholder="search by name"
-              />
+              <input type="search" placeholder="search by name" />
             </div>
-            <a className="btn btn-success" id="fileType" ng-click="ctrl.exportStaffs();">
+            <a className="btn btn-success" id="fileType">
               Export
             </a>
           </div>
@@ -667,15 +632,7 @@ export class StaffSetup extends React.Component<any, any> {
           <table className="staff-management-table">
             <thead>
               <th>
-                {/* <!-- <input type="checkbox" style="width:18px; height: 18px;" ng-model="ctrl.checked" */}
-                {/* ng-change="ctrl.onClickCheckbox()" /> --> */}
-                <input
-                  type="checkbox"
-                  ng-model="ctrl.isCheckAll"
-                  ng-change="ctrl.checkAllTeachers()"
-                  key="teacher.id"
-                  id="chk"
-                />
+                <input type="checkbox" key="teacher.id" id="chk" />
               </th>
               <th>Name</th>
               <th>Emp Id</th>
@@ -687,19 +644,10 @@ export class StaffSetup extends React.Component<any, any> {
               <th>status</th>
             </thead>
             <tbody>
-              <tr
-                ng-repeat=" teacher in ctrl.filteredTeachers | filter:search:strict | orderBy:'teacherName'"
-                key="teacher.id"
-              >
+              <tr key="teacher.id">
                 <td>
-                  <input
-                    type="checkbox"
-                    ng-model="teacher.isChecked"
-                    ng-change="ctrl.onTeacherCheckedChange($index)"
-                    id="chk"
-                  />
+                  <input type="checkbox" id="chk" />
                 </td>
-                <td ng-search=" filter:search" />
                 <td />
                 <td />
                 <td />
@@ -707,13 +655,7 @@ export class StaffSetup extends React.Component<any, any> {
                 <td />
                 <td />
                 <td />
-                {/* <td>{{ teacher.employeeId }}</td>
-                                <td>{{ teacher.designation }}</td>
-                                <td>{{ teacher.department.name }}</td>
-                                <td>{{ teacher.sex }}</td>
-                                <td>{{ teacher.staffType }}</td>
-                                <td>{{ teacher.contactNo }}</td>
-                                <td>{{ teacher.status }}</td> */}
+                <td />
               </tr>
             </tbody>
           </table>
