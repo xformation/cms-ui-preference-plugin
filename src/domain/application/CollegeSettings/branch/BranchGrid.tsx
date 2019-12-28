@@ -20,6 +20,7 @@ export interface BranchProps extends React.HTMLAttributes<HTMLElement>{
 const ERROR_MESSAGE_MANDATORY_FIELD_MISSING = "Mandatory fields missing";
 const ERROR_MESSAGE_SERVER_SIDE_ERROR = "Due to some error in preferences service, branch could not be saved. Please check preferences service logs";
 const SUCCESS_MESSAGE_BRANCH_ADDED = "New branch saved successfully";
+const SUCCESS_MESSAGE_BRANCH_UPDATED = "Branch updated successfully";
 
 class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps, any> {
     constructor(props: BranchProps) {
@@ -168,32 +169,32 @@ class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps,
         let isValid = true;
         let errorMessage = ""
         if(branchObj.stateId === undefined || branchObj.stateId === null || branchObj.stateId === ""){
-            branchObj.stateId = "";
-            commonFunctions.changeTextBoxBorderToError(branchObj.stateId, "stateId");
+            // branchObj.stateId = "";
+            commonFunctions.changeTextBoxBorderToError((branchObj.stateId === undefined || branchObj.stateId === null) ? "" : branchObj.stateId, "stateId");
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
             isValid = false;
         }
         if(branchObj.cityId === undefined || branchObj.cityId === null || branchObj.cityId === ""){
-            branchObj.cityId = "";
-            commonFunctions.changeTextBoxBorderToError(branchObj.cityId, "cityId");
+            // branchObj.cityId = "";
+            commonFunctions.changeTextBoxBorderToError((branchObj.cityId === undefined || branchObj.cityId === null) ? "" : branchObj.cityId, "cityId");
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
             isValid = false;
         }
         if(branchObj.branchName === undefined || branchObj.branchName === null || branchObj.branchName === ""){
-            branchObj.branchName = "";
-            commonFunctions.changeTextBoxBorderToError(branchObj.branchName, "branchName");
+            // branchObj.branchName = "";
+            commonFunctions.changeTextBoxBorderToError((branchObj.branchName === undefined || branchObj.branchName === null) ? "" : branchObj.branchName, "branchName");
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
             isValid = false;
         }
         if(branchObj.address === undefined || branchObj.address === null || branchObj.address === ""){
-            branchObj.address = "";
-            commonFunctions.changeTextBoxBorderToError(branchObj.address, "address");
+            // branchObj.address = "";
+            commonFunctions.changeTextBoxBorderToError((branchObj.address === undefined || branchObj.address === null) ? "" : branchObj.address , "address");
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
             isValid = false;
         }
         if(branchObj.status === undefined || branchObj.status === null || branchObj.status === ""){
-            branchObj.status = "";
-            commonFunctions.changeTextBoxBorderToError(branchObj.status, "status");
+            // branchObj.status = "";
+            commonFunctions.changeTextBoxBorderToError((branchObj.status === undefined || branchObj.status === null) ? "" : branchObj.status, "status");
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
             isValid = false;
         }
@@ -246,6 +247,9 @@ class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps,
         let successMessage = "";
         if(exitCode === 0 ){
             successMessage = SUCCESS_MESSAGE_BRANCH_ADDED;
+            if(branchInput.id !== null){
+                successMessage = SUCCESS_MESSAGE_BRANCH_UPDATED;
+            }
         }else {
             errorMessage = ERROR_MESSAGE_SERVER_SIDE_ERROR;
         }
@@ -342,7 +346,7 @@ class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps,
                                 </div>
                                 <div className="mdflex modal-fwidth">
                                     <div className="fwidth-modal-text m-r-1">
-                                        <label className="gf-form-label b-0 bg-transparent">Branch Heach</label>
+                                        <label className="gf-form-label b-0 bg-transparent">Branch Head</label>
                                         <input type="text" required className="gf-form-input" onChange={this.onChange}  value={branchObj.branchHead} placeholder="branch head" name="branchHead" id="branchHead" maxLength={255}/>
                                     </div>
                                     <div className="fwidth-modal-text">
@@ -363,7 +367,7 @@ class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps,
                                         <button type="button" id="btnUpdate" className="btn btn-primary border-bottom" onClick={this.saveBranch}>Update</button>
                                     }
                                     &nbsp;<button className="btn btn-danger border-bottom" onClick={(e) => this.showModal(e, false, modelHeader)}>Cancel</button>
-                                    <button type="button" id="btnRefresh" className="btn btn-primary border-bottom" onClick={this.getBranchList}>Refresh</button>
+                                    
                                 </div>
                             </div>
                         </form>

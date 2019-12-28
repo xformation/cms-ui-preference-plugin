@@ -3,7 +3,6 @@ import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 
 import '../../../css/college-settings.css';
 import CollegeInfo  from './college/AddCollegePage/CollegeInfo';
-// import {CollegeBranches} from './branch/CollegeBranches';
 import BranchGrid from './branch/BranchGrid';
 import { withApollo } from 'react-apollo';
 import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST } from '../_queries';
