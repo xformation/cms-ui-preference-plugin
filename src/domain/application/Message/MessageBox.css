@@ -4,10 +4,10 @@
   font-weight: 400;
   font-size: 0.8rem;
 }
-.success {
+.successMsgBackGround {
   background: #09c512fb;
 }
-.error {
+.errorMsgBackGround {
   background: rgba(221, 55, 55, 1);
 }
 .msgbox-border {

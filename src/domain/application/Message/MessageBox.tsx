@@ -41,17 +41,11 @@ export class MessageBox extends React.Component<MsgProps, any> {
                     <div>{message}</div>
                     <hr className='msgbox-hr'></hr>
                 </div>
-                <div className={`${activeState === 1 ? 'success msgbox-border msgbox-padding msgbox-width-height text' : 'hide'}`}>
-                    {/* <div> */}
-                        {/* <input onClick={this.closeDiv} className="msgbox-close fa-info-circle" type="button" value="x"></input> */}
-                        {message}
-                    {/* </div> */}
+                <div className={`${activeState === 1 ? 'successMsgBackGround msgbox-border msgbox-padding msgbox-width-height text' : 'hide'}`}>
+                    {message}
                 </div>
-                <div className={`${activeState === 2 ? 'error msgbox-border msgbox-padding msgbox-width-height text' : 'hide'}`}>
-                    {/* <div> */}
-                        {/* <input onClick={this.closeDiv} className="msgbox-close fa-info-circle" type="button" value="x"></input> */}
-                        {message}
-                    {/* </div> */}
+                <div className={`${activeState === 2 ? 'errorMsgBackGround msgbox-border msgbox-padding msgbox-width-height text' : 'hide'}`}>
+                    {message}
                 </div>
             </main>
             

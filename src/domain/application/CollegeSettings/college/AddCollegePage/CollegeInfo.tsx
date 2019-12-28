@@ -1,13 +1,14 @@
 import * as React from 'react';
 // import { collegeSettingsServices } from '../../../_services/collegeSettings.services';
 import { withApollo } from 'react-apollo';
-
-// import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { ADD_COLLEGE} from '../../../_queries';
 // import { validators } from '../_services/commonValidation';
 // import withLoadingHandler from '../../withLoadingHandler';
 import MessageBox from '../../../Message/MessageBox';
 
+const SUCCESS_MESSAGE_COLLEGE_ADDED = "College is added successfully. It is created as default main branch also";
+const ERROR_MESSAGE_SERVER_SIDE_ERROR = "Due to some error in preference service, college could not be saved. Please check preference service logs";
+const ERROR_MESSAGE_COLLEGE_EXISTS = "College already exists. Application allows only one college";
 type CollegeState = {
     collegeData: any,
 };
@@ -25,6 +26,8 @@ class CollegeInfo extends React.Component<any, CollegeState> {
             collegeData: {
                 logoFile: this.DEFAULT_LOGO,
                 collegeName: "",
+                errorMessage:"",
+                successMessage:"",
             }
         };
 
@@ -40,7 +43,7 @@ class CollegeInfo extends React.Component<any, CollegeState> {
         this.setState({
             collegeData: {
               ...collegeData,
-              collegeName: value
+              [name]: value
             }
         });
     }
@@ -51,7 +54,6 @@ class CollegeInfo extends React.Component<any, CollegeState> {
         var r = new FileReader();
         r.onload = function (e: any) {
             collegeData.logoFile = e.target.result;
-            console.log('College logo converted to base64 :\n\n' + collegeData.logoFile);
         };
         r.readAsDataURL(e.target.files[0]);
 
@@ -81,13 +83,16 @@ class CollegeInfo extends React.Component<any, CollegeState> {
 
     // }
 
-    handleSubmit(e: any) {
-        // e.preventDefault();
+    async handleSubmit(e: any) {
         const { collegeData } = this.state;
-        let btn = document.querySelector(".save-all-forms-btn");
+        collegeData.errorMessage = "";
+        collegeData.successMessage ="";
+        this.setState({
+            collegeData: collegeData
+        });
+
+        let btn = document.querySelector("#btnAddCollege");
         btn && btn.setAttribute("disabled", "true");
-        let dataSavedMessage: any = document.querySelector(".data-saved-message");
-        // dataSavedMessage.style.display = "none";
         let logoFileString = collegeData.logoFile; 
         if(collegeData.logoFile === this.DEFAULT_LOGO){
             logoFileString = null;
@@ -96,54 +101,36 @@ class CollegeInfo extends React.Component<any, CollegeState> {
             collegeName: collegeData.collegeName,
             logoFile: logoFileString
         };
+        let exitCode = 0;
         
-        return this.props.client.mutate({
-            mutation: ADD_COLLEGE,
+        await this.props.client.mutate({
+            mutation:  ADD_COLLEGE,
             variables: { input: collegeInput },
             fetchPolicy: 'no-cache'
-        }).then((data: any) => {
-            btn && btn.removeAttribute("disabled");
-            dataSavedMessage.style.display = "inline-block";
-            console.log("gql response --- : ",data);
+        }).then((resp: any) => {
+            console.log("Response in addCollege mutation. Exit code : ",resp.data.addCollege.cmsCollegeVo.exitCode);
+            exitCode = resp.data.addCollege.cmsCollegeVo.exitCode;
+            if(exitCode === 100){
+                collegeData.errorMessage = ERROR_MESSAGE_COLLEGE_EXISTS;
+                console.log("Resp with Error code: ",ERROR_MESSAGE_COLLEGE_EXISTS )
+            }else{
+                collegeData.successMessage = SUCCESS_MESSAGE_COLLEGE_ADDED;
+                console.log("Success resp: ",SUCCESS_MESSAGE_COLLEGE_ADDED);
+            }
+            this.setState({
+                collegeData: collegeData
+            });
         }).catch((error: any) => {
-            btn && btn.removeAttribute("disabled");
-            dataSavedMessage.style.display = "inline-block";
-            console.log('there was an error sending the update mutation', error);
+            exitCode = 1;
+            console.log('Error in addCollege mutation : ', error);
+            collegeData.errorMessage = ERROR_MESSAGE_SERVER_SIDE_ERROR;
+            this.setState({
+                collegeData: collegeData
+            });
         });
+        btn && btn.removeAttribute("disabled");
+        
     }
-
-    // handleSubmit(e: any) {
-    //     e.preventDefault();
-    //     const { logoFile } = this.state;
-    //     const sendData = {
-    //         logoFile: logoFile,
-    //     };
-    //     this.setState({
-    //         is_api_progress: true
-    //     });
-    //     collegeSettingsServices.saveCollege(sendData).then(
-    //         response => {
-    //             if (response === 200 || response === 201) {
-    //                 // alert('College data saved successfully.');
-    //             } else if (response === 500) {
-    //                 // alert('College already exists.');
-    //             } else {
-    //                 // alert('Due to some error college data could not be saved!');
-    //             }
-    //             this.setState({
-    //                 is_api_progress: false
-    //             });
-    //         },
-    //         error => {
-    //             alert("Due to some error college data could not be saved!");
-    //             this.setState({
-    //                 is_api_progress: false
-    //             });
-    //         }
-    //     );
-    // }
-
-    
 
     toBase64(file: any) {
         return new Promise((resolve: any, reject: any) => {
@@ -157,17 +144,18 @@ class CollegeInfo extends React.Component<any, CollegeState> {
     render() {
         const { collegeData } = this.state;
         return (
-            <div className="info-container">
-                {/* <small>REGISTER COLLEGE</small>
-                    <hr></hr> */}
-                <MessageBox id='1' message='REGISTER COLLEGE' activeTab='0'></MessageBox>
-                {/* <div className=""> */}
-                    {/* <h6>REGISTER BASIC INFORMATION ABOUT COLLEGE</h6> */}
-                    {/* <hr></hr> */}
-                    {/* <small>REGISTER BASIC INFORMATION ABOUT COLLEGE</small>
-                    <hr></hr> */}
-                {/* </div> */}
-                <form name="collegeForm" className="gf-form-group section m-b-1" onSubmit={this.handleSubmit}>
+            <main >
+                {
+                    collegeData.errorMessage !== ""  ? 
+                        <MessageBox id="mbox" message={collegeData.errorMessage} activeTab={2}/>        
+                        : null
+                }
+                {
+                    collegeData.successMessage !== ""  ? 
+                        <MessageBox id="mbox" message={collegeData.successMessage} activeTab={1}/>        
+                        : null
+                }
+                    
                     <h5 className="form-h5">Name</h5>
                     <div className="gf-form m-b-1">
                         <input type="text" className="gf-form-input max-width-18" placeholder="College Name" maxLength={255} required={true} name="collegeName" value={collegeData.collegeName} onChange={this.handleStateChange} />
@@ -185,11 +173,10 @@ class CollegeInfo extends React.Component<any, CollegeState> {
                         </div>
                     </div>
                     <div className="gf-form-button-row">
-                        {/* <input type="button" value="Save" onClick={this.handleSubmit} className="btn bs save-all-forms-btn"></input> */}
-                        <button type="submit" className="btn btn-primary border-bottom save-all-forms-btn">Save</button>
+                        <input type="button" id="btnAddCollege" value="Save" onClick={this.handleSubmit} className="btn btn-primary save-all-forms-btn"></input>
                     </div>
-                </form>
-            </div>
+                
+            </main>
         );
     }
 };
