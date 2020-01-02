@@ -106,18 +106,18 @@ class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps,
         }));
     }
 
-    createSelectbox(data: any, value: any, key: any, label: any){
-        let retData = [];
-        if(data.length > 0){
-            for(let i=0;i<data.length;i++){
-                let item = data[i];
-                retData.push(
-                    <option value={item[value]} key={item[key]}>{item[label]}</option>
-                );
-            }
-        }
-        return retData;
-    }
+    // createSelectbox(data: any, value: any, key: any, label: any){
+    //     let retData = [];
+    //     if(data.length > 0){
+    //         for(let i=0;i<data.length;i++){
+    //             let item = data[i];
+    //             retData.push(
+    //                 <option value={item[value]} key={item[key]}>{item[label]}</option>
+    //             );
+    //         }
+    //     }
+    //     return retData;
+    // }
 
     onChange = (e: any) => {
         e.preventDefault();
@@ -313,7 +313,7 @@ class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps,
                                         <select className="gf-form-input" name="stateId" id="stateId"  onChange={this.onChange} value={branchObj.stateId}>
                                             <option value="">Select State</option>
                                                 {
-                                                    this.createSelectbox(stateList, "id", "id", "stateName")
+                                                    commonFunctions.createSelectbox(stateList, "id", "id", "stateName")
                                                 }
                                         </select>
                                     </div>
@@ -322,7 +322,7 @@ class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps,
                                         <select className="gf-form-input" name="cityId" id="cityId" onChange={this.onChange} value={branchObj.cityId}>
                                             <option value="">Select City</option>
                                                 {
-                                                    this.createSelectbox(cityList, "id", "id", "cityName")
+                                                    commonFunctions.createSelectbox(cityList, "id", "id", "cityName")
                                                 }
                                         </select>
                                     </div>

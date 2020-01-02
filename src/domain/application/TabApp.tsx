@@ -7,6 +7,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import TabPage from './TabPage';
 import "../../css/tabs.css";
+import "../../css/light.css";
 import CollegeInfo from './CollegeSettings/college/AddCollegePage/CollegeInfo';
 
 

@@ -4,7 +4,7 @@ import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import '../../../css/college-settings.css';
 import CollegeInfo  from './college/AddCollegePage/CollegeInfo';
 import BranchGrid from './branch/BranchGrid';
-import LegalEntities from './legalentity/LegalEntities';
+import {LegalEntities} from './legalentity/LegalEntities';
 import { withApollo } from 'react-apollo';
 import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST } from '../_queries';
 
@@ -36,7 +36,7 @@ class CollegeSettings extends React.Component<any, any> {
         let bid = 34; 
         let aid = 56; 
         
-        if(tabNo === 1){
+        if(tabNo === 1 || tabNo === 2){
             this.getBranchList(bid, aid);
         }
         this.setState({
@@ -118,7 +118,13 @@ class CollegeSettings extends React.Component<any, any> {
                         }
                     </TabPane>
                     <TabPane tabId={2}>
-                        <LegalEntities></LegalEntities>
+                        {
+                            branchList !== null && stateDataList !== null && cityDataList !== null && (
+                                <LegalEntities branchList={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
+                            )
+                        }
+                    
+                        
                     </TabPane>
                     <TabPane tabId={3}>
                         Test

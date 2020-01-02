@@ -1,9 +1,25 @@
+import * as React from 'react';
+
 export const commonFunctions: any = {
   getRequestOptions,
   validateEmail,
   changeTextBoxBorderToError,
   restoreTextBoxBorderToNormal,
+  createSelectbox,
 };
+
+function createSelectbox(data: any, value: any, key: any, label: any){
+  let retData = [];
+  if(data.length > 0){
+      for(let i=0; i<data.length;i++){
+          let item = data[i];
+          retData.push(
+              <option value={item[value]} key={item[key]}>{item[label]}</option>
+          );
+      }
+  } 
+  return retData;
+}
 
 function getRequestOptions(type: any, extraHeaders: any, body?: any): any {
   let requestOptions: any = {};
