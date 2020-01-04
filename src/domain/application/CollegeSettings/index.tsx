@@ -6,7 +6,7 @@ import CollegeInfo  from './college/AddCollegePage/CollegeInfo';
 import BranchGrid from './branch/BranchGrid';
 import {LegalEntities} from './legalentity/LegalEntities';
 import { withApollo } from 'react-apollo';
-import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST } from '../_queries';
+import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST, GET_AUTHORIZED_SIGNATORY_LIST } from '../_queries';
 
 class CollegeSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -15,12 +15,14 @@ class CollegeSettings extends React.Component<any, any> {
             activeTab: 0,
             branchList: null,
             stateDataList: null,
-            cityDataList: null
+            cityDataList: null,
+            authorizedSignatoryList: null
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getBranchList = this.getBranchList.bind(this);
         this.getStateList = this.getStateList.bind(this);
         this.getCityList = this.getCityList.bind(this);
+        this.getAuthorizedSignatoryList = this.getAuthorizedSignatoryList.bind(this);
     }
 
     async componentDidMount(){
@@ -38,6 +40,7 @@ class CollegeSettings extends React.Component<any, any> {
         
         if(tabNo === 1 || tabNo === 2){
             this.getBranchList(bid, aid);
+            this.getAuthorizedSignatoryList();
         }
         this.setState({
             activeTab: tabNo,
@@ -75,8 +78,19 @@ class CollegeSettings extends React.Component<any, any> {
         });
     }
 
+    async getAuthorizedSignatoryList(){
+        const { data } = await this.props.client.query({
+            query: GET_AUTHORIZED_SIGNATORY_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        
+        this.setState({
+            authorizedSignatoryList: data
+        });
+    }
+
     render() {
-        const { activeTab, branchList, stateDataList, cityDataList } = this.state;
+        const { activeTab, branchList, stateDataList, cityDataList, authorizedSignatoryList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -119,8 +133,8 @@ class CollegeSettings extends React.Component<any, any> {
                     </TabPane>
                     <TabPane tabId={2}>
                         {
-                            branchList !== null && stateDataList !== null && cityDataList !== null && (
-                                <LegalEntities branchList={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
+                            authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
+                                <LegalEntities signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} branchList={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
                             )
                         }
                     

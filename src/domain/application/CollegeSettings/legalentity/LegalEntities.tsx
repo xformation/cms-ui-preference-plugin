@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Modal,  ModalHeader,  ModalBody,  ModalFooter,  TabContent,  TabPane,  Nav,  NavItem,  NavLink} from 'reactstrap';
 import {collegeSettingsServices} from '../../_services/collegeSettings.services';
 import { commonFunctions } from '../../_utilites/common.functions';
@@ -7,21 +8,18 @@ import AuthorizedSignatory from './AuthorizedSignatory';
 import BankAccount from './BankAccount';
 
 export interface LegalEntitiesProps extends React.HTMLAttributes<HTMLElement>{
-  // [data: string]: any;
-  // totalRecords?: number | string;
-  // type?: string;
-  // source?: string;
-  // sourceOfApplication?: string;
   branchList?: any;
   stateList?: any;
   cityList?: any;
   originalCityList?: any;
+  signatoryList?: any;
 }
 
 export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
   DEFAULT_LOGO = '/public/img/college_logo.png';
   constructor(props: LegalEntitiesProps) {
     super(props);
+    
     this.state = {
       branchList: this.props.branchList,
       stateList: this.props.stateList,
@@ -35,6 +33,19 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
       cities: [],
       selectedState: '',
       selectedCity: '',
+      signatoryList: this.props.signatoryList,
+      asObj:{
+        name: "",
+        fatherName: "",
+        designation: "",
+        address: "",
+        emailId: "",
+        cellPhoneNumber: "",
+        panNo: "",
+        branchId: "",
+      },
+      signatoryHeaderLabel:"",
+      
     };
     this.toggleTab = this.toggleTab.bind(this);
     // this.showModal = this.showModal.bind(this);
@@ -45,6 +56,10 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
 
     this.closeSignatoryModal = this.closeSignatoryModal.bind(this);
     this.closeBankModal = this.closeBankModal.bind(this);
+    this.updateSignatoryList = this.updateSignatoryList.bind(this);
+    this.showSignatoryModal = this.showSignatoryModal.bind(this);
+    this.showSignatoryModalForEdit = this.showSignatoryModalForEdit.bind(this);
+    
   }
 
   toggleTab(tabNo: any) {
@@ -106,7 +121,18 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
   showSignatoryModal(e: any, bShow: boolean) {
     e && e.preventDefault();
     this.setState(() => ({
+      asObj: {},
       isSignatoryModalOpen: bShow,
+      signatoryHeaderLabel: "Add New Signatory"
+    }));
+  }
+
+  showSignatoryModalForEdit(e: any, bShow: boolean, signatoryObj: any) {
+    e && e.preventDefault();
+    this.setState(() => ({
+      isSignatoryModalOpen: bShow,
+      asObj: signatoryObj,
+      signatoryHeaderLabel: "Edit Signatory"
     }));
   }
 
@@ -154,8 +180,36 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     return retData;
   }
 
+  updateSignatoryList(signatoryList: any) {
+    console.log("SIGNATOTY LIST from child : ", signatoryList);
+    this.setState({
+      signatoryList: signatoryList
+    });
+  }
+
+  displaySignatoryList(signatoryList: any){
+    const retVal = [];
+    for (let i = 0; i < signatoryList.length; i++) {
+        const k = signatoryList[i];
+        retVal.push(
+          <div className="tile m-r-2 ">
+            <div id={k.id} className="tile-circle yellow upload-cursor" onClick={e => this.showSignatoryModalForEdit(e, true, k)}>
+              <b> {k.name.charAt(0)} 
+              </b>
+            </div>
+            <div className="tile-right-part">
+              <div className="tile-info">Name: {k.name}</div>
+              <div className="tile-info">Designation: {k.designation}</div>
+              {/* <div className="tile-info">Branch: {k.cmsBranchVo !== null ? k.cmsBranchVo.branchName : ""}</div> */}
+            </div>
+          </div>
+        );
+    }
+    return retVal;
+  }
+
   render() {
-    const { logoSrc, isSignatoryModalOpen, isBankModalOpen,  branchList, stateList, cityList, selectedState, selectedCity, activeTab } = this.state;
+    const { logoSrc, isSignatoryModalOpen, isBankModalOpen,  branchList, stateList, cityList, signatoryList, asObj, signatoryHeaderLabel, selectedState, selectedCity, activeTab } = this.state;
     return (
       <div className="info-container">
         <div className="authorized-signatory-container m-b-1">
@@ -181,23 +235,15 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
           </div>
         </div>
         <div className="signatory-list">
-          <div className="tile m-r-2 ">
-            <div className="tile-circle yellow">
-              <b>1</b>
-            </div>
-            <div className="tile-right-part">
-              <div className="tile-name">
-                <span>Signatory Name</span>
-              </div>
-              <div className="tile-info">DESIGNATION</div>
-            </div>
-          </div>
+            {
+              signatoryList !== null ? this.displaySignatoryList(signatoryList) : null 
+            }
         </div>
         <div className="clearfix" />
         <Modal isOpen={isSignatoryModalOpen} className="react-strap-modal-container">
-          <ModalHeader>Add New Signatory</ModalHeader>
+        <ModalHeader>{signatoryHeaderLabel}</ModalHeader>
           <ModalBody className="modal-content">
-            <AuthorizedSignatory branchList={branchList} onCloseModel={this.closeSignatoryModal}></AuthorizedSignatory>
+            <AuthorizedSignatory signatoryHeaderLabel={signatoryHeaderLabel} asObj={asObj} branchList={branchList} onCloseModel={this.closeSignatoryModal} onSaveUpdate={this.updateSignatoryList}></AuthorizedSignatory>
           </ModalBody>
         </Modal>
 
