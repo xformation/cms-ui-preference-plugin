@@ -8,7 +8,7 @@ import { SAVE_AUTHORIZED_SIGNATORY } from '../../_queries';
 const ERROR_MESSAGE_MANDATORY_FIELD_MISSING = "Mandatory fields missing";
 const ERROR_MESSAGE_SERVER_SIDE_ERROR = "Due to some error in preferences service, authorized signatory could not be saved. Please check preferences service logs";
 const SUCCESS_MESSAGE_AUTHORIZED_SIGNATORY_ADDED = "New authorized signatory saved successfully";
-const SUCCESS_MESSAGE_AUTHORIZED_SIGNATORY_UPDATED = "authorized signatory updated successfully";
+const SUCCESS_MESSAGE_AUTHORIZED_SIGNATORY_UPDATED = "Authorized signatory updated successfully";
 
 
 export interface AuthorizedSignatoryProp extends React.HTMLAttributes<HTMLElement>{
@@ -25,16 +25,6 @@ class AuthorizedSignatory<T = {[data: string]: any}> extends React.Component<Aut
     super(props);
     this.state = {
       asObj: this.props.asObj,
-      // asObj: {
-      //   name: "",
-      //   fatherName: "",
-      //   designation: "",
-      //   address: "",
-      //   emailId: "",
-      //   cellPhoneNumber: "",
-      //   panNo: "",
-      //   branchId: "",
-      // },
       errorMessage: "",
       successMessage: "",
       branchList: this.props.branchList,
@@ -68,9 +58,9 @@ class AuthorizedSignatory<T = {[data: string]: any}> extends React.Component<Aut
   }
 
   
-  getInput(asObj: any, modelHeader: any){
+  getInput(asObj: any, signatoryHeaderLabel: any){
     let asId = null;
-    if(modelHeader === "Edit Signatory"){
+    if(signatoryHeaderLabel === "Edit Signatory"){
         asId = asObj.id;
     }
     let asInput = {
@@ -128,12 +118,12 @@ class AuthorizedSignatory<T = {[data: string]: any}> extends React.Component<Aut
 
   save = (e: any) => {
     const { id } = e.nativeEvent.target;
-    const {asObj, modelHeader} = this.state;
+    const {asObj, signatoryHeaderLabel} = this.state;
     let isValid = this.validateFields(asObj);
     if(isValid === false){
         return;
     }
-    const asInput = this.getInput(asObj, modelHeader);
+    const asInput = this.getInput(asObj, signatoryHeaderLabel);
     this.doSave(asInput, id);
   }
 
@@ -189,7 +179,7 @@ class AuthorizedSignatory<T = {[data: string]: any}> extends React.Component<Aut
   }
 
   render() {
-    const { asObj, branchList, modelHeader, errorMessage, successMessage, signatoryHeaderLabel } = this.state;
+    const { asObj, branchList, errorMessage, successMessage, signatoryHeaderLabel } = this.state;
     return (
       <div className="info-container">
         {

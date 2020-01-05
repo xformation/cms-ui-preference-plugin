@@ -13,6 +13,7 @@ export interface LegalEntitiesProps extends React.HTMLAttributes<HTMLElement>{
   cityList?: any;
   originalCityList?: any;
   signatoryList?: any;
+  bankAccountsList?: any;
 }
 
 export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
@@ -35,6 +36,7 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
       selectedCity: '',
       signatoryList: this.props.signatoryList,
       asObj:{
+        id: null,
         name: "",
         fatherName: "",
         designation: "",
@@ -45,7 +47,18 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
         branchId: "",
       },
       signatoryHeaderLabel:"",
-      
+      bankAccountHeaderLabel:"",
+      bankObj:{
+        id: null,
+        bankName: "",
+        accountNumber: "",
+        typeOfAccount: "",
+        ifscCode: "",
+        address: "",
+        corporateId: "",
+        branchId: "",
+      },
+      bankAccountsList: this.props.bankAccountsList,
     };
     this.toggleTab = this.toggleTab.bind(this);
     // this.showModal = this.showModal.bind(this);
@@ -59,7 +72,7 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     this.updateSignatoryList = this.updateSignatoryList.bind(this);
     this.showSignatoryModal = this.showSignatoryModal.bind(this);
     this.showSignatoryModalForEdit = this.showSignatoryModalForEdit.bind(this);
-    
+    this.updateBankAccountsList = this.updateBankAccountsList.bind(this);
   }
 
   toggleTab(tabNo: any) {
@@ -139,11 +152,21 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
   showBankModal(e: any, bShow: boolean) {
     e && e.preventDefault();
     this.setState(() => ({
+      bankObj: {},
       isBankModalOpen: bShow,
+      bankAccountHeaderLabel: "Add Bank Account"
     }));
   }
 
-  
+  showBankModalForEdit(e: any, bShow: boolean, bankObj: any) {
+    e && e.preventDefault();
+    this.setState(() => ({
+      isBankModalOpen: bShow,
+      bankObj: bankObj,
+      bankAccountHeaderLabel: "Edit Bank Account"
+    }));
+  }
+
   closeSignatoryModal() {
     this.setState({
       isSignatoryModalOpen: false
@@ -187,6 +210,13 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     });
   }
 
+  updateBankAccountsList(bankAccountsList: any) {
+    console.log("BankAccounts LIST from child : ", bankAccountsList);
+    this.setState({
+      bankAccountsList: bankAccountsList
+    });
+  }
+
   displaySignatoryList(signatoryList: any){
     const retVal = [];
     for (let i = 0; i < signatoryList.length; i++) {
@@ -208,8 +238,29 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     return retVal;
   }
 
+  displayBankAccountList(bankAccountsList: any){
+    const retVal = [];
+    for (let i = 0; i < bankAccountsList.length; i++) {
+        const k = bankAccountsList[i];
+        retVal.push(
+          <div className="tile m-r-2 ">
+            <div id={k.id} className="tile-circle SBI upload-cursor" onClick={e => this.showBankModalForEdit(e, true, k)}>
+              <b> {k.bankName.charAt(0)} 
+              </b>
+            </div>
+            <div className="tile-right-part">
+              <div className="tile-name"><span>{k.bankName}</span></div>
+              <div className="tile-info">{k.address}</div>
+              {/* <div className="tile-info">Branch: {k.cmsBranchVo !== null ? k.cmsBranchVo.branchName : ""}</div> */}
+            </div>
+          </div>
+        );
+    }
+    return retVal;
+  }
+
   render() {
-    const { logoSrc, isSignatoryModalOpen, isBankModalOpen,  branchList, stateList, cityList, signatoryList, asObj, signatoryHeaderLabel, selectedState, selectedCity, activeTab } = this.state;
+    const { logoSrc, isSignatoryModalOpen, isBankModalOpen,  branchList, stateList, cityList, signatoryList, asObj, signatoryHeaderLabel, bankAccountHeaderLabel, bankObj, bankAccountsList, selectedState, selectedCity, activeTab } = this.state;
     return (
       <div className="info-container">
         <div className="authorized-signatory-container m-b-1">
@@ -256,22 +307,15 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
           </div>
         </div>
         <div className="signatory-list">
-          <div className="tile m-r-2 ">
-            <div className="tile-circle SBI">
-              <b>&#8377;</b>
-            </div>
-            <div className="tile-right-part">
-              <div className="tile-name">
-                <span>SBI</span>
-              </div>
-              <div className="tile-info">Madhapur</div>
-            </div>
-          </div>
+          {
+              bankAccountsList !== null ? this.displayBankAccountList(bankAccountsList) : null 
+          }
+          
         </div>
         <Modal isOpen={isBankModalOpen} className="react-strap-modal-container">
-          <ModalHeader>Add Bank Account</ModalHeader>
+          <ModalHeader>{bankAccountHeaderLabel}</ModalHeader>
           <ModalBody className="modal-content">
-            <BankAccount branchList={branchList} onCloseModel={this.closeBankModal}></BankAccount>
+            <BankAccount headerLabel={bankAccountHeaderLabel} bankObj={bankObj} branchList={branchList} onCloseModel={this.closeBankModal} onSaveUpdate={this.updateBankAccountsList}></BankAccount>
           </ModalBody>
         </Modal>
         
