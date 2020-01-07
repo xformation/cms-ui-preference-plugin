@@ -7,3 +7,4 @@ export {SAVE_AUTHORIZED_SIGNATORY} from './saveAuthorizedSignatory';
 export {GET_AUTHORIZED_SIGNATORY_LIST} from './getAuthorizedSignatoryList';
 export {SAVE_BANK_ACCOUNTS} from './saveBankAccounts';
 export {GET_BANK_ACCOUNTS_LIST} from './getBankAccountsList';
+export {SAVE_LEGAL_ENTITY} from './saveLegalEntity';

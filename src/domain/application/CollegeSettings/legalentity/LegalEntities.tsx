@@ -6,6 +6,8 @@ import { commonFunctions } from '../../_utilites/common.functions';
 import RegistrationPage from './RegistrationPage';
 import AuthorizedSignatory from './AuthorizedSignatory';
 import BankAccount from './BankAccount';
+import  "../../../../css/custom.css";
+import {MessageBox} from '../../Message/MessageBox'
 
 export interface LegalEntitiesProps extends React.HTMLAttributes<HTMLElement>{
   branchList?: any;
@@ -30,10 +32,10 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
       logoSrc: '',
       isSignatoryModalOpen: false,
       isBankModalOpen: false,
-      states: [],
-      cities: [],
-      selectedState: '',
-      selectedCity: '',
+      // // states: [],
+      // // cities: [],
+      // selectedState: '',
+      // selectedCity: '',
       signatoryList: this.props.signatoryList,
       asObj:{
         id: null,
@@ -59,12 +61,16 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
         branchId: "",
       },
       bankAccountsList: this.props.bankAccountsList,
+      errorMessage: "",
+      successMessage: "",
+      legalEntityObj: null,
+      isSignatoryListChanged: false
     };
     this.toggleTab = this.toggleTab.bind(this);
     // this.showModal = this.showModal.bind(this);
     // this.showModalNew = this.showModalNew.bind(this);
-    this.handleStateChange = this.handleStateChange.bind(this);
-    this.createCitySelectbox = this.createCitySelectbox.bind(this);
+    // this.handleStateChange = this.handleStateChange.bind(this);
+    // this.createCitySelectbox = this.createCitySelectbox.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
 
     this.closeSignatoryModal = this.closeSignatoryModal.bind(this);
@@ -73,6 +79,8 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     this.showSignatoryModal = this.showSignatoryModal.bind(this);
     this.showSignatoryModalForEdit = this.showSignatoryModalForEdit.bind(this);
     this.updateBankAccountsList = this.updateBankAccountsList.bind(this);
+    this.updateLegalEntity = this.updateLegalEntity.bind(this);
+    this.updateSignatoryListFlag = this.updateSignatoryListFlag.bind(this);
   }
 
   toggleTab(tabNo: any) {
@@ -81,28 +89,28 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     });
   }
 
-  componentDidMount() {
-    collegeSettingsServices.getStates().then(
-      response => {
-        this.setState({
-          states: response,
-        });
-      },
-      error => {
-        console.log(error);
-      }
-    );
-    collegeSettingsServices.getCities().then(
-      response => {
-        this.setState({
-          cities: response,
-        });
-      },
-      error => {
-        console.log(error);
-      }
-    );
-  }
+  // componentDidMount() {
+  //   collegeSettingsServices.getStates().then(
+  //     response => {
+  //       this.setState({
+  //         states: response,
+  //       });
+  //     },
+  //     error => {
+  //       console.log(error);
+  //     }
+  //   );
+  //   collegeSettingsServices.getCities().then(
+  //     response => {
+  //       this.setState({
+  //         cities: response,
+  //       });
+  //     },
+  //     error => {
+  //       console.log(error);
+  //     }
+  //   );
+  // }
 
   handleImageChange(e: any) {
     const {files, name} = e.target;
@@ -179,37 +187,47 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     });
   }
 
-  handleStateChange(e: any) {
-    const {name, value} = e.target;
-    this.setState({
-      [name]: value,
-    });
-  }
+  // handleStateChange(e: any) {
+  //   const {name, value} = e.target;
+  //   this.setState({
+  //     [name]: value,
+  //   });
+  // }
 
-  createCitySelectbox(selectedState: any) {
-    const {cities} = this.state;
-    let retData = [];
-    selectedState = parseInt(selectedState);
-    for (let i = 0; i < cities.length; i++) {
-      let city = cities[i];
-      if (selectedState === city.stateId) {
-        retData.push(
-          <option key={city.id} value={city.id}>
-            {city.cityName}
-          </option>
-        );
-      }
-    }
-    return retData;
-  }
+  // createCitySelectbox(selectedState: any) {
+  //   const {cities} = this.state;
+  //   let retData = [];
+  //   selectedState = parseInt(selectedState);
+  //   for (let i = 0; i < cities.length; i++) {
+  //     let city = cities[i];
+  //     if (selectedState === city.stateId) {
+  //       retData.push(
+  //         <option key={city.id} value={city.id}>
+  //           {city.cityName}
+  //         </option>
+  //       );
+  //     }
+  //   }
+  //   return retData;
+  // }
 
+  // updateSignatoryList method being called from Add/Edit Authorized Signatory model/pop-up.
+  // It's a callback method being called by onSaveUpdate property of Add/Edit Authorized Signatory model/pop-up
+  
   updateSignatoryList(signatoryList: any) {
-    console.log("SIGNATOTY LIST from child : ", signatoryList);
+    console.log("SIGNATORY LIST from child : ", signatoryList);
     this.setState({
-      signatoryList: signatoryList
+      signatoryList: signatoryList,
+      isSignatoryListChanged: true
     });
   }
 
+  updateSignatoryListFlag(flag: any){
+    this.setState({
+      isSignatoryListChanged: flag
+    });
+  }
+  // updateBankAccountsList method being called from Add/Edit Bank Account model/pop-up
   updateBankAccountsList(bankAccountsList: any) {
     console.log("BankAccounts LIST from child : ", bankAccountsList);
     this.setState({
@@ -259,10 +277,33 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     return retVal;
   }
 
+  // updateLegalEntity method being called from RegistrationPage component
+  updateLegalEntity(errorMessage: any, successMessage: any, legalEntityObj: any) {
+    console.log("Legal entiy object from child : ", legalEntityObj);
+    this.setState({
+      errorMessage: errorMessage,
+      successMessage: successMessage,
+      legalEntityObj: legalEntityObj
+    });
+  }
+
+  
+
   render() {
-    const { logoSrc, isSignatoryModalOpen, isBankModalOpen,  branchList, stateList, cityList, signatoryList, asObj, signatoryHeaderLabel, bankAccountHeaderLabel, bankObj, bankAccountsList, selectedState, selectedCity, activeTab } = this.state;
+    const { logoSrc, isSignatoryModalOpen, isBankModalOpen,  branchList, stateList, cityList, signatoryList, asObj, signatoryHeaderLabel, bankAccountHeaderLabel, bankObj, bankAccountsList, 
+      errorMessage, successMessage, isSignatoryListChanged, selectedState, selectedCity, activeTab } = this.state;
     return (
       <div className="info-container">
+        {
+            errorMessage !== ""  ? 
+                <MessageBox id="mbox" message={errorMessage} activeTab={2}/>        
+                : null
+        }
+        {
+            successMessage !== ""  ? 
+                <MessageBox id="mbox" message={successMessage} activeTab={1}/>        
+                : null
+        }
         <div className="authorized-signatory-container m-b-1">
           <small>
             A Legal Entity is the registered name of the institution. This name will be used in all documents such as pay slip, offer letter etc.
@@ -319,7 +360,7 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
           </ModalBody>
         </Modal>
         
-        <RegistrationPage branchList={branchList} stateList={stateList} cityList={cityList}></RegistrationPage>
+        <RegistrationPage signatoryListFlag={isSignatoryListChanged} signatoryList={signatoryList} branchList={branchList} stateList={stateList} cityList={cityList} onSaveUpdate={this.updateLegalEntity}></RegistrationPage>
         
       </div>
     );
