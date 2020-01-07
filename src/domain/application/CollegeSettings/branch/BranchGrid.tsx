@@ -237,6 +237,11 @@ class BranchGrid<T = {[data: string]: any}> extends React.Component<BranchProps,
         }).then((resp: any) => {
             console.log("Success in saveBranch Mutation. Exit code : ",resp.data.saveBranch.cmsBranchVo.exitCode);
             exitCode = resp.data.saveBranch.cmsBranchVo.exitCode;
+            let temp = resp.data.saveBranch.cmsBranchVo.dataList; 
+            console.log("New branch list : ", temp);
+            this.setState({
+                list: temp
+            });
         }).catch((error: any) => {
             exitCode = 1;
             console.log('Error in saveBranch : ', error);

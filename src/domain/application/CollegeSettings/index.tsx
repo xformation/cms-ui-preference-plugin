@@ -141,13 +141,13 @@ class CollegeSettings extends React.Component<any, any> {
                     <TabPane tabId={1}>
                         {
                             branchList !== null && stateDataList !== null && cityDataList !== null && (
-                                <BranchGrid data={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}/>
+                                <BranchGrid data={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList} />
                             )
                         }
                     </TabPane>
                     <TabPane tabId={2}>
                         {
-                            authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
+                            bankAccountsList !== null && authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
                                 <LegalEntities signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} bankAccountsList={bankAccountsList.getBankAccountsList} branchList={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
                             )
                         }
