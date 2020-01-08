@@ -5,6 +5,7 @@ import  "../../../../css/custom.css";
 // import {MessageBox} from '../../Message/MessageBox'
 import { withApollo } from 'react-apollo';
 import { SAVE_LEGAL_ENTITY } from '../../_queries';
+import * as moment from 'moment';
 
 const ERROR_MESSAGE_MANDATORY_FIELD_MISSING = "Mandatory fields missing";
 const ERROR_MESSAGE_SERVER_SIDE_ERROR = "Due to some error in preferences service, legal entity could not be saved. Please check preferences service logs";
@@ -20,13 +21,14 @@ export interface RegistrationProps extends React.HTMLAttributes<HTMLElement>{
   originalCityList?: any;
   signatoryList?: any;
   onSaveUpdate?: any;
-  signatoryListFlag?: any;
+  legalEntityList?: any;
 }
 class RegistrationPage<T = {[data: string]: any}> extends React.Component<RegistrationProps, any> {
   constructor(props: RegistrationProps) {
     super(props);
     this.state = {
       activeTab: 0,
+      legalEntityList: this.props.legalEntityList,
       branchList : this.props.branchList,
       originalBranchList : this.props.branchList,
       stateList: this.props.stateList,
@@ -58,7 +60,7 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
         stateId: "",
         cityId: "",
       },
-      isSignatoryListChanged: this.props.signatoryListFlag,
+      // isSignatoryListChanged: this.props.signatoryListFlag,
       ptSignatoryDesignation: "",
       esiSignatoryDesignation:"",
       pfSignatoryDesignation: "",
@@ -74,7 +76,7 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
     this.applyDesignation = this.applyDesignation.bind(this);
     this.filterCityList = this.filterCityList.bind(this);
     this.filterBranchList = this.filterBranchList.bind(this);
-
+    this.filterLegalEntity = this.filterLegalEntity.bind(this);
   }
  
   componentWillUpdate(newProps: any, newState: any){
@@ -145,19 +147,12 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
       this.resetCollegeNameAndAddress();
     }
     if(name === "branchId"){
-      regObj.branchId = value;
-      if(value !== ""){
-        let obj = this.applyBranch(value);
-        regObj.legalNameOfCollege = obj.legalNameOfCollege;
-        regObj.registeredOfficeAddress = obj.registeredOfficeAddress;
-      }else{
-        regObj.legalNameOfCollege = "";
-        regObj.registeredOfficeAddress = "";
-      }
+      let o =  this.filterLegalEntity(value);
+      console.log("LEGAL ENTITY OBJECT : ",o);
       commonFunctions.restoreTextBoxBorderToNormal("legalNameOfCollege");
       commonFunctions.restoreTextBoxBorderToNormal("registeredOfficeAddress");
       this.setState({
-        regObj: regObj
+        regObj: o
       });
       
     }
@@ -180,7 +175,7 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
         pfSignatoryDesignation: desig
       });
     }
-    this.props.onSaveUpdate("", "", regObj); 
+    this.props.onSaveUpdate("", ""); 
     commonFunctions.restoreTextBoxBorderToNormal(name);
   }
 
@@ -255,13 +250,12 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
   }
 
   applyBranch(branchId: any){
-    const {regObj, branchList} = this.state;
-    let obj = regObj;
+    const {branchList} = this.state;
+    let obj = {};
     for (let i = 0; i < branchList.length; i++) {
       const k = branchList[i];
       if(parseInt(branchId, 10) === parseInt(k.id, 10)){
-        obj.legalNameOfCollege = k.branchName;
-        obj.registeredOfficeAddress = k.address;
+        obj = k;
         break;
       }
     }
@@ -324,7 +318,7 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
     this.setState({
         errorMessage: errorMessage
     });
-    this.props.onSaveUpdate(errorMessage, "", null); 
+    this.props.onSaveUpdate(errorMessage, ""); 
     if(isValid) {
       this.toggleTab(1);
     }
@@ -363,7 +357,7 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
     this.setState({
         errorMessage: errorMessage
     });
-    this.props.onSaveUpdate(errorMessage, "", null); 
+    this.props.onSaveUpdate(errorMessage, ""); 
     if(isValid) {
       this.toggleTab(2);
     }
@@ -392,7 +386,7 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
     this.setState({
         errorMessage: errorMessage
     });
-    this.props.onSaveUpdate(errorMessage, "", null); 
+    this.props.onSaveUpdate(errorMessage, ""); 
     if(isValid) {
       this.toggleTab(3);
     }
@@ -421,7 +415,7 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
     this.setState({
         errorMessage: errorMessage
     });
-    this.props.onSaveUpdate(errorMessage, "", null); 
+    this.props.onSaveUpdate(errorMessage, ""); 
     if(isValid) {
       this.toggleTab(4);
     }
@@ -450,7 +444,7 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
     this.setState({
         errorMessage: errorMessage
     });
-    this.props.onSaveUpdate(errorMessage, "", null); 
+    this.props.onSaveUpdate(errorMessage, ""); 
     return isValid; 
   }
 
@@ -492,6 +486,9 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
         console.log("Success in saveLegalEntity Mutation. Exit code : ",resp.data.saveLegalEntity.cmsLegalEntityVo.exitCode);
         exitCode = resp.data.saveLegalEntity.cmsLegalEntityVo.exitCode;
         
+        this.setState({
+          legalEntityList: resp.data.saveLegalEntity.cmsLegalEntityVo.dataList
+      });
     }).catch((error: any) => {
         exitCode = 1;
         console.log('Error in saveLegalEntity : ', error);
@@ -512,26 +509,19 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
         successMessage: successMessage,
         errorMessage: errorMessage
     });
-    this.props.onSaveUpdate("", successMessage, legalEntityInput);
+    this.props.onSaveUpdate(errorMessage, successMessage);
   }
   
   getInput(regObj: any){
-    let asId = null;
-    // if(headerLabel === "Edit Bank Account"){
-    //     console.log("bank account id : ", bankObj.id);
-    //     asId = bankObj.id;
-    // }else{
-    //   console.log("bank account id is null....... ");
-    // }
     let legalEntityInput = {
-        // id: asId,
+        id: (regObj.id !== null || regObj.id !== undefined || regObj.id !== "") ? regObj.id : null,
         logoFile: null, 		
         logoFilePath: null, 		
         logoFileName: null, 		
         logoFileExtension: null, 		
         legalNameOfCollege: regObj.legalNameOfCollege, 		
         typeOfCollege: regObj.typeOfCollege, 		
-        strDateOfIncorporation: regObj.dateOfIncorporation, 		
+        strDateOfIncorporation: (regObj.dateOfIncorporation !== null || regObj.dateOfIncorporation !== undefined || regObj.dateOfIncorporation !== "") ? moment(regObj.dateOfIncorporation).format("DD-MM-YYYY") : "",	
         registeredOfficeAddress: regObj.registeredOfficeAddress, 		
         collegeIdentificationNumber: regObj.collegeIdentificationNumber, 		
         pan: regObj.pan, 		
@@ -540,22 +530,113 @@ class RegistrationPage<T = {[data: string]: any}> extends React.Component<Regist
         citTdsLocation: regObj.citTdsLocation,
         formSignatory: regObj.formSignatory,
         pfNumber: regObj.pfNumber,
-        strPfRegistrationDate: regObj.pfRegistrationDate,
+        strPfRegistrationDate: (regObj.pfRegistrationDate !== null || regObj.pfRegistrationDate !== undefined || regObj.pfRegistrationDate !== "") ? moment(regObj.pfRegistrationDate).format("DD-MM-YYYY") : "", 		
         pfSignatory: regObj.pfSignatory,
         esiNumber: regObj.esiNumber,
-        strEsiRegistrationDate: regObj.strEsiRegistrationDate,
+        strEsiRegistrationDate: (regObj.esiRegistrationDate !== null || regObj.esiRegistrationDate !== undefined || regObj.esiRegistrationDate !== "") ? moment(regObj.esiRegistrationDate).format("DD-MM-YYYY") : "", 		
         esiSignatory: regObj.esiSignatory,
         ptNumber: regObj.ptNumber,
-        strPtRegistrationDate: regObj.ptRegistrationDate,
+        strPtRegistrationDate: (regObj.ptRegistrationDate !== null || regObj.ptRegistrationDate !== undefined || regObj.ptRegistrationDate !== "") ? moment(regObj.ptRegistrationDate).format("DD-MM-YYYY") : "", 		
         ptSignatory: regObj.ptSignatory,
         branchId: regObj.branchId
     };
     return legalEntityInput;
   }
 
+  filterLegalEntity(branchId: any){
+    const {legalEntityList, branchList} = this.state;
+    let obj = {
+              id: null, 
+              legalNameOfCollege: "",
+              registeredOfficeAddress: "",
+              dateOfIncorporation: "",
+              typeOfCollege: "",
+              collegeIdentificationNumber: "",
+              pan: "",
+              tan: "",
+              tanCircleNumber: "",
+              formSignatory: "",
+              citTdsLocation: "",
+              pfNumber: "",
+              pfRegistrationDate: "",
+              pfSignatory: "",
+              esiNumber: "",
+              esiRegistrationDate: "",
+              esiSignatory: "",
+              ptNumber: "",
+              ptRegistrationDate: "",
+              ptSignatory: "",
+              branchId: branchId,
+              stateId: "",
+              cityId: ""
+    };
+    if(branchId === null || branchId === undefined || branchId === ""){
+      return obj;
+    }
+    for(let i=0; i<legalEntityList.length; i++){
+      const k = legalEntityList[i];
+      if(parseInt(branchId, 10) === parseInt(k.cmsBranchVo.id, 10)){
+        obj.id= k.id; 
+        obj.legalNameOfCollege = k.legalNameOfCollege;
+        obj.registeredOfficeAddress = k.registeredOfficeAddress;
+        obj.dateOfIncorporation = moment(k.strDateOfIncorporation).format("YYYY-MM-DD");
+        obj.typeOfCollege = k.typeOfCollege;
+        obj.collegeIdentificationNumber = k.collegeIdentificationNumber;
+        obj.pan = k.pan;
+        obj.tan = k.tan;
+        obj.tanCircleNumber = k.tanCircleNumber;
+        obj.formSignatory = k.formSignatory
+        obj.citTdsLocation = k.citTdsLocation;
+        obj.pfNumber = k.pfNumber;
+        obj.pfRegistrationDate = moment(k.strPfRegistrationDate).format("YYYY-MM-DD");
+        obj.pfSignatory = k.pfSignatory;
+        obj.esiNumber = k.esiNumber;
+        obj.esiRegistrationDate = moment(k.strEsiRegistrationDate).format("YYYY-MM-DD");
+        obj.esiSignatory = k.esiSignatory;
+        obj.ptNumber = k.ptNumber;
+        obj.ptRegistrationDate = moment(k.strPtRegistrationDate).format("YYYY-MM-DD");
+        obj.ptSignatory = k.ptSignatory;
+        obj.branchId = k.branchId;
+        obj.stateId = k.stateId;
+        obj.cityId = k.cityId;
+        break;
+      }
+    }
+    if(obj.legalNameOfCollege === null || obj.legalNameOfCollege === undefined || obj.legalNameOfCollege === "" ){
+      for (let i = 0; i < branchList.length; i++) {
+        const k = branchList[i];
+        if(parseInt(branchId, 10) === parseInt(k.id, 10)) {
+          obj.legalNameOfCollege = k.branchName;
+          obj.registeredOfficeAddress = k.address;
+          break;
+        }
+      }
+    }
+    if(obj.pfSignatory !== ""){
+      let desig = this.applyDesignation(obj.pfSignatory);
+      this.setState({
+        pfSignatoryDesignation: desig
+      });
+    }
+    if(obj.esiSignatory !== ""){
+      let desig = this.applyDesignation(obj.esiSignatory);
+      this.setState({
+        esiSignatoryDesignation: desig
+      });
+    }
+    if(obj.ptSignatory !== ""){
+      let desig = this.applyDesignation(obj.ptSignatory);
+      this.setState({
+        ptSignatoryDesignation: desig
+      });
+    }
+    return obj;
+    
+  }
+
   render() {
     const {activeTab, stateList, cityList, branchList, signatoryList, regObj, ptSignatoryDesignation, esiSignatoryDesignation,
-    pfSignatoryDesignation} = this.state;
+          pfSignatoryDesignation, legalEntityList} = this.state;
     return (
       <section className="tab-container">
         <div className="clearfix" />

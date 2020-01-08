@@ -6,7 +6,7 @@ import CollegeInfo  from './college/AddCollegePage/CollegeInfo';
 import BranchGrid from './branch/BranchGrid';
 import {LegalEntities} from './legalentity/LegalEntities';
 import { withApollo } from 'react-apollo';
-import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST, GET_AUTHORIZED_SIGNATORY_LIST, GET_BANK_ACCOUNTS_LIST } from '../_queries';
+import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST, GET_AUTHORIZED_SIGNATORY_LIST, GET_BANK_ACCOUNTS_LIST, GET_LEGAL_ENTITY_LIST } from '../_queries';
 
 class CollegeSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -17,7 +17,8 @@ class CollegeSettings extends React.Component<any, any> {
             stateDataList: null,
             cityDataList: null,
             authorizedSignatoryList: null,
-            bankAccountsList: null
+            bankAccountsList: null,
+            legalEntityList: null
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getBranchList = this.getBranchList.bind(this);
@@ -25,11 +26,12 @@ class CollegeSettings extends React.Component<any, any> {
         this.getCityList = this.getCityList.bind(this);
         this.getAuthorizedSignatoryList = this.getAuthorizedSignatoryList.bind(this);
         this.getBankAccountsList = this.getBankAccountsList.bind(this);
+        this.getLegalEntityList = this.getLegalEntityList.bind(this);
     }
 
     async componentDidMount(){
         await this.getStateList();
-        this.getCityList();
+        await this.getCityList();
     }
 
     async toggleTab (tabNo: any) {
@@ -40,11 +42,15 @@ class CollegeSettings extends React.Component<any, any> {
         let bid = 34; 
         let aid = 56; 
         
-        if(tabNo === 1 || tabNo === 2){
+        if(tabNo === 1 ){
+            this.getBranchList(bid, aid);
+        }else if(tabNo === 2){
             this.getBranchList(bid, aid);
             this.getAuthorizedSignatoryList();
             this.getBankAccountsList();
+            this.getLegalEntityList();
         }
+
         this.setState({
             activeTab: tabNo,
         });
@@ -97,14 +103,23 @@ class CollegeSettings extends React.Component<any, any> {
             query: GET_BANK_ACCOUNTS_LIST,
              fetchPolicy: 'no-cache'
         })
-        
         this.setState({
             bankAccountsList: data
         });
     }
 
+    async getLegalEntityList(){
+        const { data } = await this.props.client.query({
+            query: GET_LEGAL_ENTITY_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        this.setState({
+            legalEntityList: data
+        });
+    }
+
     render() {
-        const { activeTab, branchList, stateDataList, cityDataList, authorizedSignatoryList, bankAccountsList } = this.state;
+        const { activeTab, branchList, stateDataList, cityDataList, authorizedSignatoryList, bankAccountsList, legalEntityList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -147,12 +162,10 @@ class CollegeSettings extends React.Component<any, any> {
                     </TabPane>
                     <TabPane tabId={2}>
                         {
-                            bankAccountsList !== null && authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
-                                <LegalEntities signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} bankAccountsList={bankAccountsList.getBankAccountsList} branchList={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
+                            legalEntityList !== null && bankAccountsList !== null && authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
+                                <LegalEntities legalEntityList={legalEntityList.getLegalEntityList} signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} bankAccountsList={bankAccountsList.getBankAccountsList} branchList={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
                             )
                         }
-                    
-                        
                     </TabPane>
                     <TabPane tabId={3}>
                         Test

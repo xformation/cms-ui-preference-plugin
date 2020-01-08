@@ -16,6 +16,7 @@ export interface LegalEntitiesProps extends React.HTMLAttributes<HTMLElement>{
   originalCityList?: any;
   signatoryList?: any;
   bankAccountsList?: any;
+  legalEntityList?: any;
 }
 
 export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
@@ -24,6 +25,7 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
     super(props);
     
     this.state = {
+      legalEntityList: this.props.legalEntityList,
       branchList: this.props.branchList,
       stateList: this.props.stateList,
       cityList: this.props.cityList,
@@ -63,7 +65,7 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
       bankAccountsList: this.props.bankAccountsList,
       errorMessage: "",
       successMessage: "",
-      legalEntityObj: null,
+      // legalEntityObj: null,
       isSignatoryListChanged: false
     };
     this.toggleTab = this.toggleTab.bind(this);
@@ -278,12 +280,11 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
   }
 
   // updateLegalEntity method being called from RegistrationPage component
-  updateLegalEntity(errorMessage: any, successMessage: any, legalEntityObj: any) {
-    console.log("Legal entiy object from child : ", legalEntityObj);
+  updateLegalEntity(errorMessage: any, successMessage: any) {
+   
     this.setState({
       errorMessage: errorMessage,
-      successMessage: successMessage,
-      legalEntityObj: legalEntityObj
+      successMessage: successMessage
     });
   }
 
@@ -291,7 +292,7 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
 
   render() {
     const { logoSrc, isSignatoryModalOpen, isBankModalOpen,  branchList, stateList, cityList, signatoryList, asObj, signatoryHeaderLabel, bankAccountHeaderLabel, bankObj, bankAccountsList, 
-      errorMessage, successMessage, isSignatoryListChanged, selectedState, selectedCity, activeTab } = this.state;
+      errorMessage, successMessage, isSignatoryListChanged, legalEntityList, selectedState, selectedCity, activeTab } = this.state;
     return (
       <div className="info-container">
         {
@@ -360,7 +361,7 @@ export class LegalEntities extends React.Component<LegalEntitiesProps, any> {
           </ModalBody>
         </Modal>
         
-        <RegistrationPage signatoryListFlag={isSignatoryListChanged} signatoryList={signatoryList} branchList={branchList} stateList={stateList} cityList={cityList} onSaveUpdate={this.updateLegalEntity}></RegistrationPage>
+        <RegistrationPage legalEntityList={legalEntityList} signatoryList={signatoryList} branchList={branchList} stateList={stateList} cityList={cityList} onSaveUpdate={this.updateLegalEntity}></RegistrationPage>
         
       </div>
     );
