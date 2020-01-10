@@ -9,3 +9,5 @@ export {SAVE_BANK_ACCOUNTS} from './saveBankAccounts';
 export {GET_BANK_ACCOUNTS_LIST} from './getBankAccountsList';
 export {SAVE_LEGAL_ENTITY} from './saveLegalEntity';
 export {GET_LEGAL_ENTITY_LIST} from './getLegalEntityList';
+export {GET_ACADEMIC_YEAR_LIST} from './getAcademicYearList';
+export {SAVE_ACADEMIC_YEAR} from './saveAcademicYear';

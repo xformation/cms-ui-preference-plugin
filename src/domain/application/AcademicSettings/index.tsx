@@ -1,26 +1,49 @@
 import * as React from 'react';
-// import { graphql, QueryProps, MutationFunc, compose } from 'react-apollo';
-import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
+import { graphql, QueryProps, MutationFunc, compose, withApollo } from 'react-apollo';
+// import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { CalendarSetup } from './CalendarSetup';
+import { GET_ACADEMIC_YEAR_LIST } from '../_queries';
 
-export default class AcademicSettings extends React.Component<any, any> {
+import { CalendarSetup } from './CalendarSetup';
+import AcademicYear from './academicyear/AcademicYear';
+
+class AcademicSettings extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
             activeTab: 0,
+            ayList: null,
         };
         this.toggleTab = this.toggleTab.bind(this);
+        this.getAcademicYearList = this.getAcademicYearList.bind(this);
+    }
+
+    async componentDidMount(){
+        await this.getAcademicYearList();
     }
 
     toggleTab(tabNo: any) {
+        if(tabNo === 0 ){
+            this.getAcademicYearList();
+        }
         this.setState({
             activeTab: tabNo,
         });
     }
 
+    async getAcademicYearList(){
+        const { data } = await this.props.client.query({
+            query: GET_ACADEMIC_YEAR_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        
+        this.setState({
+            ayList: data
+        });
+    }
+
     render() {
-        const { activeTab } = this.state;
+        const { activeTab, ayList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -57,7 +80,12 @@ export default class AcademicSettings extends React.Component<any, any> {
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
                     <TabPane tabId={0}>
-                        Test
+                        {
+                            ayList !== null ?
+                                <AcademicYear ayList={ayList.getAcademicYearList}></AcademicYear>
+                            :
+                            "No Record Found"
+                        }
                     </TabPane>
                     <TabPane tabId={1}>
                         Test
@@ -79,3 +107,5 @@ export default class AcademicSettings extends React.Component<any, any> {
         );
     }
 }
+
+export default withApollo(AcademicSettings)
