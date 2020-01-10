@@ -11,3 +11,5 @@ export {SAVE_LEGAL_ENTITY} from './saveLegalEntity';
 export {GET_LEGAL_ENTITY_LIST} from './getLegalEntityList';
 export {GET_ACADEMIC_YEAR_LIST} from './getAcademicYearList';
 export {SAVE_ACADEMIC_YEAR} from './saveAcademicYear';
+export {GET_HOLIDAY_LIST} from './getHolidayList';
+export {SAVE_HOLIDAY} from './saveHoliday';
