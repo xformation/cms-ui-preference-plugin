@@ -1,16 +1,17 @@
 import gql from 'graphql-tag';
 
-export const SAVE_HOLIDAY = gql`
-  mutation saveHoliday($input: HolidayInput) {
-    saveHoliday(input: $input) {
-      cmsHolidayVo {
+export const SAVE_TERM = gql`
+  mutation saveTerm($input: TermInput) {
+    saveTerm(input: $input) {
+      cmsTermVo {
         exitCode
         exitDescription
         dataList {
           id
           description
           comments
-          strHolidayDate
+          strStartDate
+          strEndDate
           createdBy
           updatedBy
           strCreatedOn

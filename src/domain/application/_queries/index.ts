@@ -13,3 +13,5 @@ export {GET_ACADEMIC_YEAR_LIST} from './getAcademicYearList';
 export {SAVE_ACADEMIC_YEAR} from './saveAcademicYear';
 export {GET_HOLIDAY_LIST} from './getHolidayList';
 export {SAVE_HOLIDAY} from './saveHoliday';
+export {GET_TERM_LIST} from './getTermList';
+export {SAVE_TERM} from './saveTerm';

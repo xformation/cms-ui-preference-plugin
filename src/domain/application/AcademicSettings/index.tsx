@@ -2,11 +2,12 @@ import * as React from 'react';
 import { graphql, QueryProps, MutationFunc, compose, withApollo } from 'react-apollo';
 // import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST } from '../_queries';
+import { GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST } from '../_queries';
 
 import { CalendarSetup } from './CalendarSetup';
 import AcademicYear from './academicyear/AcademicYear';
 import Holiday from './holiday/Holiday';
+import Term from './term/Term';
 
 class AcademicSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -15,10 +16,12 @@ class AcademicSettings extends React.Component<any, any> {
             activeTab: 0,
             ayList: null,
             holidayList: null,
+            termList: null,
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getAcademicYearList = this.getAcademicYearList.bind(this);
         this.getHolidayList = this.getHolidayList.bind(this);
+        this.getTermList = this.getTermList.bind(this);
         this.updateAyList = this.updateAyList.bind(this);
     }
 
@@ -43,6 +46,9 @@ class AcademicSettings extends React.Component<any, any> {
         }
         if(tabNo === 1 ){
             this.getHolidayList();
+        }
+        if(tabNo === 2 ){
+            this.getTermList();
         }
         this.setState({
             activeTab: tabNo,
@@ -70,8 +76,19 @@ class AcademicSettings extends React.Component<any, any> {
         });
     }
 
+    async getTermList(){
+        const { data } = await this.props.client.query({
+            query: GET_TERM_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        
+        this.setState({
+            termList: data
+        });
+    }
+
     render() {
-        const { activeTab, ayList, holidayList } = this.state;
+        const { activeTab, ayList, holidayList, termList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -87,26 +104,31 @@ class AcademicSettings extends React.Component<any, any> {
                     </NavItem>
                     <NavItem className="cursor-pointer">
                         <NavLink className={`vertical-nav-link ${activeTab === 2 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(2); }} >
-                            Department Setup
+                            Term Setup
                         </NavLink>
                     </NavItem>
                     <NavItem className="cursor-pointer">
                         <NavLink className={`vertical-nav-link ${activeTab === 3 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(3); }} >
-                            Courses
+                            Department Setup
                         </NavLink>
                     </NavItem>
                     <NavItem className="cursor-pointer">
                         <NavLink className={`vertical-nav-link ${activeTab === 4 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(4); }} >
-                            Staff Setup
+                            Courses
                         </NavLink>
                     </NavItem>
                     <NavItem className="cursor-pointer">
                         <NavLink className={`vertical-nav-link ${activeTab === 5 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(5); }} >
-                            Subject Setup
+                            Staff Setup
                         </NavLink>
                     </NavItem>
                     <NavItem className="cursor-pointer">
                         <NavLink className={`vertical-nav-link ${activeTab === 6 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(6); }} >
+                            Subject Setup
+                        </NavLink>
+                    </NavItem>
+                    <NavItem className="cursor-pointer">
+                        <NavLink className={`vertical-nav-link ${activeTab === 7 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(7); }} >
                             Timetable Setup
                         </NavLink>
                     </NavItem>
@@ -129,7 +151,12 @@ class AcademicSettings extends React.Component<any, any> {
                         }
                     </TabPane>
                     <TabPane tabId={2}>
-                        Test
+                        {
+                            ayList !== null && termList !== null ?
+                                <Term termList={termList.getTermList} ayList={ayList}></Term>
+                            :
+                            "No Record Found"
+                        }
                     </TabPane>
                     <TabPane tabId={3}>
                         Test
@@ -141,6 +168,9 @@ class AcademicSettings extends React.Component<any, any> {
                         Test
                     </TabPane>
                     <TabPane tabId={6}>
+                        Test
+                    </TabPane>
+                    <TabPane tabId={7}>
                         <CalendarSetup />
                     </TabPane>
                 </TabContent>

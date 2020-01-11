@@ -1,12 +1,13 @@
 import gql from 'graphql-tag';
 
-export const GET_HOLIDAY_LIST = gql`
+export const GET_TERM_LIST = gql`
   query {
-    getHolidayList {
+    getTermList {
       id
       description
       comments
-      strHolidayDate
+      strStartDate
+      strEndDate
       createdBy
       updatedBy
       strCreatedOn
