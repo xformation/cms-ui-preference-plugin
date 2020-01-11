@@ -15,3 +15,5 @@ export {GET_HOLIDAY_LIST} from './getHolidayList';
 export {SAVE_HOLIDAY} from './saveHoliday';
 export {GET_TERM_LIST} from './getTermList';
 export {SAVE_TERM} from './saveTerm';
+export {GET_DEPARTMENT_LIST} from './getDepartmentList';
+export {SAVE_DEPARTMENT} from './saveDepartment';

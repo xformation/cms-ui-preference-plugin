@@ -2,26 +2,31 @@ import * as React from 'react';
 import { graphql, QueryProps, MutationFunc, compose, withApollo } from 'react-apollo';
 // import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST } from '../_queries';
+import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST } from '../_queries';
 
 import { CalendarSetup } from './CalendarSetup';
 import AcademicYear from './academicyear/AcademicYear';
 import Holiday from './holiday/Holiday';
 import Term from './term/Term';
+import Department from './department/Department';
 
 class AcademicSettings extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
             activeTab: 0,
+            branchList: null,
             ayList: null,
             holidayList: null,
             termList: null,
+            departmentList: null,
         };
         this.toggleTab = this.toggleTab.bind(this);
+        this.getBranchList = this.getBranchList.bind(this);
         this.getAcademicYearList = this.getAcademicYearList.bind(this);
         this.getHolidayList = this.getHolidayList.bind(this);
         this.getTermList = this.getTermList.bind(this);
+        this.getDepartmentList = this.getDepartmentList.bind(this);
         this.updateAyList = this.updateAyList.bind(this);
     }
 
@@ -38,6 +43,7 @@ class AcademicSettings extends React.Component<any, any> {
 
     async componentDidMount(){
         await this.getAcademicYearList();
+        await this.getBranchList();
     }
 
     toggleTab(tabNo: any) {
@@ -49,6 +55,9 @@ class AcademicSettings extends React.Component<any, any> {
         }
         if(tabNo === 2 ){
             this.getTermList();
+        }
+        if(tabNo === 3 ){
+            this.getDepartmentList();
         }
         this.setState({
             activeTab: tabNo,
@@ -62,6 +71,16 @@ class AcademicSettings extends React.Component<any, any> {
         })
         this.setState({
             ayList: data.getAcademicYearList
+        });
+    }
+
+    async getBranchList(){
+        const { data } = await this.props.client.query({
+            query: GET_BRANCH_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        this.setState({
+            branchList: data.getBranchList
         });
     }
 
@@ -87,8 +106,18 @@ class AcademicSettings extends React.Component<any, any> {
         });
     }
 
+    async getDepartmentList(){
+        const { data } = await this.props.client.query({
+            query: GET_DEPARTMENT_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        this.setState({
+            departmentList: data
+        });
+    }
+
     render() {
-        const { activeTab, ayList, holidayList, termList } = this.state;
+        const { activeTab, branchList, ayList, holidayList, termList, departmentList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -139,7 +168,7 @@ class AcademicSettings extends React.Component<any, any> {
                             ayList !== null ?
                                 <AcademicYear ayList={ayList} onSaveUpdate={this.updateAyList}></AcademicYear>
                             :
-                            "No Record Found"
+                            null
                         }
                     </TabPane>
                     <TabPane tabId={1}>
@@ -147,7 +176,7 @@ class AcademicSettings extends React.Component<any, any> {
                             ayList !== null && holidayList !== null ?
                                 <Holiday holidayList={holidayList.getHolidayList} ayList={ayList}></Holiday>
                             :
-                            "No Record Found"
+                            null
                         }
                     </TabPane>
                     <TabPane tabId={2}>
@@ -155,11 +184,16 @@ class AcademicSettings extends React.Component<any, any> {
                             ayList !== null && termList !== null ?
                                 <Term termList={termList.getTermList} ayList={ayList}></Term>
                             :
-                            "No Record Found"
+                            null
                         }
                     </TabPane>
                     <TabPane tabId={3}>
-                        Test
+                        {
+                            branchList !== null && ayList !== null && departmentList !== null ?
+                                <Department branchList={branchList} ayList={ayList} departmentList={departmentList.getDepartmentList} ></Department>
+                            :
+                            null
+                        }
                     </TabPane>
                     <TabPane tabId={4}>
                         Test
