@@ -2,13 +2,14 @@ import * as React from 'react';
 import { graphql, QueryProps, MutationFunc, compose, withApollo } from 'react-apollo';
 // import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST } from '../_queries';
+import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST, GET_COURSE_LIST } from '../_queries';
 
 import { CalendarSetup } from './CalendarSetup';
 import AcademicYear from './academicyear/AcademicYear';
 import Holiday from './holiday/Holiday';
 import Term from './term/Term';
 import Department from './department/Department';
+import Course from './course/Course';
 
 class AcademicSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -20,6 +21,7 @@ class AcademicSettings extends React.Component<any, any> {
             holidayList: null,
             termList: null,
             departmentList: null,
+            courseList: null,
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getBranchList = this.getBranchList.bind(this);
@@ -27,6 +29,7 @@ class AcademicSettings extends React.Component<any, any> {
         this.getHolidayList = this.getHolidayList.bind(this);
         this.getTermList = this.getTermList.bind(this);
         this.getDepartmentList = this.getDepartmentList.bind(this);
+        this.getCourseList = this.getCourseList.bind(this);
         this.updateAyList = this.updateAyList.bind(this);
     }
 
@@ -44,6 +47,9 @@ class AcademicSettings extends React.Component<any, any> {
     async componentDidMount(){
         await this.getAcademicYearList();
         await this.getBranchList();
+        await this.getDepartmentList();
+        await this.getHolidayList();
+        await this.getTermList();
     }
 
     toggleTab(tabNo: any) {
@@ -58,6 +64,9 @@ class AcademicSettings extends React.Component<any, any> {
         }
         if(tabNo === 3 ){
             this.getDepartmentList();
+        }
+        if(tabNo === 4 ){
+            this.getCourseList();
         }
         this.setState({
             activeTab: tabNo,
@@ -116,8 +125,18 @@ class AcademicSettings extends React.Component<any, any> {
         });
     }
 
+    async getCourseList(){
+        const { data } = await this.props.client.query({
+            query: GET_COURSE_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        this.setState({
+            courseList: data.getCourseList
+        });
+    }
+
     render() {
-        const { activeTab, branchList, ayList, holidayList, termList, departmentList } = this.state;
+        const { activeTab, branchList, ayList, courseList, holidayList, termList, departmentList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -143,7 +162,7 @@ class AcademicSettings extends React.Component<any, any> {
                     </NavItem>
                     <NavItem className="cursor-pointer">
                         <NavLink className={`vertical-nav-link ${activeTab === 4 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(4); }} >
-                            Courses
+                            Course Setup
                         </NavLink>
                     </NavItem>
                     <NavItem className="cursor-pointer">
@@ -189,14 +208,17 @@ class AcademicSettings extends React.Component<any, any> {
                     </TabPane>
                     <TabPane tabId={3}>
                         {
-                            branchList !== null && ayList !== null && departmentList !== null ?
+                            branchList !== null && ayList !== null && departmentList !== null && (
                                 <Department branchList={branchList} ayList={ayList} departmentList={departmentList.getDepartmentList} ></Department>
-                            :
-                            null
+                            )
                         }
                     </TabPane>
                     <TabPane tabId={4}>
-                        Test
+                        {
+                            courseList !== null && branchList !== null && departmentList !== null && (
+                                <Course branchList={branchList} courseList={courseList} departmentList={departmentList.getDepartmentList} ></Course>
+                            )
+                        }
                     </TabPane>
                     <TabPane tabId={5}>
                         Test

@@ -17,3 +17,5 @@ export {GET_TERM_LIST} from './getTermList';
 export {SAVE_TERM} from './saveTerm';
 export {GET_DEPARTMENT_LIST} from './getDepartmentList';
 export {SAVE_DEPARTMENT} from './saveDepartment';
+export {SAVE_COURSE} from './saveCourse';
+export {GET_COURSE_LIST} from './getCourseList';

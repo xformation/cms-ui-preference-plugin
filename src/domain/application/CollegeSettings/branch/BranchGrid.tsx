@@ -15,6 +15,7 @@ export interface BranchProps extends React.HTMLAttributes<HTMLElement>{
     stateList?: any;
     cityList?: any;
     originalCityList?: any;
+    onSaveUpdate?: any;
 }
 
 const ERROR_MESSAGE_MANDATORY_FIELD_MISSING = "Mandatory fields missing";

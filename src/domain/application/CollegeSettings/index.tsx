@@ -22,6 +22,7 @@ class CollegeSettings extends React.Component<any, any> {
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getBranchList = this.getBranchList.bind(this);
+        this.updateBranchListAfterCollegeUpdate = this.updateBranchListAfterCollegeUpdate.bind(this);
         this.getStateList = this.getStateList.bind(this);
         this.getCityList = this.getCityList.bind(this);
         this.getAuthorizedSignatoryList = this.getAuthorizedSignatoryList.bind(this);
@@ -35,17 +36,17 @@ class CollegeSettings extends React.Component<any, any> {
     }
 
     async toggleTab (tabNo: any) {
-        this.setState({
-            branchList: null,
-            activeTab: tabNo,            
-        });
-        let bid = 34; 
-        let aid = 56; 
+        // this.setState({
+        //     branchList: null,
+        //     activeTab: tabNo,            
+        // });
+        // let bid = 34; 
+        // let aid = 56; 
         
         if(tabNo === 1 ){
-            this.getBranchList(bid, aid);
+            this.getBranchList();
         }else if(tabNo === 2){
-            this.getBranchList(bid, aid);
+            this.getBranchList();
             this.getAuthorizedSignatoryList();
             this.getBankAccountsList();
             this.getLegalEntityList();
@@ -56,14 +57,26 @@ class CollegeSettings extends React.Component<any, any> {
         });
     }
 
-    async getBranchList(bid: any, aid: any){
+    async getBranchList(){
+        console.log("Branch list set null to fetch data again. Branch list : ", this.state.branchList);
         const { data } = await this.props.client.query({
             query: GET_BRANCH_LIST,
              fetchPolicy: 'no-cache'
         })
         
         this.setState({
-            branchList: data
+            branchList: data.getBranchList
+        });
+    }
+
+    updateBranchListAfterCollegeUpdate(newBranchList: any) {
+        console.log("Branch list from CollegeInfo child :: ", newBranchList);
+        this.setState({
+            branchList: null
+        });
+        console.log("branch list cache cleared. Branch list : ",this.state.branchList);
+        this.setState({
+            branchList: newBranchList
         });
     }
 
@@ -151,19 +164,19 @@ class CollegeSettings extends React.Component<any, any> {
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
                     <TabPane tabId={0}>
-                        <CollegeInfo />
+                        <CollegeInfo onSaveUpdate={this.updateBranchListAfterCollegeUpdate}/>
                     </TabPane>
                     <TabPane tabId={1}>
                         {
                             branchList !== null && stateDataList !== null && cityDataList !== null && (
-                                <BranchGrid data={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList} />
-                            )
+                                <BranchGrid data={branchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList} />
+                            ) 
                         }
                     </TabPane>
                     <TabPane tabId={2}>
                         {
                             legalEntityList !== null && bankAccountsList !== null && authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
-                                <LegalEntities legalEntityList={legalEntityList.getLegalEntityList} signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} bankAccountsList={bankAccountsList.getBankAccountsList} branchList={branchList.getBranchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
+                                <LegalEntities legalEntityList={legalEntityList.getLegalEntityList} signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} bankAccountsList={bankAccountsList.getBankAccountsList} branchList={branchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
                             )
                         }
                     </TabPane>

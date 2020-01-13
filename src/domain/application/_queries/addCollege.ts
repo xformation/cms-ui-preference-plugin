@@ -17,6 +17,50 @@ export const ADD_COLLEGE = gql`
         strUpdatedOn
         exitCode
         exitDescription
+        branchList {
+          id
+          branchName
+          address
+          pinCode
+          branchHead
+          cellPhoneNo
+          landLinePhoneNo
+          emailId
+          faxNo
+          isMainBranch
+          startDate
+          college {
+            id
+            collegeName
+          }
+          city {
+            id
+            cityName
+            stdCode
+          }
+          state {
+            id
+            stateName
+            country {
+              id
+              countryName
+              countryCode
+            }
+          }
+          strStartDate
+          collegeId
+          cityId
+          stateId
+          createdBy
+          createdOn
+          updatedBy
+          updatedOn
+          strCreatedOn
+          strUpdatedOn
+          exitCode
+          exitDescription
+          status
+        }
       }
     }
   }

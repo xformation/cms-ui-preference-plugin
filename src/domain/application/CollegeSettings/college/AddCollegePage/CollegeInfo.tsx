@@ -9,18 +9,24 @@ import MessageBox from '../../../Message/MessageBox';
 const SUCCESS_MESSAGE_COLLEGE_ADDED = "College is added successfully. It is created as default main branch also";
 const ERROR_MESSAGE_SERVER_SIDE_ERROR = "Due to some error in preference service, college could not be saved. Please check preference service logs";
 const ERROR_MESSAGE_COLLEGE_EXISTS = "College already exists. Application allows only one college";
+
+export interface CollegeProp extends React.HTMLAttributes<HTMLElement>{
+    [data: string]: any;
+    onSaveUpdate?: any;
+}
+
 type CollegeState = {
     collegeData: any,
 };
 
-class CollegeInfo extends React.Component<any, CollegeState> {
+class CollegeInfo extends React.Component<CollegeProp, CollegeState> {
     DEFAULT_LOGO = "/public/img/college_logo.png";
     // DEFAULT_BG = "/public/img/dashboard.png";
     isActive: any = false;
     collegeFormRef: any;
     // cumulativeResult: any;
 
-    constructor(props: any) {
+    constructor(props: CollegeProp) {
         super(props);
         this.state = {
             collegeData: {
@@ -116,6 +122,7 @@ class CollegeInfo extends React.Component<any, CollegeState> {
             }else{
                 collegeData.successMessage = SUCCESS_MESSAGE_COLLEGE_ADDED;
                 console.log("Success resp: ",SUCCESS_MESSAGE_COLLEGE_ADDED);
+                this.props.onSaveUpdate(resp.data.addCollege.cmsCollegeVo.branchList);
             }
             this.setState({
                 collegeData: collegeData
