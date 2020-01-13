@@ -56,8 +56,8 @@ export class StaffSetup extends React.Component<any, any> {
     fCatGrida.setAttribute('class', 'hide');
     let createbtns: any = document.querySelector('#createbtn');
     createbtns.setAttribute('class', 'hide');
-    let savebtns: any = document.querySelector('#savebtn');
-    savebtns.setAttribute('class', 'btn bs save-all-forms-btn m-r-1 height-33');
+    let backbtn: any = document.querySelector('#backbtn');
+    backbtn.setAttribute('class', 'btn btn-primary m-r-1');
   }
   back() {
     let {count, countParticularDiv} = this.state;
@@ -73,20 +73,14 @@ export class StaffSetup extends React.Component<any, any> {
     fCatGrida.setAttribute('class', 'p-1 page-body legal-entities-main-container');
     let createbtns: any = document.querySelector('#createbtn');
     createbtns.setAttribute('class', 'btn btn-primary m-r-1');
-    let savebtns: any = document.querySelector('#savebtn');
-    savebtns.setAttribute('class', 'hide');
+    let backbtn: any = document.querySelector('#backbtn');
+    backbtn.setAttribute('class', 'hide');
   }
 
   render() {
     const {isModalOpen, activeTab} = this.state;
     return (
       <div className="info-container">
-        <div className="authorized-signatory-container m-b-1">
-          <h3>Staff Setup</h3>
-          {/* <a className="btn btn-primary"  >
-            Assign
-          </a> */}
-        </div>
         <div className="authorized-signatory-container m-b-1 dflex ht bg-heading">
           <h4 className="ptl-06">Staff Details</h4>
           <div className="">
@@ -97,10 +91,7 @@ export class StaffSetup extends React.Component<any, any> {
             >
               Create
             </button>
-            <button id="savebtn" className="hide" onClick={this.create}>
-              Save
-            </button>
-            <button className="btn btn-primary m-r-1" onClick={this.back}>
+            <button id="backbtn" className="hide" onClick={this.back}>
               Back
             </button>
           </div>
@@ -167,13 +158,13 @@ export class StaffSetup extends React.Component<any, any> {
             </div>
             <div className="form-justify">
               <label htmlFor="">*Department:</label>
-              <select className="gf-form-input width-11" required>
+              <select className="gf-form-input width-11 b-r" required>
                 <option value="">Select Department</option>
               </select>
             </div>
             <div className="form-justify">
               <label htmlFor="">*Branch:</label>
-              <select className="gf-form-input width-11" required>
+              <select className="gf-form-input width-11 b-r" required>
                 <option value="">Select Branch</option>
               </select>
             </div>
@@ -408,6 +399,11 @@ export class StaffSetup extends React.Component<any, any> {
                         <option value="">Select Blood Group</option>
                       </select>
                     </div>
+                    <div>
+                      <button type="button" className="btn btn-primary border-bottom">
+                        Next
+                      </button>
+                    </div>
                   </div>
                 </div>
               </TabPane>
@@ -525,6 +521,12 @@ export class StaffSetup extends React.Component<any, any> {
                         maxLength={255}
                       />
                     </div>
+                    <div></div>
+                    <div>
+                      <button type="button" className="btn btn-primary border-bottom">
+                        Next
+                      </button>
+                    </div>
                   </div>
                 </div>
               </TabPane>
@@ -587,6 +589,12 @@ export class StaffSetup extends React.Component<any, any> {
                         maxLength={255}
                       />
                     </div>
+                    <div></div>
+                    <div>
+                      <button type="button" className="btn btn-primary border-bottom">
+                        Save
+                      </button>
+                    </div>
                   </div>
                 </div>
               </TabPane>
@@ -620,11 +628,15 @@ export class StaffSetup extends React.Component<any, any> {
                 <option value="GUEST">GUEST</option>
               </select>
             </div>
-            <div className="margin-bott">
+            <div className="margin-bott m-r-1">
               <label htmlFor="">Search</label>
-              <input type="search" placeholder="search by name" />
+              <input
+                className="gf-form-input fwidth"
+                type="search"
+                placeholder="search by name"
+              />
             </div>
-            <a className="btn btn-success" id="fileType">
+            <a className="btn btn-primary" style={{marginTop: '-5px'}} id="fileType">
               Export
             </a>
           </div>
