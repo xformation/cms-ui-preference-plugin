@@ -5,12 +5,14 @@ import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 import CollegeSettings from './CollegeSettings';
 import AcademicSettings from './AcademicSettings';
 import RolesPermission from './RolesPermission';
+import {config} from './config';
 
 export default class TabPage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       activeTab: 0,
+      user: null,
     };
     this.toggleTab = this.toggleTab.bind(this);
   }
@@ -21,8 +23,24 @@ export default class TabPage extends React.Component<any, any> {
     });
   }
 
+  async componentDidMount(){
+    try{
+      const response = await fetch(config.LOGGED_IN_USER_URL);
+      if (!response.ok) {
+        console.log("preference plugin. Response error : ",response.statusText);
+        return;
+      }
+      const json = await response.json();
+      this.setState({ user: json });
+    }catch(error){
+      console.log("preference plugin. Fetch user error: ",error);
+    }
+
+    console.log("preference plugin. USER -- ",this.state.user); 
+  }
+
   render() {
-    const {activeTab} = this.state;
+    const {activeTab, user} = this.state;
     return (
       <section className="tab-container">
         <div>
@@ -57,7 +75,12 @@ export default class TabPage extends React.Component<any, any> {
             <CollegeSettings />
           </TabPane>
           <TabPane tabId={1}>
-            <AcademicSettings />
+              {
+                user !== null && (
+                  <AcademicSettings user={user}/>
+                )
+              }
+            
           </TabPane>
           <TabPane tabId={2}>
             <RolesPermission />

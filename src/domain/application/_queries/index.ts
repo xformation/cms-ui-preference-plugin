@@ -19,3 +19,5 @@ export {GET_DEPARTMENT_LIST} from './getDepartmentList';
 export {SAVE_DEPARTMENT} from './saveDepartment';
 export {SAVE_COURSE} from './saveCourse';
 export {GET_COURSE_LIST} from './getCourseList';
+export {SAVE_STAFF} from './saveStaff';
+export {GET_STAFF_LIST} from './getStaffList';

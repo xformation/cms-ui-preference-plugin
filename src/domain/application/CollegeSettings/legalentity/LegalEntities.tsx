@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { Modal,  ModalHeader,  ModalBody,  ModalFooter,  TabContent,  TabPane,  Nav,  NavItem,  NavLink} from 'reactstrap';
-import {collegeSettingsServices} from '../../_services/collegeSettings.services';
-import { commonFunctions } from '../../_utilites/common.functions';
+// import { commonFunctions } from '../../_utilites/common.functions';
 import RegistrationPage from './RegistrationPage';
 import AuthorizedSignatory from './AuthorizedSignatory';
 import BankAccount from './BankAccount';

@@ -6,6 +6,7 @@ export const commonFunctions: any = {
   changeTextBoxBorderToError,
   restoreTextBoxBorderToNormal,
   createSelectbox,
+  changeComponentBorderToError
 };
 
 function createSelectbox(data: any, value: any, key: any, label: any){
@@ -49,6 +50,11 @@ function changeTextBoxBorderToError(textBoxValue: any, objName: any) {
     const obj: any = document.querySelector('#' + objName);
     obj.className = 'gf-form-input input-textbox-error';
   }
+}
+
+function changeComponentBorderToError(objName: any) {
+    const obj: any = document.querySelector('#' + objName);
+    obj.className = 'gf-form-input input-textbox-error';
 }
 
 function restoreTextBoxBorderToNormal(objName: any) {

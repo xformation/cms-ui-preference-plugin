@@ -1,7 +1,15 @@
 const secSrvUrl = 'http://100.81.3.26:8094';
 const apiUrl = 'http://100.81.3.26:8080/api';
 
+const graphqlUrl = 'http://localhost:8080';
+const loggedInUserUrl = 'http://localhost:3000';
+const webSockWithCmsBackendUrl = 'ws://localhost:4000/websocket/tracker/websocket';
+
 export const config = {
+  GRAPHQL_URL: graphqlUrl + '/graphql',
+  LOGGED_IN_USER_URL: loggedInUserUrl + '/api/user',
+  WEB_SOCKET_URL_WITH_CMS_BACKEND: webSockWithCmsBackendUrl,
+
   COLLEGE_URL: apiUrl + '/cmscollege',
   STATES_URL: apiUrl + '/states',
   CITIES_URL: apiUrl + '/cities',

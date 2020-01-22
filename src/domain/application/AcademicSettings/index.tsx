@@ -2,26 +2,37 @@ import * as React from 'react';
 import { graphql, QueryProps, MutationFunc, compose, withApollo } from 'react-apollo';
 // import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST, GET_COURSE_LIST } from '../_queries';
-
+import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST, GET_COURSE_LIST, GET_STAFF_LIST } from '../_queries';
+import wsCmsBackendServiceSingletonClient from '../../../wsCmsBackendServiceClient';
 import { CalendarSetup } from './CalendarSetup';
 import AcademicYear from './academicyear/AcademicYear';
 import Holiday from './holiday/Holiday';
 import Term from './term/Term';
 import Department from './department/Department';
 import Course from './course/Course';
+import Staff from './staff/Staff';
 
-class AcademicSettings extends React.Component<any, any> {
+export interface AcademicSettingsProps extends React.HTMLAttributes<HTMLElement>{
+    [data: string]: any;
+    user?: any,
+}
+
+class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
     constructor(props: any) {
         super(props);
         this.state = {
             activeTab: 0,
+            user: this.props.user,
             branchList: null,
             ayList: null,
             holidayList: null,
             termList: null,
             departmentList: null,
             courseList: null,
+            branchId: null,
+            academicYearId: null,
+            departmentId: null,
+            staffList: null,
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getBranchList = this.getBranchList.bind(this);
@@ -31,6 +42,8 @@ class AcademicSettings extends React.Component<any, any> {
         this.getDepartmentList = this.getDepartmentList.bind(this);
         this.getCourseList = this.getCourseList.bind(this);
         this.updateAyList = this.updateAyList.bind(this);
+        this.registerSocket = this.registerSocket.bind(this);
+        this.getStaffList = this.getStaffList.bind(this);
     }
 
     updateAyList(newAyList: any) {
@@ -45,12 +58,40 @@ class AcademicSettings extends React.Component<any, any> {
     }
 
     async componentDidMount(){
+        await this.registerSocket();
         await this.getAcademicYearList();
         await this.getBranchList();
         await this.getDepartmentList();
         await this.getHolidayList();
         await this.getTermList();
+        await this.getStaffList();
+        
     }
+
+    registerSocket() {
+        const socket = wsCmsBackendServiceSingletonClient.getInstance();
+    
+        socket.onmessage = (response: any) => {
+            let message = JSON.parse(response.data);
+            console.log("AcademicSettings Index. message received from server ::: ", message);
+            this.setState({
+                branchId: message.selectedBranchId,
+                academicYearId: message.selectedAcademicYearId,
+                departmentId: message.selectedDepartmentId,
+            });
+            console.log("AcademicSettings Index. branchId: ",this.state.branchId);
+            console.log("AcademicSettings Index. ayId: ",this.state.academicYearId);  
+        }
+    
+        socket.onopen = () => {
+            console.log("AcademicSettings Index. Opening websocekt connection to cmsbackend. User : ",this.state.user.login);
+            socket.send(this.state.user.login);
+        }
+    
+        window.onbeforeunload = () => {
+            console.log("Staff. Closing websocket connection with cms backend service");
+        }
+      }
 
     toggleTab(tabNo: any) {
         if(tabNo === 0 ){
@@ -68,6 +109,10 @@ class AcademicSettings extends React.Component<any, any> {
         if(tabNo === 4 ){
             this.getCourseList();
         }
+        if(tabNo === 5 ){
+            this.getStaffList();
+        }
+        
         this.setState({
             activeTab: tabNo,
         });
@@ -133,10 +178,23 @@ class AcademicSettings extends React.Component<any, any> {
         this.setState({
             courseList: data.getCourseList
         });
+
+    }
+
+    async getStaffList(){
+        // const {branchId, departmentId, academicYearId} = this.state;
+        const { data } = await this.props.client.query({
+            query: GET_STAFF_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        this.setState({
+            staffList: data.getTeacherList
+        });
+        console.log("getStaffList() : ", this.state.staffList);
     }
 
     render() {
-        const { activeTab, branchList, ayList, courseList, holidayList, termList, departmentList } = this.state;
+        const { activeTab, user, branchList, ayList, courseList, holidayList, termList, departmentList, staffList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -221,7 +279,12 @@ class AcademicSettings extends React.Component<any, any> {
                         }
                     </TabPane>
                     <TabPane tabId={5}>
-                        Test
+                        {
+                            user !== null && staffList !== null && (
+                                <Staff user={user} staffList={staffList} ></Staff>
+                            )
+                        }
+                        
                     </TabPane>
                     <TabPane tabId={6}>
                         Test
