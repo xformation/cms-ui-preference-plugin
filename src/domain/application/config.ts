@@ -1,7 +1,7 @@
 const secSrvUrl = 'http://100.81.3.26:8094';
 const apiUrl = 'http://100.81.3.26:8080/api';
 
-const graphqlUrl = 'http://100.81.3.26:8080';
+const graphqlUrl = 'http://100.81.3.26:9091';
 const loggedInUserUrl = 'http://100.81.3.26:3000';
 const webSockWithCmsBackendUrl = 'ws://100.81.3.26:4000/websocket/tracker/websocket';
 
