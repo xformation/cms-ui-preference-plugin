@@ -2,7 +2,8 @@ import * as React from 'react';
 import { graphql, QueryProps, MutationFunc, compose, withApollo } from 'react-apollo';
 // import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST, GET_COURSE_LIST, GET_STAFF_LIST } from '../_queries';
+import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST, GET_COURSE_LIST, 
+    GET_STAFF_LIST, GET_SUBJECT_LIST,GET_BATCH_LIST,GET_SECTION_LIST } from '../_queries';
 import wsCmsBackendServiceSingletonClient from '../../../wsCmsBackendServiceClient';
 import { CalendarSetup } from './CalendarSetup';
 import AcademicYear from './academicyear/AcademicYear';
@@ -11,6 +12,7 @@ import Term from './term/Term';
 import Department from './department/Department';
 import Course from './course/Course';
 import Staff from './staff/Staff';
+import Subject from './subject/Subject';
 
 export interface AcademicSettingsProps extends React.HTMLAttributes<HTMLElement>{
     [data: string]: any;
@@ -33,6 +35,8 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
             academicYearId: null,
             departmentId: null,
             staffList: null,
+            batchList: null,
+            sectionList: null,
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getBranchList = this.getBranchList.bind(this);
@@ -44,6 +48,9 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         this.updateAyList = this.updateAyList.bind(this);
         this.registerSocket = this.registerSocket.bind(this);
         this.getStaffList = this.getStaffList.bind(this);
+        this.getSubjectList = this.getSubjectList.bind(this);
+        this.getBatchList = this.getBatchList.bind(this);
+        this.getSectionList = this.getSectionList.bind(this);
     }
 
     updateAyList(newAyList: any) {
@@ -65,7 +72,9 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         await this.getHolidayList();
         await this.getTermList();
         await this.getStaffList();
-        
+        await this.getSubjectList();
+        await this.getBatchList();
+        await this.getSectionList();
     }
 
     registerSocket() {
@@ -112,7 +121,9 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         if(tabNo === 5 ){
             this.getStaffList();
         }
-        
+        if(tabNo === 6 ){
+            this.getSubjectList();
+        }
         this.setState({
             activeTab: tabNo,
         });
@@ -193,8 +204,42 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         console.log("getStaffList() : ", this.state.staffList);
     }
 
+    async getSubjectList(){
+        const { data } = await this.props.client.query({
+            query: GET_SUBJECT_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        this.setState({
+            subjectList: data.getSubjectList
+        });
+        console.log("getSubjectList() : ", this.state.subjectList);
+    }
+
+    async getBatchList(){
+        const { data } = await this.props.client.query({
+            query: GET_BATCH_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        this.setState({
+            batchList: data.getBatchList
+        });
+        console.log("getBatchList() : ", this.state.batchList);
+    }
+
+    async getSectionList(){
+        const { data } = await this.props.client.query({
+            query: GET_SECTION_LIST,
+             fetchPolicy: 'no-cache'
+        })
+
+        this.setState({
+            sectionList: data.getSectionList
+        });
+        console.log("getSectionList() : ", this.state.sectionList);
+    }
+    
     render() {
-        const { activeTab, user, branchList, ayList, courseList, holidayList, termList, departmentList, staffList } = this.state;
+        const { activeTab, user, branchList, ayList, courseList, holidayList, termList, departmentList, staffList, subjectList, batchList, sectionList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -287,7 +332,11 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
                         
                     </TabPane>
                     <TabPane tabId={6}>
-                        Test
+                        {
+                            user !== null && sectionList !== null && subjectList !== null && batchList !== null && (
+                                <Subject user={user} sectionList={sectionList} teacherList={staffList} subjectList={subjectList} batchList={batchList} ></Subject>
+                            )
+                        }
                     </TabPane>
                     <TabPane tabId={7}>
                         <CalendarSetup />

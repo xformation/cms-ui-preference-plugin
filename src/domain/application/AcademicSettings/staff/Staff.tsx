@@ -540,7 +540,6 @@ class Staff extends React.Component<StaffProps, any> {
                         <td>{obj.cmsDepartmentVo.name}</td>
                         <td>{obj.sex}</td>
                         <td>{obj.staffType}</td>
-                        <td></td>
                         <td>{obj.status}</td>
                   </tr>
         
@@ -931,7 +930,6 @@ class Staff extends React.Component<StaffProps, any> {
               <th>Department</th>
               <th>Gender</th>
               <th>Type</th>
-              <th>Subjects</th>
               <th>status</th>
             </thead>
             <tbody>

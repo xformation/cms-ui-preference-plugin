@@ -21,3 +21,7 @@ export {SAVE_COURSE} from './saveCourse';
 export {GET_COURSE_LIST} from './getCourseList';
 export {SAVE_STAFF} from './saveStaff';
 export {GET_STAFF_LIST} from './getStaffList';
+export {SAVE_SUBJECT} from './saveSubject';
+export {GET_SUBJECT_LIST} from './getSubjectList';
+export {GET_BATCH_LIST} from './getBatchList';
+export {GET_SECTION_LIST} from './getSectionList';
