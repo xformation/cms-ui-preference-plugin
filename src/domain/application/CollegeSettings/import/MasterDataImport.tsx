@@ -57,14 +57,21 @@ class MasterDataImport extends React.Component<MasterDataProp, any> {
             commonFunctions.changeTextBoxBorderToError((obj.entityId === undefined || obj.entityId === null) ? "" : obj.entityId, "entityId");
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
             isValid = false;
+            this.setState({
+                errorMessage: errorMessage
+            });
+            return isValid;
         }
-        if (excelFile.name === undefined || excelFile.name === '' || excelFile.name === null) {
+        if (excelFile === undefined || excelFile === '' || excelFile  === null) {
             errorMessage = "Please upload an excel file"
+            this.setState({
+                errorMessage: errorMessage
+            });
             isValid = false;
+            return isValid;
         }
-        this.setState({
-            errorMessage: errorMessage
-        });
+        
+        
         return isValid;
     }
 
@@ -86,33 +93,31 @@ class MasterDataImport extends React.Component<MasterDataProp, any> {
     }
 
     getFile(e: any) {
-        let excelFile = URL.createObjectURL(e.target.files[0]);
-        var r = new FileReader();
-        r.onload = function (e: any) {
-            excelFile = e.target.result;
-        };
-        r.readAsDataURL(e.target.files[0]);
-
+        console.log("File : ",e.target.files[0]);
         this.setState({
-            excelFile: excelFile
+            excelFile: e.target.files[0]
         })
     }
 
     async uploadFile(e: any) {
         const {excelFile, obj} = this.state;
-
+        if(!this.validateFields(obj)){
+            return;
+        }
         const data = new FormData();
         data.append('file', excelFile, excelFile.name);
-        const requestOptions = commonFunctions.getRequestOptions("POST", {"Content-Type":undefined}, JSON.stringify(data));
-// //     
-//         const resp = await fetch(config.CMS_UPLOAD_MASTER_DATA_URL, data {
-//           transformRequest: requestOptions,
-//         });
-        return await fetch(config.CMS_UPLOAD_MASTER_DATA_URL, requestOptions)
-        .then(response => response.json()); 
 
-        // console.log('Post response : ', resp);
-        // alert(resp.data.statusDesc);
+        return await fetch(config.CMS_UPLOAD_MASTER_DATA_URL+ '/' + obj.entityId, {
+            method: 'post',
+            body: data
+        })
+        .then(response => {
+            const data = response.json();
+            console.log("Response : ", data);
+            alert(data);
+        });
+
+        
     }
 
     render() {

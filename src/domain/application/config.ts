@@ -28,5 +28,5 @@ export const config = {
 
   CMS_GLOBAL_CONFIG_URL: backendRestUrl + '/cmssettings',
 
-  CMS_UPLOAD_MASTER_DATA_URL: backendRestUrl + '/cmsdataimport',
+  CMS_UPLOAD_MASTER_DATA_URL: preferenceRestUrl + '/cmsdataimport',
 };
