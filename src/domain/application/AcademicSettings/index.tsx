@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { graphql, QueryProps, MutationFunc, compose, withApollo } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 // import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST, GET_COURSE_LIST, 
     GET_STAFF_LIST, GET_SUBJECT_LIST,GET_BATCH_LIST,GET_SECTION_LIST } from '../_queries';
 import wsCmsBackendServiceSingletonClient from '../../../wsCmsBackendServiceClient';
-import { CalendarSetup } from './CalendarSetup';
+// import { CalendarSetup } from './CalendarSetup';
+import  TimeTable  from './timetable/TimeTable';
 import AcademicYear from './academicyear/AcademicYear';
 import Holiday from './holiday/Holiday';
 import Term from './term/Term';
@@ -333,16 +334,21 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
                     </TabPane>
                     <TabPane tabId={6}>
                         {
-                            user !== null && sectionList !== null && subjectList !== null && batchList !== null && (
+                            user !== null && sectionList !== null && subjectList !== null && staffList !== null && batchList !== null && (
                                 <Subject user={user} sectionList={sectionList} teacherList={staffList} subjectList={subjectList} batchList={batchList} ></Subject>
                             )
                         }
                     </TabPane>
                     <TabPane tabId={7}>
-                        <CalendarSetup />
+                        {
+                            user !== null && sectionList !== null && termList !== null && batchList !== null && (
+                                <TimeTable user={user} sectionList={sectionList} termList={termList.getTermList} batchList={batchList} ></TimeTable>
+                            )
+                        }
                     </TabPane>
                 </TabContent>
             </section>
+
         );
     }
 }

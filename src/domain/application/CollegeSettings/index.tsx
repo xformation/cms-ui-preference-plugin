@@ -5,8 +5,10 @@ import '../../../css/college-settings.css';
 import CollegeInfo  from './college/AddCollegePage/CollegeInfo';
 import BranchGrid from './branch/BranchGrid';
 import {LegalEntities} from './legalentity/LegalEntities';
+import MasterDataImport from './import/MasterDataImport';
 import { withApollo } from 'react-apollo';
-import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST, GET_AUTHORIZED_SIGNATORY_LIST, GET_BANK_ACCOUNTS_LIST, GET_LEGAL_ENTITY_LIST } from '../_queries';
+import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST, GET_AUTHORIZED_SIGNATORY_LIST, GET_BANK_ACCOUNTS_LIST, GET_LEGAL_ENTITY_LIST,
+            GET_TABLE_LIST } from '../_queries';
 
 class CollegeSettings extends React.Component<any, any> {
     constructor(props: any) {
@@ -18,7 +20,8 @@ class CollegeSettings extends React.Component<any, any> {
             cityDataList: null,
             authorizedSignatoryList: null,
             bankAccountsList: null,
-            legalEntityList: null
+            legalEntityList: null,
+            tableList: null,
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getBranchList = this.getBranchList.bind(this);
@@ -28,11 +31,13 @@ class CollegeSettings extends React.Component<any, any> {
         this.getAuthorizedSignatoryList = this.getAuthorizedSignatoryList.bind(this);
         this.getBankAccountsList = this.getBankAccountsList.bind(this);
         this.getLegalEntityList = this.getLegalEntityList.bind(this);
+        this.getTableList = this.getTableList.bind(this);
     }
 
     async componentDidMount(){
         await this.getStateList();
         await this.getCityList();
+        await this.getTableList();
     }
 
     async toggleTab (tabNo: any) {
@@ -50,6 +55,8 @@ class CollegeSettings extends React.Component<any, any> {
             this.getAuthorizedSignatoryList();
             this.getBankAccountsList();
             this.getLegalEntityList();
+        }else if(tabNo === 3){
+            this.getTableList();
         }
 
         this.setState({
@@ -131,8 +138,19 @@ class CollegeSettings extends React.Component<any, any> {
         });
     }
 
+    async getTableList(){
+        const { data } = await this.props.client.query({
+            query: GET_TABLE_LIST,
+             fetchPolicy: 'no-cache'
+        })
+        this.setState({
+            tableList : data
+        });
+    }
+
     render() {
-        const { activeTab, branchList, stateDataList, cityDataList, authorizedSignatoryList, bankAccountsList, legalEntityList } = this.state;
+        const { activeTab, branchList, stateDataList, cityDataList, authorizedSignatoryList, bankAccountsList, legalEntityList, 
+                    tableList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -181,7 +199,12 @@ class CollegeSettings extends React.Component<any, any> {
                         }
                     </TabPane>
                     <TabPane tabId={3}>
-                        Test
+                        {
+                            tableList !== null && (
+                                <MasterDataImport tableList={tableList.getTableList}/>
+                            )
+                        }
+                        
                     </TabPane>
                     <TabPane tabId={4}>
                         Test

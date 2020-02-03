@@ -25,3 +25,4 @@ export {SAVE_SUBJECT} from './saveSubject';
 export {GET_SUBJECT_LIST} from './getSubjectList';
 export {GET_BATCH_LIST} from './getBatchList';
 export {GET_SECTION_LIST} from './getSectionList';
+export {GET_TABLE_LIST} from './getTableList';

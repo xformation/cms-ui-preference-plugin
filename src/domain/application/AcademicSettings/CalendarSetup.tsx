@@ -97,7 +97,7 @@ export class CalendarSetup extends React.Component<any, any> {
                         }
                     );
                     let departmentId = response.selectedDepartmentId;
-                    departmentId = 2001;
+                    // departmentId = 2001;
                     this.setState({
                         departmentId
                     });
@@ -337,7 +337,7 @@ export class CalendarSetup extends React.Component<any, any> {
                         </select>
                     </div>
                     <div className="gf-form--grow form-control-container m-b-1">
-                        <label className="gf-form-label bg-transparent b-0">Year</label>
+                        <label className="gf-form-label bg-transparent b-0">Teacher </label>
                         <select className="gf-form-select-box" name="selectedTeacher" value={selectedTeacher} onChange={this.handleStateChange}>
                             <option value="">Select Teacher</option>
                             {this.createTeacherSelectbox(teachers)}

@@ -1,6 +1,8 @@
+import {config} from './domain/application/config';
 
 const cfg = {
-    URL: "ws://localhost:4000/websocket/tracker/websocket"
+    // URL: "ws://100.81.5.26:4000/websocket/tracker/websocket"
+    URL: config.WEB_SOCKET_URL_WITH_CMS_BACKEND
 }
 
 const wsCmsBackendServiceSingletonClient = (function () {
