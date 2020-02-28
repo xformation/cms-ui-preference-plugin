@@ -3,6 +3,7 @@ import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import "../../../../css/custom.css";
 import { withApollo } from 'react-apollo';
 import CreateTimeTable from './CreateTimeTable';
+import { CalendarSetup } from './CalendarSetup';
 
 class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, any> {
 
@@ -29,7 +30,7 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
     const { activeTab, termList, batchList, sectionList, teacherList, subjectList } = this.state;
     return (
       <section className="tab-container">
-        
+
         <div className="clearfix" />
         <div className="dflex m-b-1 algn-item-center">
         </div>
@@ -48,7 +49,7 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
         </Nav>
         <TabContent activeTab={activeTab} className="ltab-contianer">
           <TabPane tabId={0}>
-            <CreateTimeTable termList={termList} sectionList={sectionList} batchList={batchList} teacherList={teacherList} subjectList={subjectList}/>
+            <CreateTimeTable termList={termList} sectionList={sectionList} batchList={batchList} teacherList={teacherList} subjectList={subjectList} />
           </TabPane>
 
           <TabPane tabId={1}>
@@ -94,6 +95,7 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
                 </div>
               </div>
             </div> */}
+            <CalendarSetup />
           </TabPane>
 
         </TabContent>

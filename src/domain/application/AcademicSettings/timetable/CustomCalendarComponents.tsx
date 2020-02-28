@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import mImage from '../../../img/uicon_m.png';
-import wImage from '../../../img/uicon_w.png';
+import mImage from '../../../../img/uicon_m.png';
+import wImage from '../../../../img/uicon_w.png';
 export function EventUI({ event }: any) {
     return (
         <div className="calendar-event-container">

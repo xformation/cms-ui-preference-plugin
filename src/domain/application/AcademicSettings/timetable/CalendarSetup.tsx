@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import * as moment from 'moment';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { academicSettingsServices } from '../_services/academicSettings.service';
+import { academicSettingsServices } from '../../_services/academicSettings.service';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { EventUI } from "./CustomCalendarComponents";
 
