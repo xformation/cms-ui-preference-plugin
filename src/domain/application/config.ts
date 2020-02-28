@@ -1,5 +1,5 @@
-//const IP = 'localhost';
-const IP = '100.81.5.26';
+const IP = 'localhost';
+// const IP = '100.81.5.26';
 
 const secSrvUrl = 'http://' + IP + ':8094';
 const preferenceRestUrl = 'http://' + IP + ':9091/api';
@@ -27,6 +27,7 @@ export const config = {
   CMS_AM_BY_DEPARTMENT_URL: preferenceRestUrl + '/cmsattendance-masters-bydepartmentid',
 
   CMS_GLOBAL_CONFIG_URL: backendRestUrl + '/cmssettings',
+  CMS_LECTURE_URL: backendRestUrl + '/cmslectures',
 
   CMS_UPLOAD_MASTER_DATA_URL: preferenceRestUrl + '/cmsdataimport',
 };

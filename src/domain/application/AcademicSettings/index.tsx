@@ -6,7 +6,7 @@ import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIS
     GET_STAFF_LIST, GET_SUBJECT_LIST,GET_BATCH_LIST,GET_SECTION_LIST } from '../_queries';
 import wsCmsBackendServiceSingletonClient from '../../../wsCmsBackendServiceClient';
 // import { CalendarSetup } from './CalendarSetup';
-import  TimeTable  from './timetable/TimeTable';
+import  TimeTable  from './timetable';
 import AcademicYear from './academicyear/AcademicYear';
 import Holiday from './holiday/Holiday';
 import Term from './term/Term';
@@ -342,7 +342,7 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
                     <TabPane tabId={7}>
                         {
                             user !== null && sectionList !== null && termList !== null && batchList !== null && (
-                                <TimeTable user={user} sectionList={sectionList} termList={termList.getTermList} batchList={batchList} ></TimeTable>
+                                <TimeTable user={user} sectionList={sectionList} termList={termList.getTermList} batchList={batchList} teacherList={staffList} subjectList={subjectList}></TimeTable>
                             )
                         }
                     </TabPane>

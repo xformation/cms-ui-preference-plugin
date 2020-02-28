@@ -9,16 +9,16 @@ export const commonFunctions: any = {
   changeComponentBorderToError
 };
 
-function createSelectbox(data: any, value: any, key: any, label: any){
+function createSelectbox(data: any, value: any, key: any, label: any) {
   let retData = [];
-  if(data.length > 0){
-      for(let i=0; i<data.length;i++){
-          let item = data[i];
-          retData.push(
-              <option value={item[value]} key={item[key]}>{item[label]}</option>
-          );
-      }
-  } 
+  if (data && data.length > 0) {
+    for (let i = 0; i < data.length; i++) {
+      let item = data[i];
+      retData.push(
+        <option value={item[value]} key={item[key]}>{item[label]}</option>
+      );
+    }
+  }
   return retData;
 }
 
@@ -53,8 +53,8 @@ function changeTextBoxBorderToError(textBoxValue: any, objName: any) {
 }
 
 function changeComponentBorderToError(objName: any) {
-    const obj: any = document.querySelector('#' + objName);
-    obj.className = 'gf-form-input input-textbox-error';
+  const obj: any = document.querySelector('#' + objName);
+  obj.className = 'gf-form-input input-textbox-error';
 }
 
 function restoreTextBoxBorderToNormal(objName: any) {

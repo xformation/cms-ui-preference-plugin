@@ -10,7 +10,8 @@ export const academicSettingsServices = {
     getGlobalConfiguration,
     getCmsSubjects,
     getCmsTeachers,
-    getFilterAttendanceMasterByDepartment
+    getFilterAttendanceMasterByDepartment,
+    saveLectures
 }
 
 function getCmsLectures(data: any) {
@@ -59,10 +60,16 @@ function getFilterAttendanceMasterByDepartment(departmentId: any) {
     const requestOptions = commonFunctions.getRequestOptions("GET", {});
     return fetch(config.CMS_AM_BY_DEPARTMENT_URL + '?departmentId=' + departmentId, requestOptions)
         .then(response => response.json());
-  }
+}
 
 function getGlobalConfiguration(userName: any) {
     const requestOptions = commonFunctions.getRequestOptions("GET", {});
     return fetch(config.CMS_GLOBAL_CONFIG_URL + '?userName=' + userName, requestOptions)
+        .then(response => response.json());
+}
+
+function saveLectures(data: any, params: any) {
+    const requestOptions = commonFunctions.getRequestOptions("POST", { "Content-Type": "application/json;charset=UTF-8" }, JSON.stringify(data));
+    return fetch(`${config.CMS_LECTURE_URL}?termId=${params.termId}&academicYearId=${params.academicYearId}&sectionId=${params.sectionId}&batchId=${params.batchId}&branchId=${params.branchId}&departmentId=${params.departmentId}`, requestOptions)
         .then(response => response.json());
 }

@@ -189,3 +189,7 @@
 .input-textbox-error {
   border: 1px solid #d44939 !important;
 }
+
+.error-text{
+  color: #d44939;
+}
