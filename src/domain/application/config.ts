@@ -1,5 +1,5 @@
-const IP = 'localhost';
-// const IP = '100.81.5.26';
+//const IP = 'localhost';
+const IP = '100.81.5.25';
 
 const secSrvUrl = 'http://' + IP + ':8094';
 const preferenceRestUrl = 'http://' + IP + ':9091/api';
@@ -25,9 +25,13 @@ export const config = {
   CMS_SUBJECT_BY_DEPARTMENT_URL: preferenceRestUrl + '/cmssubjects-bydepartmentid',
   CMS_TEACHER_BY_FILTER_PARAM_URL: preferenceRestUrl + '/cmsteachers-qryprms',
   CMS_AM_BY_DEPARTMENT_URL: preferenceRestUrl + '/cmsattendance-masters-bydepartmentid',
+  CMS_UPLOAD_MASTER_DATA_URL: preferenceRestUrl + '/cmsdataimport',
+  MS_ACCESS_TOKEN_URL: preferenceRestUrl + '/cms-ms-authenticate',
 
   CMS_GLOBAL_CONFIG_URL: backendRestUrl + '/cmssettings',
   CMS_LECTURE_URL: backendRestUrl + '/cmslectures',
+  CMS_UI_MODULES_GET: backendRestUrl + '/cmsmodules',
 
-  CMS_UPLOAD_MASTER_DATA_URL: preferenceRestUrl + '/cmsdataimport',
+  PERMS_LIST_ALL: secSrvUrl + '/security/permissions/listAll',
+  PERMS_CREATE: secSrvUrl + '/security/permissions/create',
 };
