@@ -10,11 +10,14 @@ const ERROR_MESSAGE_SERVER_SIDE_ERROR = "Due to some error in security service, 
 const SUCCESS_MESSAGE_ADDED = "New permission saved successfully";
 const SUCCESS_MESSAGE_UPDATED = "Permission updated successfully";
 
-
+interface RbacProps extends React.HTMLAttributes<HTMLElement> {
+  isPageLoaded?: string | any;
+}
 export class Permissions extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
+      isPageLoaded: this.props.isPageLoaded,
       isModalOpen: false,
       isLoading: false,
       uiModules: [],
@@ -29,6 +32,7 @@ export class Permissions extends React.Component<any, any> {
       errorMessage: "",
       successMessage: "",
     };
+    this.getAllPermissions = this.getAllPermissions.bind(this);
     this.showModal = this.showModal.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.createSelectbox = this.createSelectbox.bind(this);
@@ -41,6 +45,10 @@ export class Permissions extends React.Component<any, any> {
   }
 
   async componentDidMount(){
+    await this.getAllPermissions();
+  }
+
+  async getAllPermissions(){
     await rbacSettingsServices.getSecurityPermissions().then(
       response => {
         let sortedArr = _.sortBy(response, 'name');
@@ -78,6 +86,11 @@ export class Permissions extends React.Component<any, any> {
     }
     this.setState(() => ({
       isModalOpen: bShow,
+      errorMessage: "",
+      successMessage: "",
+      permissionName: null,
+      permission: null,
+      description: null,
     }));
   }
 
@@ -91,8 +104,12 @@ export class Permissions extends React.Component<any, any> {
         selectedUiModules: []
       });
       this.onChangePluginName(value);
-      
     }
+
+    commonFunctions.restoreTextBoxBorderToNormal(name);
+    this.setState({
+      errorMessage: ""
+    });
   }
 
   createSelectbox(data: any, value: any, label: any, uniqueKey: any) {
@@ -122,7 +139,7 @@ export class Permissions extends React.Component<any, any> {
   };
 
   createRows(objAry: any) {
-    console.log("createRows() - Permission list on permission page: ", objAry);
+    console.log("createRows() - permission page ##################################### ", objAry);
     if(objAry === undefined || objAry === null) {
         return;
     }
@@ -197,8 +214,9 @@ export class Permissions extends React.Component<any, any> {
   }
   
   async savePermission() {
-    const {permissionName, permission, description} = this.state;
+    const {permissionName, permission, description, errorMessage} = this.state;
     if(!this.validate()){
+      console.log("Validation error : ",errorMessage);
       return;
     }
     let perm = {
@@ -236,7 +254,7 @@ export class Permissions extends React.Component<any, any> {
         <div className="border p-1 pb-2">
           
 
-          <div className="m-b-1" >
+          <div className="m-b-1" style={{float: 'right'}}>
             <button className="btn btn-primary m-1 width-14 m-r-1" onClick={e => this.showModal(e, true)} >
               <i className="fa fa-plus-circle mr-1" /> Create New Permission
             </button>
@@ -262,7 +280,7 @@ export class Permissions extends React.Component<any, any> {
                   <div className="mdflex modal-fwidth">
                     <div className="fwidth-modal-text m-r-1 fwidth">
                       <label className="gf-form-label b-0 bg-transparent">Plugins</label>
-                      <select className="gf-form-input" name="permissionName" value={permissionName} onChange={this.handleStateChange}>
+                      <select className="gf-form-input" name="permissionName" id="permissionName" value={permissionName} onChange={this.handleStateChange}>
                         <option value="">Select</option>
                         {this.createSelectbox(uiModules, "moduleName", "moduleName", "moduleName")}
                       </select>
@@ -272,10 +290,12 @@ export class Permissions extends React.Component<any, any> {
                   <div className="mdflex modal-fwidth">
                     <div className="fwidth-modal-text m-r-1 fwidth">
                       <label className="gf-form-label b-0 bg-transparent">Permissions </label>
-                      <select className="gf-form-input" name="permission" value={permission} onChange={this.handleStateChange}>
+                      <input type="text" className="gf-form-input" name="permission" id="permission" value={permission} onChange={this.handleStateChange} maxLength={255}/>
+                      
+                      {/* <select className="gf-form-input" name="permission" id="permission" value={permission} onChange={this.handleStateChange}>
                         <option value="">Select</option>
                         {this.createSelectbox(selectedUiModules, "subModuleName", "subModuleName", "subModuleName")}
-                      </select>
+                      </select> */}
                     </div>
                   </div>
                   <div className="fwidth-modal-text modal-fwidth">
@@ -293,20 +313,23 @@ export class Permissions extends React.Component<any, any> {
               </form>
             </ModalBody>
           </Modal>
-          <table className="fwidth" id="permissionTable" >
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Permission</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            {
-              permissions !== undefined && permissions !== null && permissions.length > 0 ?
-              <tbody>{this.createRows(permissions)}</tbody>
-              : null
-            }
-          </table>
+          <div style={{height:'350px', width:'100%', boxSizing:'border-box', display:'inline-block', verticalAlign:'middle', overflowY:'auto'}}>
+            <table className="fwidth" id="permissionTable" >
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Permission</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              {
+                permissions !== undefined && permissions !== null && permissions.length > 0 ?
+                <tbody>{this.createRows(permissions)}</tbody>
+                : null
+              }
+            </table>
+          </div>
+          
         </div>
       </div>
     );

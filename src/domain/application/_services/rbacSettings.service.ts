@@ -2,12 +2,17 @@ import {config} from '../config';
 import {commonFunctions} from '../_utilites/common.functions';
 
 export const rbacSettingsServices = {
+  getUserPermission,
   getUiModules,
   getSecurityPermissions,
   savePermission,
-  // getCmsBatches,
-  // getCmsAcademicYears,
-  // getCmsSections,
+  getAllRoles,
+  saveGroup,
+  getAllUsers,
+  saveUser,
+  updateUser,
+  importUser,
+  createRole,
   // getGlobalConfiguration,
   // getCmsSubjects,
   // getCmsTeachers,
@@ -39,31 +44,72 @@ function savePermission(data: any) {
   return fetch(config.PERMS_CREATE, requestOptions).then(response => response.json());
 }
 
-function getCmsBatches(departmentId: any) {
+function getAllRoles() {
   const requestOptions = commonFunctions.getRequestOptions('GET', {});
-  return fetch(config.CMS_BATCH_BY_DEPARTMENT_URL + departmentId, requestOptions).then(
-    response => response.json()
-  );
+  return fetch(config.ROLES_LIST_ALL, requestOptions).then(response => response.json());
 }
 
-function getCmsAcademicYears(departmentId: any) {
-  const requestOptions = commonFunctions.getRequestOptions('GET', {});
-  return fetch(config.CMS_ACADEMICYEAR_URL + departmentId, requestOptions).then(
-    response => response.json()
+function saveGroup(data: any) {
+  const requestOptions = commonFunctions.getRequestOptions(
+    'POST',
+    {'Content-Type': 'application/json;charset=UTF-8'},
+    JSON.stringify(data)
   );
+  return fetch(config.ROLES_CREATE, requestOptions).then(response => response.json());
 }
 
-function getCmsSections(batchId: any) {
+function getAllUsers() {
   const requestOptions = commonFunctions.getRequestOptions('GET', {});
-  return fetch(config.CMS_SECTION_BY_BATCH_URL + batchId, requestOptions).then(response =>
-    response.json()
-  );
+  return fetch(config.USERS_LIST_ALL, requestOptions).then(response => response.json());
 }
 
-function getCmsSubjects(departmentId: any) {
+function saveUser(data: any) {
+  const requestOptions = commonFunctions.getRequestOptions(
+    'POST',
+    {'Content-Type': 'application/json;charset=UTF-8'},
+    JSON.stringify(data)
+  );
+  return fetch(config.USERS_CREATE, requestOptions).then(response => response.json());
+}
+
+function updateUser(data: any) {
+  const requestOptions = commonFunctions.getRequestOptions(
+    'POST',
+    {'Content-Type': 'application/json;charset=UTF-8'},
+    JSON.stringify(data)
+  );
+  return fetch(config.USERS_UPDATE, requestOptions).then(response => response.json());
+}
+
+function importUser(isTeacher: any, isStudent: any, isEmployee: any, branchId: any) {
+  const requestOptions = commonFunctions.getRequestOptions('POST', {});
+  return fetch(
+    config.EXPORT_USER +
+      '?chkTeacher=' +
+      isTeacher +
+      '&chkStudent=' +
+      isStudent +
+      '&chkEmployee=' +
+      isEmployee +
+      '&branchId=' +
+      branchId,
+    requestOptions
+  ).then(response => response.json());
+}
+
+function createRole(data: any) {
+  const requestOptions = commonFunctions.getRequestOptions(
+    'POST',
+    {'Content-Type': 'application/json;charset=UTF-8'},
+    JSON.stringify(data)
+  );
+  return fetch(config.ROLES_CREATE, requestOptions).then(response => response.json());
+}
+
+function getUserPermission(userName: any) {
   const requestOptions = commonFunctions.getRequestOptions('GET', {});
   return fetch(
-    config.CMS_SUBJECT_BY_DEPARTMENT_URL + '?departmentId=' + departmentId,
+    config.CMS_GLOBAL_CONFIG_URL + '?userName=' + userName,
     requestOptions
   ).then(response => response.json());
 }

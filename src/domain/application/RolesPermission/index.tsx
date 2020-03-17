@@ -7,11 +7,17 @@ import {Groups} from './groups/Groups';
 import {Users} from './users/Users';
 import {Roles} from './roles/Roles';
 
-export default class RolesPermission extends React.Component<any, any> {
-    constructor(props: any) {
+export interface RolePermProps extends React.HTMLAttributes<HTMLElement>{
+    [data: string]: any;
+    user?: any;
+}
+export default class RolesPermission extends React.Component<RolePermProps, any> {
+    constructor(props: RolePermProps) {
         super(props);
         this.state = {
             activeTab: 0,
+            isLoaded: "NO",
+            user: this.props.user,
         };
         this.toggleTab = this.toggleTab.bind(this);
     }
@@ -20,10 +26,20 @@ export default class RolesPermission extends React.Component<any, any> {
         this.setState({
             activeTab: tabNo,
         });
+        if(tabNo === 1){
+            this.setState({
+                isLoaded: "YES",
+            }); 
+        }else{
+            this.setState({
+                isLoaded: "NO",
+            });
+        }
+        
     }
 
     render() {
-        const { activeTab } = this.state;
+        const { activeTab,isLoaded,user } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -52,14 +68,17 @@ export default class RolesPermission extends React.Component<any, any> {
                     <TabPane tabId={0}>
                         <Permissions />
                     </TabPane>
-                    <TabPane tabId={1}>
-                        <Roles />
+                    <TabPane tabId={1}> 
+                        {
+                            activeTab === 1 ? <Roles isLoaded={activeTab === 1 ? "YES" : "NO"}/> : null
+                        }
+                        
                     </TabPane>
                     <TabPane tabId={2}>
-                        <Groups />
+                        {activeTab === 2 ? <Groups isPageLoaded={activeTab === 2 ? "YES" : "NO"}/> : null}
                     </TabPane>
                     <TabPane tabId={3}>
-                        <Users />
+                        {activeTab === 3 ? <Users user={user} isPageLoaded={activeTab === 3 ? "YES" : "NO"}/> : null}
                     </TabPane>
                     
                 </TabContent>

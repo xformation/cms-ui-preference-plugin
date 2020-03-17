@@ -27,6 +27,7 @@ export const config = {
   CMS_AM_BY_DEPARTMENT_URL: preferenceRestUrl + '/cmsattendance-masters-bydepartmentid',
   CMS_UPLOAD_MASTER_DATA_URL: preferenceRestUrl + '/cmsdataimport',
   MS_ACCESS_TOKEN_URL: preferenceRestUrl + '/cms-ms-authenticate',
+  EXPORT_USER: preferenceRestUrl + '/cmsuserexport',
 
   CMS_GLOBAL_CONFIG_URL: backendRestUrl + '/cmssettings',
   CMS_LECTURE_URL: backendRestUrl + '/cmslectures',
@@ -34,4 +35,14 @@ export const config = {
 
   PERMS_LIST_ALL: secSrvUrl + '/security/permissions/listAll',
   PERMS_CREATE: secSrvUrl + '/security/permissions/create',
+  ROLES_LIST_ALL: secSrvUrl + '/security/roles/listAll',
+  ROLES_CREATE: secSrvUrl + '/security/roles/create',
+  USERS_LIST_ALL: secSrvUrl + '/security/users/listAll',
+  USERS_CREATE: secSrvUrl + '/security/users/create',
+  USERS_UPDATE: secSrvUrl + '/security/users/update',
+  USERS_GET: secSrvUrl + '/security/users/',
+
+  LABEL_COLLEGE_SETTINGS: 'College Settings',
+  LABEL_ACADEMIC_SETTINGS: 'Academic Settings',
+  LABEL_ROLES_AND_PERMISSIONS: 'Roles & Permissions',
 };

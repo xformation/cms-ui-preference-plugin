@@ -5,6 +5,7 @@ import { withApollo } from 'react-apollo';
 import wsCmsBackendServiceSingletonClient from '../../../../wsCmsBackendServiceClient';
 import * as moment from 'moment';
 import { academicSettingsServices } from '../../_services/academicSettings.service';
+import {config} from '../../config';
 
 enum Steps {
     CreateLecture,
@@ -27,7 +28,7 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
         this.state = {
             counter: 0,
             lectureTimings: [],
-            user: this.props.user,
+            user: null,
             termList: this.props.termList,
             batchList: this.props.batchList,
             sectionList: this.props.sectionList,
@@ -61,14 +62,28 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
         this.createLectureTimings = this.createLectureTimings.bind(this);
         this.createTimeTableEntries = this.createTimeTableEntries.bind(this);
         this.createSubjectSelectbox = this.createSubjectSelectbox.bind(this);
+        this.getLoggedInUser = this.getLoggedInUser.bind(this);
     }
 
     async componentDidMount() {
         await this.registerSocket();
     }
 
-    registerSocket() {
-        const socket = wsCmsBackendServiceSingletonClient.getInstance();
+    async getLoggedInUser(){
+        const requestOptions = commonFunctions.getRequestOptions('GET', {});
+        await fetch(config.LOGGED_IN_USER_URL, requestOptions).then( 
+            response => response.json()
+        ).then (data =>{
+            this.setState({
+                user: data
+            })
+        })
+    }
+
+    async registerSocket() {
+        await this.getLoggedInUser();
+        console.log("registerSocket ::---->>>>>> ",this.state.user);
+        const socket = await wsCmsBackendServiceSingletonClient.getInstance();
         socket.onmessage = (response: any) => {
             let message = JSON.parse(response.data);
             this.setState({
