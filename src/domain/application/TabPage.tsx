@@ -27,7 +27,7 @@ export default class TabPage extends React.Component<any, any> {
   }
 
   async getUserPermissions(){
-    if(this.LOGGED_IN_USER !== 'admin'){
+    if(this.LOGGED_IN_USER !== 'admin' && this.LOGGED_IN_USER !== null){
       await rbacSettingsServices.getUserPermission(this.LOGGED_IN_USER).then(
         response => {
           const lg: any = response["loginResponse"];
@@ -40,7 +40,6 @@ export default class TabPage extends React.Component<any, any> {
           this.setState({
             permissions: arr,
           });
-          console.log("PERMISSION ::::: ",arr[config.LABEL_COLLEGE_SETTINGS]);
         }
       )
     }

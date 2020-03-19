@@ -13,7 +13,7 @@ export const config = {
   GRAPHQL_URL: graphqlUrl + '/graphql',
   LOGGED_IN_USER_URL: loggedInUserUrl + '/api/user',
   WEB_SOCKET_URL_WITH_CMS_BACKEND: webSockWithCmsBackendUrl,
-
+  PAYMENT_GATEWAY_URL: 'https://uat.billdesk.com/pgidsk/PGIMerchantPayment',
   // COLLEGE_URL: preferenceRestUrl + '/cmscollege',
   // STATES_URL: preferenceRestUrl + '/states',
   // CITIES_URL: preferenceRestUrl + '/cities',
@@ -28,6 +28,7 @@ export const config = {
   CMS_UPLOAD_MASTER_DATA_URL: preferenceRestUrl + '/cmsdataimport',
   MS_ACCESS_TOKEN_URL: preferenceRestUrl + '/cms-ms-authenticate',
   EXPORT_USER: preferenceRestUrl + '/cmsuserexport',
+  PAYMENT_MSG_URL: preferenceRestUrl + '/cmspayment',
 
   CMS_GLOBAL_CONFIG_URL: backendRestUrl + '/cmssettings',
   CMS_LECTURE_URL: backendRestUrl + '/cmslectures',

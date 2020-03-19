@@ -304,7 +304,7 @@ export class Groups extends React.Component<RbacProps, any> {
       });
     });
     await this.getAllRoles();
-  };
+  }
 
   async assignRoles() {
     const {selectedGroup, roles} = this.state;
@@ -315,8 +315,7 @@ export class Groups extends React.Component<RbacProps, any> {
         successMessage: SUCCESS_MESSAGE_ROLES_ASSIGNED,
       });
     });
-    
-  };
+  }
 
   onSearchGroup(e: any) {
     const { name, value } = e.target;
