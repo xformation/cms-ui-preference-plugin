@@ -127,8 +127,8 @@ class Staff extends React.Component<StaffProps, any> {
     }
 
     socket.onopen = () => {
-        console.log("Staff. Opening websocekt connection to cmsbackend. User : ",this.state.user.login);
-        socket.send(this.state.user.login);
+        console.log("Staff. Opening websocekt connection to cmsbackend. User : ",new URLSearchParams(location.search).get("signedInUser"));
+        socket.send(new URLSearchParams(location.search).get("signedInUser"));
     }
 
     window.onbeforeunload = () => {

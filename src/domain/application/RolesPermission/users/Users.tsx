@@ -15,13 +15,13 @@ const SUCCESS_MESSAGE_USER_EXPORT = "Users imported successfully";
 
 interface RbacProps extends React.HTMLAttributes<HTMLElement> {
   isPageLoaded?: string | any;
-  user?: any;
+  // user?: any;
 }
 export class Users extends React.Component<RbacProps, any> {
   constructor(props: RbacProps) {
     super(props);
     this.state = {
-      user: this.props.user,
+      user: new URLSearchParams(location.search).get("signedInUser"),
       branchId: null,
       academicYearId: null,
       departmentId: null,
@@ -109,8 +109,8 @@ export class Users extends React.Component<RbacProps, any> {
     }
 
     socket.onopen = () => {
-        console.log("Users. Opening websocekt connection to cmsbackend. User : ",this.state.user.login);
-        socket.send(this.state.user.login);
+        console.log("Users. Opening websocekt connection to cmsbackend. User : ",new URLSearchParams(location.search).get("signedInUser"));
+        socket.send(new URLSearchParams(location.search).get("signedInUser"));
     }
 
     window.onbeforeunload = () => {

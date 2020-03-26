@@ -17,13 +17,16 @@ import Subject from './subject/Subject';
 
 export interface AcademicSettingsProps extends React.HTMLAttributes<HTMLElement>{
     [data: string]: any;
-    user?: any,
+    user?: any;
+    permissions?: any;
 }
 
 class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
+    LOGGED_IN_USER = new URLSearchParams(location.search).get('signedInUser');
     constructor(props: any) {
         super(props);
         this.state = {
+            permissions: this.props.permissions,
             activeTab: 0,
             user: this.props.user,
             branchList: null,
@@ -94,8 +97,8 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         }
     
         socket.onopen = () => {
-            console.log("AcademicSettings Index. Opening websocekt connection to cmsbackend. User : ",this.state.user.login);
-            socket.send(this.state.user.login);
+            console.log("AcademicSettings Index. Opening websocekt connection to cmsbackend. User : ",new URLSearchParams(location.search).get("signedInUser"));
+            socket.send(new URLSearchParams(location.search).get("signedInUser"));
         }
     
         window.onbeforeunload = () => {
@@ -240,112 +243,337 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
     }
     
     render() {
-        const { activeTab, user, branchList, ayList, courseList, holidayList, termList, departmentList, staffList, subjectList, batchList, sectionList } = this.state;
+        const { activeTab, permissions, user, branchList, ayList, courseList, holidayList, termList, departmentList, staffList, subjectList, batchList, sectionList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 0 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(0); }} >
-                            Academic Year Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 1 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(1); }} >
-                            Holiday Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 2 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(2); }} >
-                            Term Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 3 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(3); }} >
-                            Department Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 4 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(4); }} >
-                            Course Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 5 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(5); }} >
-                            Staff Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 6 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(6); }} >
-                            Subject Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 7 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(7); }} >
-                            Timetable Setup
-                        </NavLink>
-                    </NavItem>
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Academic Year Setup"] === "Academic Year Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 0 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(0); }} >
+                                    Academic Year Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 0 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(0); }} >
+                                    Academic Year Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Holiday Setup"] === "Holiday Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 1 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(1); }} >
+                                    Holiday Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 1 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(1); }} >
+                                    Holiday Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Term Setup"] === "Term Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 2 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(2); }} >
+                                    Term Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 2 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(2); }} >
+                                    Term Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Department Setup"] === "Department Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 3 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(3); }} >
+                                    Department Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 3 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(3); }} >
+                                    Department Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Course Setup"] === "Course Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 4 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(4); }} >
+                                    Course Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 4 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(4); }} >
+                                    Course Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Staff Setup"] === "Staff Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 5 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(5); }} >
+                                    Staff Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 5 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(5); }} >
+                                    Staff Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Subject Setup"] === "Subject Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 6 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(6); }} >
+                                    Subject Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 6 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(6); }} >
+                                    Subject Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Timetable Setup"] === "Timetable Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 7 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(7); }} >
+                                    Timetable Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 7 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(7); }} >
+                                    Timetable Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
-                    <TabPane tabId={0}>
-                        {
-                            ayList !== null ?
-                                <AcademicYear ayList={ayList} onSaveUpdate={this.updateAyList}></AcademicYear>
-                            :
-                            null
-                        }
-                    </TabPane>
-                    <TabPane tabId={1}>
-                        {
-                            ayList !== null && holidayList !== null ?
-                                <Holiday holidayList={holidayList.getHolidayList} ayList={ayList}></Holiday>
-                            :
-                            null
-                        }
-                    </TabPane>
-                    <TabPane tabId={2}>
-                        {
-                            ayList !== null && termList !== null ?
-                                <Term termList={termList.getTermList} ayList={ayList}></Term>
-                            :
-                            null
-                        }
-                    </TabPane>
-                    <TabPane tabId={3}>
-                        {
-                            branchList !== null && ayList !== null && departmentList !== null && (
-                                <Department branchList={branchList} ayList={ayList} departmentList={departmentList.getDepartmentList} ></Department>
-                            )
-                        }
-                    </TabPane>
-                    <TabPane tabId={4}>
-                        {
-                            courseList !== null && branchList !== null && departmentList !== null && (
-                                <Course branchList={branchList} courseList={courseList} departmentList={departmentList.getDepartmentList} ></Course>
-                            )
-                        }
-                    </TabPane>
-                    <TabPane tabId={5}>
-                        {
-                            user !== null && staffList !== null && (
-                                <Staff user={user} staffList={staffList} ></Staff>
-                            )
-                        }
-                        
-                    </TabPane>
-                    <TabPane tabId={6}>
-                        {
-                            user !== null && sectionList !== null && subjectList !== null && staffList !== null && batchList !== null && (
-                                <Subject user={user} sectionList={sectionList} teacherList={staffList} subjectList={subjectList} batchList={batchList} ></Subject>
-                            )
-                        }
-                    </TabPane>
-                    <TabPane tabId={7}>
-                        {
-                            user !== null && sectionList !== null && termList !== null && batchList !== null && (
-                                <TimeTable user={user} sectionList={sectionList} termList={termList.getTermList} batchList={batchList} teacherList={staffList} subjectList={subjectList}></TimeTable>
-                            )
-                        }
-                    </TabPane>
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Academic Year Setup"] === "Academic Year Setup" ?
+                            <TabPane tabId={0}>
+                                {
+                                    activeTab === 0 ?
+                                        ayList !== null ?
+                                            <AcademicYear ayList={ayList} onSaveUpdate={this.updateAyList}></AcademicYear>
+                                        :null
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={0}>
+                                {
+                                    activeTab === 0 ?
+                                        ayList !== null ?
+                                            <AcademicYear ayList={ayList} onSaveUpdate={this.updateAyList}></AcademicYear>
+                                        :null
+                                    : null
+                                }
+                            </TabPane>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Holiday Setup"] === "Holiday Setup" ?
+                            <TabPane tabId={1}>
+                                {
+                                    activeTab === 1 ?
+                                        ayList !== null && holidayList !== null ?
+                                            <Holiday holidayList={holidayList.getHolidayList} ayList={ayList}></Holiday>
+                                        :
+                                        null
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={1}>
+                                {
+                                    activeTab === 1 ?
+                                        ayList !== null && holidayList !== null ?
+                                            <Holiday holidayList={holidayList.getHolidayList} ayList={ayList}></Holiday>
+                                        :
+                                        null
+                                    : null
+                                }
+                            </TabPane>
+                        : null
+                    }
+                    
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Term Setup"] === "Term Setup" ?
+                            <TabPane tabId={2}>
+                                {
+                                    activeTab === 2 ?
+                                        ayList !== null && termList !== null ?
+                                            <Term termList={termList.getTermList} ayList={ayList}></Term>
+                                        :
+                                        null
+                                    :null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={2}>
+                                {
+                                    activeTab === 2 ?
+                                        ayList !== null && termList !== null ?
+                                            <Term termList={termList.getTermList} ayList={ayList}></Term>
+                                        :
+                                        null
+                                    :null
+                                }
+                            </TabPane>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Department Setup"] === "Department Setup" ?
+                            <TabPane tabId={3}>
+                                {
+                                    activeTab === 3 ?
+                                        branchList !== null && ayList !== null && departmentList !== null && (
+                                            <Department branchList={branchList} ayList={ayList} departmentList={departmentList.getDepartmentList} ></Department>
+                                        )
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={3}>
+                                {
+                                    activeTab === 3 ?
+                                        branchList !== null && ayList !== null && departmentList !== null && (
+                                            <Department branchList={branchList} ayList={ayList} departmentList={departmentList.getDepartmentList} ></Department>
+                                        )
+                                    : null
+                                }
+                            </TabPane>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Course Setup"] === "Course Setup" ?
+                            <TabPane tabId={4}>
+                                {
+                                    activeTab === 4 ?
+                                        courseList !== null && branchList !== null && departmentList !== null && (
+                                            <Course branchList={branchList} courseList={courseList} departmentList={departmentList.getDepartmentList} ></Course>
+                                        )
+                                    : null
+                                }
+                            </TabPane>
+                    : this.LOGGED_IN_USER === 'admin' ?
+                        <TabPane tabId={4}>
+                            {
+                                activeTab === 4 ?
+                                    courseList !== null && branchList !== null && departmentList !== null && (
+                                        <Course branchList={branchList} courseList={courseList} departmentList={departmentList.getDepartmentList} ></Course>
+                                    )
+                                : null
+                            }
+                        </TabPane>
+                    : null
+                    }
+                    
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Staff Setup"] === "Staff Setup" ?
+                            <TabPane tabId={5}>
+                                {
+                                    activeTab === 5 ?
+                                        staffList !== null && (
+                                            <Staff staffList={staffList} ></Staff>
+                                        )
+                                    : null
+                                }
+                                
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={5}>
+                                {
+                                    activeTab === 5 ?
+                                        staffList !== null && (
+                                            <Staff staffList={staffList} ></Staff>
+                                        )
+                                    : null
+                                }
+                                
+                            </TabPane>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Subject Setup"] === "Subject Setup" ?
+                            <TabPane tabId={6}>
+                                {
+                                    activeTab === 6 ?
+                                        sectionList !== null && subjectList !== null && staffList !== null && batchList !== null && (
+                                            <Subject sectionList={sectionList} teacherList={staffList} subjectList={subjectList} batchList={batchList} ></Subject>
+                                        )
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={6}>
+                                {
+                                    activeTab === 6 ?
+                                        sectionList !== null && subjectList !== null && staffList !== null && batchList !== null && (
+                                            <Subject sectionList={sectionList} teacherList={staffList} subjectList={subjectList} batchList={batchList} ></Subject>
+                                        )
+                                    : null
+                                }
+                            </TabPane>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Timetable Setup"] === "Timetable Setup" ?
+                            <TabPane tabId={7}>
+                                {
+                                    activeTab === 7 ?
+                                        sectionList !== null && termList !== null && batchList !== null && (
+                                            <TimeTable sectionList={sectionList} termList={termList.getTermList} batchList={batchList} teacherList={staffList} subjectList={subjectList}></TimeTable>
+                                        )
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={7}>
+                                {
+                                    activeTab === 7 ?
+                                        sectionList !== null && termList !== null && batchList !== null && (
+                                            <TimeTable sectionList={sectionList} termList={termList.getTermList} batchList={batchList} teacherList={staffList} subjectList={subjectList}></TimeTable>
+                                        )
+                                    : null
+                                }
+                            </TabPane>
+                        : null
+                    }
+
                 </TabContent>
             </section>
 

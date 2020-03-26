@@ -24,15 +24,17 @@ export default class TabPage extends React.Component<any, any> {
 
   async componentDidMount(){
     await this.getUserPermissions();
+    console.log("PrefPlugin. Permissions : ",this.state.permissions);
   }
 
   async getUserPermissions(){
-    if(this.LOGGED_IN_USER !== 'admin' && this.LOGGED_IN_USER !== null){
-      await rbacSettingsServices.getUserPermission(this.LOGGED_IN_USER).then(
-        response => {
-          const lg: any = response["loginResponse"];
-          const auth: any = lg["authz"];
-          const perm: any = auth["permissions"];
+    if(this.LOGGED_IN_USER !== 'admin' && this.LOGGED_IN_USER !== null) {
+      const URL = config.CMS_GLOBAL_CONFIG_URL + '?userName=' + this.LOGGED_IN_USER;
+      await fetch(URL).then(
+        response => response.json()
+      ).then(res =>{
+          const perm = res.loginResponse.authz.permissions;
+          console.log("Preference Plugin. Permissions ::------->>>>>> ",perm);
           const arr: any = [];
           perm.map((item: any) =>{
             arr[item] = item;
@@ -40,10 +42,8 @@ export default class TabPage extends React.Component<any, any> {
           this.setState({
             permissions: arr,
           });
-        }
-      )
-    }
-    
+      })
+    } 
   }
 
   toggleTab(tabNo: any) {
@@ -64,48 +64,48 @@ export default class TabPage extends React.Component<any, any> {
         <Nav tabs className="pl-3 pl-3 mb-4 mt-4 bottom-box-shadow">
           
           {
-            this.LOGGED_IN_USER !== 'admin' && permissions[config.LABEL_COLLEGE_SETTINGS] === config.LABEL_COLLEGE_SETTINGS ?
+            this.LOGGED_IN_USER !== 'admin' && permissions["College Settings"] === "College Settings" ?
               <NavItem className="cursor-pointer">
                 <NavLink className={`${activeTab === 0 ? 'active' : ''}`} onClick={() => { this.toggleTab(0); }} >
-                  {config.LABEL_COLLEGE_SETTINGS}
+                  College Settings
                 </NavLink>
               </NavItem>
             : this.LOGGED_IN_USER === 'admin' ?
               <NavItem className="cursor-pointer">
                 <NavLink className={`${activeTab === 0 ? 'active' : ''}`} onClick={() => { this.toggleTab(0); }} >
-                  {config.LABEL_COLLEGE_SETTINGS}
+                  College Settings
                 </NavLink>
               </NavItem>
             : null
           }
 
           {
-            this.LOGGED_IN_USER !== 'admin' && permissions[config.LABEL_ACADEMIC_SETTINGS] === config.LABEL_ACADEMIC_SETTINGS ?
+            this.LOGGED_IN_USER !== 'admin' && permissions["Academic Settings"] === "Academic Settings" ?
               <NavItem className="cursor-pointer">
                 <NavLink className={`${activeTab === 1 ? 'active' : ''}`} onClick={() => { this.toggleTab(1); }} >
-                  {config.LABEL_ACADEMIC_SETTINGS} 
+                  Academic Settings 
                 </NavLink>
               </NavItem>
             : this.LOGGED_IN_USER === 'admin' ?
               <NavItem className="cursor-pointer">
                 <NavLink className={`${activeTab === 1 ? 'active' : ''}`} onClick={() => { this.toggleTab(1); }} >
-                  {config.LABEL_ACADEMIC_SETTINGS} 
+                  Academic Settings 
                 </NavLink>
               </NavItem>
             : null
           }
           
           {
-            this.LOGGED_IN_USER !== 'admin' && permissions[config.LABEL_ROLES_AND_PERMISSIONS] === config.LABEL_ROLES_AND_PERMISSIONS ?
+            this.LOGGED_IN_USER !== 'admin' && permissions["Roles & Permissions"] === "Roles & Permissions" ?
               <NavItem className="cursor-pointer">
                 <NavLink className={`${activeTab === 2 ? 'active' : ''}`} onClick={() => { this.toggleTab(2); }} >
-                  {config.LABEL_ROLES_AND_PERMISSIONS}
+                  {'Roles & Permissions'}
                 </NavLink>
               </NavItem>
             : this.LOGGED_IN_USER === 'admin' ?
               <NavItem className="cursor-pointer">
                 <NavLink className={`${activeTab === 2 ? 'active' : ''}`} onClick={() => { this.toggleTab(2); }} >
-                  {config.LABEL_ROLES_AND_PERMISSIONS}
+                  {'Roles & Permissions'}
                 </NavLink>
               </NavItem>
             : null
@@ -116,33 +116,62 @@ export default class TabPage extends React.Component<any, any> {
         </Nav>
         <TabContent activeTab={activeTab} className="border-right">
           
-          <TabPane tabId={0}>
-              {/* <CollegeSettings  /> */}
-              {activeTab === 0 ? <CollegeSettings /> : null}
-          </TabPane>
-          <TabPane tabId={1}>
           {
-            // user !== null && (
-            //   <AcademicSettings user={user}  />
-            // )
-            activeTab === 1 ?
-              this.LOGGED_IN_USER !== null && (
-                  <AcademicSettings user={this.LOGGED_IN_USER}  />
-              ) 
+            this.LOGGED_IN_USER !== 'admin' && permissions["College Settings"] === "College Settings" ?
+              <TabPane tabId={0}>
+                {activeTab === 0 ? <CollegeSettings permissions={permissions}/> : null}
+              </TabPane>
+            : this.LOGGED_IN_USER === 'admin' ?
+              <TabPane tabId={0}>
+                {activeTab === 0 ? <CollegeSettings permissions={permissions}/> : null}
+              </TabPane>
             : null
           }
-          </TabPane>
-          <TabPane tabId={2}>
+
           {
-            // user !== null && (
-            //   <RolesPermission user={user}/>)
-            activeTab === 2 ?
-              this.LOGGED_IN_USER !== null && (
-                  <RolesPermission user={this.LOGGED_IN_USER}  />
-              ) 
+            this.LOGGED_IN_USER !== 'admin' && permissions["Academic Settings"] === "Academic Settings" ?
+              <TabPane tabId={1}>
+                {
+                  activeTab === 1 ?
+                    <AcademicSettings permissions={permissions}  />
+                  : null
+                }
+              </TabPane>
+            : this.LOGGED_IN_USER === 'admin' ?
+              <TabPane tabId={1}>
+                {
+                  activeTab === 1 ?
+                    <AcademicSettings permissions={permissions}  />
+                  : null
+                }
+              </TabPane>
             : null
           }
-          </TabPane>
+
+          {
+            this.LOGGED_IN_USER !== 'admin' && permissions["Roles & Permissions"] === "Roles & Permissions" ?
+              <TabPane tabId={2}>
+                {
+                  activeTab === 2 ?
+                    this.LOGGED_IN_USER !== null && (
+                        <RolesPermission user={this.LOGGED_IN_USER}  />
+                    ) 
+                  : null
+                }
+              </TabPane>
+            : this.LOGGED_IN_USER === 'admin' ?
+              <TabPane tabId={2}>
+                {
+                  activeTab === 2 ?
+                    this.LOGGED_IN_USER !== null && (
+                        <RolesPermission user={this.LOGGED_IN_USER}  />
+                    ) 
+                  : null
+                }
+              </TabPane>
+            : null
+          }
+
         </TabContent>
       </section>
     );

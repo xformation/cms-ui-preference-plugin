@@ -78,8 +78,8 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
         }
     
         socket.onopen = () => {
-            console.log("Subject page. Opening websocekt connection to cmsbackend. User : ",this.state.user.login);
-            socket.send(this.state.user.login);
+            console.log("Subject page. Opening websocekt connection to cmsbackend. User : ",new URLSearchParams(location.search).get("signedInUser"));
+            socket.send(new URLSearchParams(location.search).get("signedInUser"));
         }
     
         window.onbeforeunload = () => {

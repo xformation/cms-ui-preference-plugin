@@ -16,6 +16,7 @@ import axios from 'axios';
 
 export interface AcademicSettingsProps extends React.HTMLAttributes<HTMLElement>{
     [data: string]: any;
+    permissions?: any;
     user?: any,
     userAgentApplication?: UserAgentApplication; 
     azureUser?: any;
@@ -23,9 +24,11 @@ export interface AcademicSettingsProps extends React.HTMLAttributes<HTMLElement>
     mcCloudParentId?: any;
 }
 class CollegeSettings extends React.Component<any, any> {
+    LOGGED_IN_USER = new URLSearchParams(location.search).get("signedInUser");
     constructor(props: any) {
         super(props);
         this.state = {
+            permissions: this.props.permissions,
             activeTab: 0,
             branchList: null,
             stateDataList: null,
@@ -189,90 +192,218 @@ class CollegeSettings extends React.Component<any, any> {
     }
 
     render() {
-        const { activeTab, branchList, stateDataList, cityDataList, authorizedSignatoryList, bankAccountsList, legalEntityList, 
+        const { permissions, activeTab, branchList, stateDataList, cityDataList, authorizedSignatoryList, bankAccountsList, legalEntityList, 
                     tableList, mcCloudParentId, accessToken, userAgentApplication } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 0 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(0); }} >
-                            College Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 1 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(1); }} >
-                            Branch Setup
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 2 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(2); }} >
-                            Legal Entities
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 3 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(3); }} >
-                            Master Data Import
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="cursor-pointer">
-                        <NavLink className={`vertical-nav-link ${activeTab === 4 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(4); }} >
-                            Payment
-                        </NavLink>
-                    </NavItem>
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["College Setup"] === "College Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 0 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(0); }} >
+                                    College Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 0 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(0); }} >
+                                    College Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Branch Setup"] === "Branch Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 1 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(1); }} >
+                                    Branch Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 1 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(1); }} >
+                                    Branch Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Legal Entities"] === "Legal Entities" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 2 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(2); }} >
+                                    Legal Entities
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 2 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(2); }} >
+                                    Legal Entities
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Master Data Import"] === "Master Data Import" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 3 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(3); }} >
+                                    Master Data Import
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 3 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(3); }} >
+                                    Master Data Import
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Payment"] === "Payment" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 4 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(4); }} >
+                                    Payment
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 4 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(4); }} >
+                                    Payment
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
                     {
-                        activeTab === 0 ?
+                        this.LOGGED_IN_USER !== 'admin' && permissions["College Setup"] === "College Setup" ?
                             <TabPane tabId={0}>
-                                <CollegeInfo onSaveUpdate={this.updateBranchListAfterCollegeUpdate}/>
+                                {
+                                    activeTab === 0 ?
+                                        <CollegeInfo onSaveUpdate={this.updateBranchListAfterCollegeUpdate}/>
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={0}>
+                                {
+                                    activeTab === 0 ?
+                                        <CollegeInfo onSaveUpdate={this.updateBranchListAfterCollegeUpdate}/>
+                                    : null
+                                }
                             </TabPane>
                         : null
                     }
-                    
+
                     {
-                        activeTab === 1 ?
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Branch Setup"] === "Branch Setup" ?
                             <TabPane tabId={1}>
                                 {
-                                    branchList !== null && stateDataList !== null && cityDataList !== null && (
-                                        <BranchGrid data={branchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList} />
-                                    ) 
-                                }
-                            </TabPane>
-                        : null
-                    }
-                    
-                    {
-                        activeTab === 2 ?
-                            <TabPane tabId={2}>
-                                {
-                                    legalEntityList !== null && bankAccountsList !== null && authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
-                                        <LegalEntities legalEntityList={legalEntityList.getLegalEntityList} signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} bankAccountsList={bankAccountsList.getBankAccountsList} branchList={branchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
+                                    activeTab === 1 ?
+                                    (
+                                        branchList !== null && stateDataList !== null && cityDataList !== null && (
+                                            <BranchGrid data={branchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList} />
+                                        )
                                     )
+                                    : null            
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={1}>
+                                {
+                                    activeTab === 1 ?
+                                    (
+                                        branchList !== null && stateDataList !== null && cityDataList !== null && (
+                                            <BranchGrid data={branchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList} />
+                                        )
+                                    )
+                                    : null            
                                 }
                             </TabPane>
                         : null
                     }
-                    
+
                     {
-                        activeTab === 3 ?
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Legal Entities"] === "Legal Entities" ?
+                            <TabPane tabId={2}>
+                                {   
+                                    activeTab === 2 ?
+                                    (
+                                        legalEntityList !== null && bankAccountsList !== null && authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
+                                            <LegalEntities legalEntityList={legalEntityList.getLegalEntityList} signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} bankAccountsList={bankAccountsList.getBankAccountsList} branchList={branchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
+                                        )
+                                    )
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={2}>
+                                {   
+                                    activeTab === 2 ?
+                                    (
+                                        legalEntityList !== null && bankAccountsList !== null && authorizedSignatoryList !==null && branchList !== null && stateDataList !== null && cityDataList !== null && (
+                                            <LegalEntities legalEntityList={legalEntityList.getLegalEntityList} signatoryList={authorizedSignatoryList.getAuthorizedSignatoryList} bankAccountsList={bankAccountsList.getBankAccountsList} branchList={branchList} stateList={stateDataList.getStateList} cityList={this.state.cityDataList.getCityList}></LegalEntities>
+                                        )
+                                    )
+                                    : null
+                                }
+                            </TabPane>
+                        : null
+                    }
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Master Data Import"] === "Master Data Import" ?
                             <TabPane tabId={3}>
                                 {
-                                    tableList !== null && (
-                                		<MasterDataImport tableList={tableList.getTableList}/>
-                            		)
+                                    activeTab === 3 ?
+                                    (
+                                        tableList !== null && (
+                                            <MasterDataImport tableList={tableList.getTableList}/>
+                                        )
+                                    )
+                                    : null  
                                 }
                             </TabPane>
-                        : null  
-                    }
-                    
-                    {
-                        activeTab === 4 ?  
-                            <TabPane tabId={4}>
-                                <PaymentInput />
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={3}>
+                                {
+                                    activeTab === 3 ?
+                                    (
+                                        tableList !== null && (
+                                            <MasterDataImport tableList={tableList.getTableList}/>
+                                        )
+                                    )
+                                    : null  
+                                }
                             </TabPane>
                         : null
                     }
-                    
+
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Payment"] === "Payment" ?                            
+                            <TabPane tabId={4}>
+                                {
+                                    activeTab === 4 ?  
+                                        <PaymentInput />
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={4}>
+                                {
+                                    activeTab === 4 ?  
+                                        <PaymentInput />
+                                    : null
+                                }
+                            </TabPane>
+                        : null
+                         
+                    }
+
                 </TabContent>
             </section>
         );
