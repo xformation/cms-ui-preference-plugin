@@ -188,7 +188,7 @@ class MasterDataImport extends React.Component<MasterDataProp, any> {
                     <button onClick={this.uploadFile} className="btn btn-primary">Upload</button>
                     {
                         isLoading ?
-                            <div>Data is loading...</div>
+                            <div className="m-t-1">Data is loading...</div>
                         :
                         <div className="authorized-signatory-container m-t-1 fwidth">
                             {
@@ -197,7 +197,6 @@ class MasterDataImport extends React.Component<MasterDataProp, any> {
                                     <thead><th>Table</th><th>Status</th></thead>
                                     {this.createGrid()}
                                 </table>
-                                
                             }
                         </div>
                     }

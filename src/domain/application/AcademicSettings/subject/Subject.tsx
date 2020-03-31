@@ -197,11 +197,11 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
             isValid = false;
         }
-        if(obj.subjectType === undefined || obj.subjectType === null || obj.subjectType === ""){
-            commonFunctions.changeTextBoxBorderToError((obj.subjectType === undefined || obj.subjectType === null) ? "" : obj.subjectType, "subjectType");
-            errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
-            isValid = false;
-        }
+        // if(obj.subjectType === undefined || obj.subjectType === null || obj.subjectType === ""){
+        //     commonFunctions.changeTextBoxBorderToError((obj.subjectType === undefined || obj.subjectType === null) ? "" : obj.subjectType, "subjectType");
+        //     errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
+        //     isValid = false;
+        // }
         if(obj.subjectDesc === undefined || obj.subjectDesc === null || obj.subjectDesc === ""){
             commonFunctions.changeTextBoxBorderToError((obj.subjectDesc === undefined || obj.subjectDesc === null) ? "" : obj.subjectDesc, "subjectDesc");
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
@@ -221,13 +221,13 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
             if((obj.teacherId === undefined || obj.teacherId === null || obj.teacherId === "")
                 && (obj.sectionId !== null) ){
                 commonFunctions.changeTextBoxBorderToError((obj.teacherId === undefined || obj.teacherId === null) ? "" : obj.teacherId, "teacherId");
-                errorMessage = "Please select teacher since section is selected for teacher assignment";
+                errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
                 isValid = false;
             }
             if((obj.sectionId === undefined || obj.sectionId === null || obj.sectionId === "")
                 && (obj.teacherId !== null) ){
                 commonFunctions.changeTextBoxBorderToError((obj.sectionId === undefined || obj.sectionId === null) ? "" : obj.sectionId, "sectionId");
-                errorMessage = "Please select section since teacher is selected for teacher assignment" ;
+                errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING ;
                 isValid = false;
             }
         }
@@ -412,7 +412,7 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
                                     </div> 
 
                                     <div className="fwidth-modal-text">
-                                        <label className="gf-form-label b-0 bg-transparent">Subject Type <span style={{ color: 'red' }}> * </span></label>
+                                        <label className="gf-form-label b-0 bg-transparent">Subject Type </label>
                                         <input type="text" className="gf-form-input" onChange={this.onChange}  value={subjectObj.subjectType} placeholder="Subject Type" name="subjectType" id="subjectType" maxLength={255} />
                                     </div>
                                 </div>
@@ -444,7 +444,7 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
                                     {
                                         modelHeader === "Edit Subject" ? 
                                         <div className="fwidth-modal-text">
-                                            <label className="gf-form-label b-0 bg-transparent">Teacher</label>
+                                            <label className="gf-form-label b-0 bg-transparent">Teacher<span style={{ color: 'red' }}> * </span></label>
                                             <select name="teacherId" id="teacherId" onChange={this.onChange} value={subjectObj.teacherId} className="gf-form-input">
                                                     <option value="">Select Teacher</option>
                                                     {
@@ -460,7 +460,7 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
                                     modelHeader === "Edit Subject" ?
                                         <div className="mdflex modal-fwidth">
                                             <div className="fwidth-modal-text m-r-1">
-                                            <label className="gf-form-label b-0 bg-transparent">Section</label>
+                                            <label className="gf-form-label b-0 bg-transparent">Section<span style={{ color: 'red' }}> * </span></label>
                                             <select name="sectionId" id="sectionId" onChange={this.onChange} value={subjectObj.sectionId} className="gf-form-input">
                                                 <option value="">Select Section</option>
                                                 {
