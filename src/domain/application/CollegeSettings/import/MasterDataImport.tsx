@@ -28,7 +28,9 @@ class MasterDataImport extends React.Component<MasterDataProp, any> {
             excelFile: null,
             obj: {
                 entityId: "",
-            }
+            },
+            status: [],
+            isLoading: false,
         }; 
         this.onChange = this.onChange.bind(this);
         this.createTableSelectbox = this.createTableSelectbox.bind(this);
@@ -104,24 +106,50 @@ class MasterDataImport extends React.Component<MasterDataProp, any> {
         if(!this.validateFields(obj)){
             return;
         }
+        this.setState({
+            isLoading: true,
+            status: [],
+            errorMessage: "",
+            successMessage: "",
+        })
         const data = new FormData();
         data.append('file', excelFile, excelFile.name);
 
-        return await fetch(config.CMS_UPLOAD_MASTER_DATA_URL+ '/' + obj.entityId, {
+        await fetch(config.CMS_UPLOAD_MASTER_DATA_URL+ '/' + obj.entityId, {
             method: 'post',
             body: data
-        })
-        .then(response => {
-            const data = response.json();
-            console.log("Response : ", data);
-            alert(data);
+        }) .then(response => response.json())
+        .then(resp => {
+            console.log("Response 1: ",resp);
+            resp.map((item: any) =>{
+                console.log("resp item ::: ",item);
+                this.state.status.push(item);
+            })
+            this.setState({
+                successMessage: SUCCESS_MESSAGE_MASTERDATA_ADDED,
+                isLoading: false,
+            })
+            
         });
-
-        
     }
 
+    createGrid(){
+        const {status} = this.state;
+        let retData = [];
+        if(status.length > 0){
+            for(let i=0; i<status.length;i++){
+                let item = status[i];
+                retData.push(
+                    <tbody>
+                        <tr><td>{item.entity.toUpperCase()}</td><td>{item.status}</td></tr>
+                    </tbody>
+                );
+            }
+        } 
+        return retData;
+    }
     render() {
-        const { errorMessage, successMessage, tableList, obj } = this.state;
+        const { errorMessage, successMessage, tableList, obj, status, isLoading } = this.state;
         return (
             <main >
                 {
@@ -158,6 +186,21 @@ class MasterDataImport extends React.Component<MasterDataProp, any> {
                         </div>
                     </div>
                     <button onClick={this.uploadFile} className="btn btn-primary">Upload</button>
+                    {
+                        isLoading ?
+                            <div>Data is loading...</div>
+                        :
+                        <div className="authorized-signatory-container m-t-1 fwidth">
+                            {
+                                status.length > 0 &&
+                                <table>
+                                    <thead><th>Table</th><th>Status</th></thead>
+                                    {this.createGrid()}
+                                </table>
+                                
+                            }
+                        </div>
+                    }
                 </div>
             </main>
         );
