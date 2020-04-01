@@ -29,6 +29,7 @@ class Staff extends React.Component<StaffProps, any> {
       branchList: this.props.branchList,
       departmentList: this.props.departmentList,
       staffList: this.props.staffList,
+      allData: this.props.staffList,
       user: this.props.user,
       branchId: null,
       academicYearId: null,
@@ -84,6 +85,7 @@ class Staff extends React.Component<StaffProps, any> {
         staffType: "",
         departmentId: "",
         branchId: "",
+        searchName: "",
       },
       activeTab: 0,
       isModalOpen: false,
@@ -105,6 +107,12 @@ class Staff extends React.Component<StaffProps, any> {
     this.save = this.save.bind(this);
     this.doSave = this.doSave.bind(this);
     this.getInput = this.getInput.bind(this);
+    this.searchStaff = this.searchStaff.bind(this);
+    this.onClickCheckbox = this.onClickCheckbox.bind(this);
+    this.checkAll = this.checkAll.bind(this);
+    this.exportStaff = this.exportStaff.bind(this);
+    this.convertArrayOfObjectsToCSV = this.convertArrayOfObjectsToCSV.bind(this);
+    this.download = this.download.bind(this);
   }
 
   async componentDidMount(){
@@ -518,6 +526,26 @@ class Staff extends React.Component<StaffProps, any> {
     this.doSave(inputObj, id);
   }
 
+  checkAll(e: any) {
+    const {staffList} = this.state;
+    let chkAll = e.nativeEvent.target.checked;
+    let els = document.querySelectorAll('input[type=checkbox]');
+
+    var empty = [].filter.call(els, function(el: any) {
+      if (chkAll) {
+        el.checked = true;
+      } else {
+        el.checked = false;
+      }
+    });
+  }
+
+  onClickCheckbox(index: any, e: any) {
+    const {id} = e.nativeEvent.target;
+    let chkBox: any = document.querySelector('#' + id);
+    chkBox.checked = e.nativeEvent.target.checked;
+  }
+
   createRows(objAry: any) {
     const {branchId, departmentId} = this.state;
     console.log("createRows() - Staff list on staff page:  ", objAry);
@@ -532,7 +560,7 @@ class Staff extends React.Component<StaffProps, any> {
               parseInt(obj.cmsDepartmentVo.id,10) === parseInt(departmentId,10)){
                 retVal.push(
                   <tr key="teacher.id">
-                        <td> <input type="checkbox" id="chk" /> </td>
+                        <td> <input type="checkbox" id={'chk'+obj.id} onClick={(e: any) => this.onClickCheckbox(i, e)}/> </td>
                         <td>{obj.teacherName}</td>
                         <td>{obj.employeeId}</td>
                         <td>{obj.designation}</td>
@@ -555,6 +583,126 @@ class Staff extends React.Component<StaffProps, any> {
         
     }
     return retVal;
+  }
+
+  searchStaff(e: any) {
+    const { name, value } = e.target;
+    this.setState({
+        [name]: value
+    });
+    let result = [];
+    const { allData } = this.state;
+    if (value !== "") {
+        if (allData && allData.length > 0) {
+            for (let i = 0; i < allData.length; i++) {
+                let teacher = allData[i];
+                let name = teacher.teacherName + " " + teacher.employeeId + " " + teacher.designation+ " " + teacher.cmsBranchVo.branchName + " " + teacher.cmsDepartmentVo.name + " " +teacher.sex + " " + teacher.staffType + " " + teacher.status;
+                name = name.toLowerCase();
+                if (name.indexOf(value.toLowerCase()) !== -1) {
+                    result.push(teacher);
+                }
+            }
+            this.setState({
+                staffList: result
+            });
+        }
+    } else {
+        this.setState({
+          staffList: allData
+        });
+    }
+  }
+
+  exportStaff(objAry: any) {
+    const staffToExport = [];
+    // const mutateResLength = objAry.length;
+    // let fileType: any = document.querySelector('#fileType');
+    // if (fileType.value == '') {
+    //   alert('Please select a file type to export');
+    //   return;
+    // }
+    for (let x = 0; x < objAry.length; x++) {
+      const tempObj = objAry[x];
+      // const students = tempObj.data.getStudentList;
+      // const length = students.length;
+      // for (let i = 0; i < length; i++) {
+        // const student = students[i];
+        if(tempObj.cmsBranchVo.id === this.state.branchId && tempObj.cmsDepartmentVo.id === this.state.departmentId){
+          console.log("checkbox id : ",tempObj.id);
+          let chkBox: any = document.querySelector('#chk'+tempObj.id);
+          if (chkBox !== null && chkBox !== undefined && chkBox.checked) {
+            staffToExport.push(tempObj);
+          }
+        }
+        
+        
+      // }
+    }
+    if (staffToExport.length > 0) {
+      var csvContent = this.convertArrayOfObjectsToCSV(staffToExport);
+      this.download(csvContent, 'studentlist.csv', 'text/csv;encoding:utf-8');
+    } else {
+      alert('Please select records to export');
+    }
+  }
+
+  download(content: any, fileName: any, mimeType: any) {
+    var a = document.createElement('a');
+    mimeType = mimeType || 'application/octet-stream';
+
+    if (navigator.msSaveBlob) {
+      // IE10
+      navigator.msSaveBlob(
+        new Blob([content], {
+          type: mimeType,
+        }),
+        fileName
+      );
+    } else if (URL && 'download' in a) {
+      //html5 A[download]
+      a.href = URL.createObjectURL(
+        new Blob([content], {
+          type: mimeType,
+        })
+      );
+      a.setAttribute('download', fileName);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } else {
+      location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
+    }
+  }
+
+  convertArrayOfObjectsToCSV(data: any) {
+    var result: any, ctr: any, keys: any, columnDelimiter: any, lineDelimiter: any;
+
+    data = data || null;
+    if (data == null || !data.length) {
+      return null;
+    }
+
+    columnDelimiter = ',';
+    lineDelimiter = '\n';
+
+    keys = Object.keys(data[0]);
+
+    result = '';
+    result += keys.join(columnDelimiter);
+    result += lineDelimiter;
+
+    data.forEach(function(item: any) {
+      ctr = 0;
+      keys.forEach(function(key: any) {
+        if (ctr > 0) result += columnDelimiter;
+
+        result += item[key];
+        ctr++;
+      });
+      result += lineDelimiter;
+    });
+
+    return result;
   }
 
   render() {
@@ -887,7 +1035,7 @@ class Staff extends React.Component<StaffProps, any> {
         </div>
         <div id="lidiv" className="p-1 page-body legal-entities-main-container">
           <div className="staff-management">
-            <div>
+            {/* <div>
               <label htmlFor="">Gender</label>
               <select className="gf-form-input">
                 <option value="">Select Gender</option>
@@ -902,26 +1050,21 @@ class Staff extends React.Component<StaffProps, any> {
                 <option value="">Select Staff Type</option>
                 <option value="TEACHING">TEACHING</option>
                 <option value="NONTEACHING">NONTEACHING</option>
-                {/* <option value="GUEST">GUEST</option> */}
               </select>
-            </div>
+            </div> */}
             <div className="margin-bott m-r-1">
               <label htmlFor="">Search</label>
-              <input
-                className="gf-form-input fwidth"
-                type="search"
-                placeholder="search by name"
-              />
+              <input type="text" className="input" placeholder="search" name="searchStaff" onChange={this.searchStaff} value={this.state.searchName} />
             </div>
-            <a className="btn btn-primary" style={{marginTop: '-5px'}} id="fileType">
-              Export
+            <a onClick={(e: any) => this.exportStaff(staffList) } className="btn btn-primary" style={{marginTop: '-5px'}} >
+              Export To CSV
             </a>
           </div>
 
           <table className="staff-management-table">
             <thead>
               <th>
-                <input type="checkbox" key="teacher.id" id="chk" />
+                <input type="checkbox" value="checkedAll" onClick={(e: any) => this.checkAll(e)} key="teacher.id" id="chkAll" name="chkAll"/>
               </th>
               <th>Name</th>
               <th>Emp Id</th>
