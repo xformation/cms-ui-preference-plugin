@@ -63,6 +63,7 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
         this.createTimeTableEntries = this.createTimeTableEntries.bind(this);
         this.createSubjectSelectbox = this.createSubjectSelectbox.bind(this);
         this.getLoggedInUser = this.getLoggedInUser.bind(this);
+        this.createTermSelectbox = this.createTermSelectbox.bind(this);
     }
 
     async componentDidMount() {
@@ -273,6 +274,27 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
         });
     }
 
+    createTermSelectbox(data: any, value: any, key: any, label: any) {
+        const { academicYearId } = this.state;
+        let retData = [];
+        if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                let item = data[i];
+                if (academicYearId) {
+                    if(item !== null && item !== undefined && item.cmsAcademicYearVo !== null &&
+                        item.cmsAcademicYearVo !== undefined){
+                            if (parseInt(academicYearId, 10) === parseInt(item.cmsAcademicYearVo.id, 10)) {
+                                retData.push(
+                                    <option value={item[value]} key={item[key]}>{item[label]}</option>
+                                );
+                            }
+                    }
+                }
+            }
+        }
+        return retData;
+    }
+
     createBatchSelectbox(data: any, value: any, key: any, label: any) {
         const { departmentId } = this.state;
         let retData = [];
@@ -293,6 +315,7 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
         }
         return retData;
     }
+
 
     createSectionSelectbox(data: any, value: any, key: any, label: any, batchId: any) {
         const { departmentId } = this.state;
@@ -590,7 +613,7 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
                                     <label className="gf-form-label b-0 bg-white">Term<span style={{ color: 'red' }}> * </span> </label>
                                     <select className={`gf-form-input ${submitted && !lecObj.termId ? 'input-textbox-error' : ''}`} name="termId" id="termId" value={lecObj.termId} onChange={this.handleLecObjChange} disabled={showTimeScheduleAssignment !== Steps.CreateLecture} >
                                         <option value="">Select Term</option>
-                                        {commonFunctions.createSelectbox(termList, "id", "id", "description")}
+                                        {this.createTermSelectbox(termList, "id", "id", "description")}
                                     </select>
                                     {submitted && !lecObj.termId &&
                                         <small className="error-text">Please select Term</small>
