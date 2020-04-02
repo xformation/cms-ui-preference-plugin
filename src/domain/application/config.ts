@@ -1,5 +1,5 @@
-const IP = 'localhost';
-// const IP = '100.81.5.25';
+//const IP = 'localhost';
+const IP = '100.81.5.25';
 
 const secSrvUrl = 'http://' + IP + ':8094';
 const preferenceRestUrl = 'http://' + IP + ':9091/api';
@@ -31,7 +31,7 @@ export const config = {
   PAYMENT_MSG_URL: preferenceRestUrl + '/cmspayment',
 
   CMS_GLOBAL_CONFIG_URL: backendRestUrl + '/cmssettings',
-  CMS_LECTURE_URL: backendRestUrl + '/cmslectures',
+  // CMS_LECTURE_URL: backendRestUrl + '/cmslectures',
   CMS_UI_MODULES_GET: backendRestUrl + '/cmsmodules',
 
   PERMS_LIST_ALL: secSrvUrl + '/security/permissions/listAll',

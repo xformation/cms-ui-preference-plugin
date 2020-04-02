@@ -502,7 +502,7 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
                     
                 {
                     subjectList !== null && subjectList !== undefined && subjectList.length > 0 ?
-                        <div style={{width:'100%', height:'250px', overflow:'auto'}}>
+                        <div style={{width:'100%', height:'300px', overflow:'auto'}}>
                             <table id="ayTable" className="striped-table fwidth bg-white p-2 m-t-1">
                                 <thead>
                                     <tr>

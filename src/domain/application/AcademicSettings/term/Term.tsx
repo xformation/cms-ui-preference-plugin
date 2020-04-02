@@ -6,6 +6,7 @@ import {MessageBox} from '../../Message/MessageBox'
 import { withApollo } from 'react-apollo';
 import { SAVE_TERM } from '../../_queries';
 import * as moment from 'moment';
+import wsCmsBackendServiceSingletonClient from '../../../../wsCmsBackendServiceClient';
 
 export interface TermProps extends React.HTMLAttributes<HTMLElement>{
     [data: string]: any;
@@ -36,11 +37,50 @@ class Term<T = {[data: string]: any}> extends React.Component<TermProps, any> {
             },
             errorMessage: "",
             successMessage: "",
-            modelHeader: ""
+            modelHeader: "",
+            branchId: null,
+            academicYearId: null,
+            departmentId: null,
         };
-        
+        this.registerSocket = this.registerSocket.bind(this);
+        this.showDetail = this.showDetail.bind(this);
+        this.createRows = this.createRows.bind(this);
+        this.doSave = this.doSave.bind(this);
+        this.showModal = this.showModal.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.validateDates = this.validateDates.bind(this);
+        this.validateFields = this.validateFields.bind(this);
     }
     
+    async componentDidMount(){
+        await this.registerSocket();
+    }
+    registerSocket() {
+        const socket = wsCmsBackendServiceSingletonClient.getInstance();
+    
+        socket.onmessage = (response: any) => {
+            let message = JSON.parse(response.data);
+            console.log("Term page. message received from server ::: ", message);
+            this.setState({
+                branchId: message.selectedBranchId,
+                academicYearId: message.selectedAcademicYearId,
+                departmentId: message.selectedDepartmentId,
+            });
+            console.log("Term page. branchId: ",this.state.branchId);
+            console.log("Term page. ayId: ",this.state.academicYearId);  
+            console.log("Term page. departmentId: ",this.state.departmentId);  
+        }
+    
+        socket.onopen = () => {
+            console.log("Term page. Opening websocekt connection to cmsbackend. User : ",new URLSearchParams(location.search).get("signedInUser"));
+            socket.send(new URLSearchParams(location.search).get("signedInUser"));
+        }
+    
+        window.onbeforeunload = () => {
+            console.log("Term page. Closing websocket connection with cms backend service");
+        }
+    }
+
     showDetail(e: any, bShow: boolean, editObj: any, modelHeader: any) {
         e && e.preventDefault();
         const { termObj } = this.state;
@@ -61,32 +101,38 @@ class Term<T = {[data: string]: any}> extends React.Component<TermProps, any> {
     }
 
     createRows(objAry: any) {
-        const { source } = this.state;
+        const { academicYearId } = this.state;
         console.log("createRows() - term list on term page:  ", objAry);
         if(objAry === undefined || objAry === null) {
             return;
         }
         const aryLength = objAry.length;
         const retVal = [];
-        for (let i = 0; i < aryLength; i++) {
-            const obj = objAry[i];
-            retVal.push(
-              <tr >
-                <td>{obj.id}</td>
-                <td>{obj.description}</td>
-                <td>{obj.strStartDate}</td>
-                <td>{obj.strEndDate}</td>
-                <td>{obj.comments}</td>
-                <td>{obj.cmsAcademicYearVo.description}</td>
-                <td>{obj.status}</td>
-                <td>
-                    {
-                        <button className="btn btn-primary" onClick={e => this.showDetail(e, true, obj, "Edit Term")}>Edit</button>
-                    }
-                </td>
-              </tr>
-            );
+        if(academicYearId !== null && academicYearId !== undefined){
+            for (let i = 0; i < aryLength; i++) {
+                const obj = objAry[i];
+                if(parseInt(obj.cmsAcademicYearVo.id,10) === parseInt(academicYearId,10)){
+                    retVal.push(
+                        <tr >
+                          <td>{obj.id}</td>
+                          <td>{obj.description}</td>
+                          <td>{obj.strStartDate}</td>
+                          <td>{obj.strEndDate}</td>
+                          <td>{obj.comments}</td>
+                          <td>{obj.cmsAcademicYearVo.description}</td>
+                          <td>{obj.status}</td>
+                          <td>
+                              {
+                                  <button className="btn btn-primary" onClick={e => this.showDetail(e, true, obj, "Edit Term")}>Edit</button>
+                              }
+                          </td>
+                        </tr>
+                      );
+                }
+                
+            }
         }
+        
         return retVal;
     }
 

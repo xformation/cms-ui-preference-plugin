@@ -145,7 +145,7 @@ function saveLectures(data: any, params: any) {
     JSON.stringify(data)
   );
   return fetch(
-    `${config.CMS_LECTURE_URL}?termId=${params.termId}&academicYearId=${
+    `${config.LECTURES_URL}?termId=${params.termId}&academicYearId=${
       params.academicYearId
     }&sectionId=${params.sectionId}&batchId=${params.batchId}&branchId=${
       params.branchId
