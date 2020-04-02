@@ -280,10 +280,13 @@ class TimeTablePage<T = { [data: string]: any }> extends React.Component<any, an
             for (let i = 0; i < data.length; i++) {
                 let item = data[i];
                 if (departmentId) {
-                    if (parseInt(departmentId, 10) === parseInt(item.cmsDepartmentVo.id, 10)) {
-                        retData.push(
-                            <option value={item[value]} key={item[key]}>{item[label]}</option>
-                        );
+                    if(item !== null && item !== undefined && item.cmsDepartmentVo !== null &&
+                        item.cmsDepartmentVo !== undefined){
+                            if (parseInt(departmentId, 10) === parseInt(item.cmsDepartmentVo.id, 10)) {
+                                retData.push(
+                                    <option value={item[value]} key={item[key]}>{item[label]}</option>
+                                );
+                            }
                     }
                 }
             }

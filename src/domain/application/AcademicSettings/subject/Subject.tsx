@@ -98,7 +98,12 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
         subjectObj.status = editObj.status;
         subjectObj.departmentId = editObj.departmentId;
         subjectObj.batchId = editObj.batchId;
-        
+        if(editObj.cmsTeacherVo !== null && editObj.cmsTeacherVo !== undefined){
+            subjectObj.teacherId = editObj.cmsTeacherVo.id;
+        }
+        if(editObj.cmsSectionVo !== null && editObj.cmsSectionVo !== undefined){
+            subjectObj.sectionId = editObj.cmsSectionVo.id;
+        }
         this.setState(() => ({
             isModalOpen: bShow,
             subjectObj: subjectObj,
@@ -197,11 +202,11 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
             isValid = false;
         }
-        // if(obj.subjectType === undefined || obj.subjectType === null || obj.subjectType === ""){
-        //     commonFunctions.changeTextBoxBorderToError((obj.subjectType === undefined || obj.subjectType === null) ? "" : obj.subjectType, "subjectType");
-        //     errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
-        //     isValid = false;
-        // }
+        if(obj.subjectType === undefined || obj.subjectType === null || obj.subjectType === ""){
+            commonFunctions.changeTextBoxBorderToError((obj.subjectType === undefined || obj.subjectType === null) ? "" : obj.subjectType, "subjectType");
+            errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
+            isValid = false;
+        }
         if(obj.subjectDesc === undefined || obj.subjectDesc === null || obj.subjectDesc === ""){
             commonFunctions.changeTextBoxBorderToError((obj.subjectDesc === undefined || obj.subjectDesc === null) ? "" : obj.subjectDesc, "subjectDesc");
             errorMessage = ERROR_MESSAGE_MANDATORY_FIELD_MISSING;
@@ -412,7 +417,7 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
                                     </div> 
 
                                     <div className="fwidth-modal-text">
-                                        <label className="gf-form-label b-0 bg-transparent">Subject Type </label>
+                                        <label className="gf-form-label b-0 bg-transparent">Subject Type <span style={{ color: 'red' }}> * </span></label>
                                         <input type="text" className="gf-form-input" onChange={this.onChange}  value={subjectObj.subjectType} placeholder="Subject Type" name="subjectType" id="subjectType" maxLength={255} />
                                     </div>
                                 </div>
