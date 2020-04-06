@@ -358,12 +358,12 @@ export class Users extends React.Component<RbacProps, any> {
     this.setState({
       errorMessage: ""
     });
-    if (!branchId) {
-      this.setState({
-        errorMessage: "Please select branch from preferences"
-      });
-      return;
-    }
+    // if (!branchId) {
+    //   this.setState({
+    //     errorMessage: "Please select branch from preferences"
+    //   });
+    //   return;
+    // }
     if (chkTeacher === false && chkStudent === false && chkEmployee === false) {
       this.setState({
         errorMessage: "Please select at least one checkbox"
@@ -397,11 +397,14 @@ export class Users extends React.Component<RbacProps, any> {
             if (assignUsers && assignUsers.length > 0) {
                 for (let i = 0; i < assignUsers.length; i++) {
                     let prm = assignUsers[i];
-                    let name = prm.username ;
-                    name = name.toLowerCase();
-                    if (name.indexOf(value.toLowerCase()) !== -1) {
-                        result.push(prm);
+                    if(prm !== null && prm !== undefined && prm !== "" && prm.username !== null && 
+                        prm.username !== undefined ){
+                      let name = prm.username.toLowerCase();
+                      if (name.indexOf(value.toLowerCase()) !== -1) {
+                          result.push(prm);
+                      }
                     }
+                    
                 }
                 this.setState({
                   assignUsers: result
