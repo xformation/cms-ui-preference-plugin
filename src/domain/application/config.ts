@@ -1,5 +1,5 @@
-//const IP = 'localhost';
-const IP = '100.81.5.25';
+const IP = 'localhost';
+// const IP = '100.81.5.25';
 
 const secSrvUrl = 'http://' + IP + ':8094';
 const preferenceRestUrl = 'http://' + IP + ':9091/api';
