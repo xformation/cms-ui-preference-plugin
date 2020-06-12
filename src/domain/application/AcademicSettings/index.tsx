@@ -3,7 +3,7 @@ import { withApollo } from 'react-apollo';
 // import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import { GET_BRANCH_LIST, GET_ACADEMIC_YEAR_LIST, GET_HOLIDAY_LIST, GET_TERM_LIST, GET_DEPARTMENT_LIST, GET_COURSE_LIST, 
-    GET_STAFF_LIST, GET_SUBJECT_LIST,GET_BATCH_LIST,GET_SECTION_LIST } from '../_queries';
+    GET_STAFF_LIST, GET_SUBJECT_LIST,GET_BATCH_LIST,GET_SECTION_LIST, GET_FACILITY_LIST } from '../_queries';
 import wsCmsBackendServiceSingletonClient from '../../../wsCmsBackendServiceClient';
 // import { CalendarSetup } from './CalendarSetup';
 import  TimeTable  from './timetable';
@@ -14,6 +14,7 @@ import Department from './department/Department';
 import Course from './course/Course';
 import Staff from './staff/Staff';
 import Subject from './subject/Subject';
+import Facility from './facility/Facility';
 
 export interface AcademicSettingsProps extends React.HTMLAttributes<HTMLElement>{
     [data: string]: any;
@@ -41,6 +42,7 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
             staffList: null,
             batchList: null,
             sectionList: null,
+            facilityList: null,
         };
         this.toggleTab = this.toggleTab.bind(this);
         this.getBranchList = this.getBranchList.bind(this);
@@ -55,6 +57,7 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         this.getSubjectList = this.getSubjectList.bind(this);
         this.getBatchList = this.getBatchList.bind(this);
         this.getSectionList = this.getSectionList.bind(this);
+        this.getFacilityList = this.getFacilityList.bind(this);
     }
 
     updateAyList(newAyList: any) {
@@ -79,6 +82,7 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         await this.getSubjectList();
         await this.getBatchList();
         await this.getSectionList();
+        await this.getFacilityList();
     }
 
     registerSocket() {
@@ -127,6 +131,9 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         }
         if(tabNo === 6 ){
             this.getSubjectList();
+        }
+        if(tabNo === 8 ){
+            this.getFacilityList();
         }
         this.setState({
             activeTab: tabNo,
@@ -241,9 +248,21 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
         });
         console.log("getSectionList() : ", this.state.sectionList);
     }
+
+    async getFacilityList(){
+        const { data } = await this.props.client.query({
+            query: GET_FACILITY_LIST,
+             fetchPolicy: 'no-cache'
+        })
+
+        this.setState({
+            facilityList: data.getFacilityList
+        });
+        console.log("getFacilityList() : ", this.state.facilityList);
+    }
     
     render() {
-        const { activeTab, permissions, user, branchList, ayList, courseList, holidayList, termList, departmentList, staffList, subjectList, batchList, sectionList } = this.state;
+        const { activeTab, permissions, user, branchList, ayList, courseList,facilityList, holidayList, termList, departmentList, staffList, subjectList, batchList, sectionList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -370,6 +389,21 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
                             <NavItem className="cursor-pointer">
                                 <NavLink className={`vertical-nav-link ${activeTab === 7 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(7); }} >
                                     Timetable Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+                   {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Facility Setup"] === "Facility Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 8 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(8); }} >
+                                Facility Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 8 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(8); }} >
+                                 Facility Setup
                                 </NavLink>
                             </NavItem>
                         : null
@@ -573,6 +607,33 @@ class AcademicSettings extends React.Component<AcademicSettingsProps, any> {
                             </TabPane>
                         : null
                     }
+
+{
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Facility Setup"] === "Facility Setup" ?
+                            <TabPane tabId={8}>
+                                {
+                                    activeTab === 8 ?
+                                        ayList !== null && branchList !==null && facilityList !== null ?
+                                            <Facility ayList={ayList} branchList={branchList} facilityList={facilityList}></Facility>
+                                        :
+                                        null
+                                    :null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={8}>
+                                {
+                                    activeTab === 8 ?
+                                        ayList !== null && branchList !== null && facilityList !== null ?
+                                            <Facility  ayList={ayList} branchList={branchList} facilityList={facilityList} ></Facility>
+                                        :
+                                        null
+                                    :null
+                                }
+                            </TabPane>
+                        : null
+                    }
+
 
                 </TabContent>
             </section>
