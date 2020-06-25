@@ -28,3 +28,5 @@ export {GET_SUBJECT_LIST} from './getSubjectList';
 export {GET_BATCH_LIST} from './getBatchList';
 export {GET_SECTION_LIST} from './getSectionList';
 export {GET_TABLE_LIST} from './getTableList';
+export {SAVE_CLOUD_CONTEXT_PATH} from './saveCloudContextPath';
+export {GET_CLOUD_CONTEXT_PATH_LIST} from './getCloudContextPathList';

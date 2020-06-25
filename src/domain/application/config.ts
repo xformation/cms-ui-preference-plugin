@@ -4,6 +4,7 @@ const IP = 'localhost';
 const secSrvUrl = 'http://' + IP + ':8094';
 const preferenceRestUrl = 'http://' + IP + ':9091/api';
 const backendRestUrl = 'http://' + IP + ':8080/api';
+const jcrRestUrl = 'http://' + IP + ':8093/oakRepo';
 
 const graphqlUrl = 'http://' + IP + ':9091';
 const loggedInUserUrl = 'http://' + IP + ':3000';
@@ -29,6 +30,10 @@ export const config = {
   MS_ACCESS_TOKEN_URL: preferenceRestUrl + '/cms-ms-authenticate',
   EXPORT_USER: preferenceRestUrl + '/cmsuserexport',
   PAYMENT_MSG_URL: preferenceRestUrl + '/cmspayment',
+  CMS_SAVE_CLOUD_CONTEXT_PATH: jcrRestUrl + '/saveCloudContext',
+  CMS_GET_CLOUD_CONTEXT_PATH: jcrRestUrl + '/listCloudContext',
+  CMS_SAVE_CLOUD_PROVIDER_CONFIG: jcrRestUrl + '/saveCloudProviderConfig',
+  CMS_GET_CLOUD_PROVIDER_CONFIG: jcrRestUrl + '/listCloudProviderConfig',
 
   CMS_GLOBAL_CONFIG_URL: backendRestUrl + '/cmssettings',
   // CMS_LECTURE_URL: backendRestUrl + '/cmslectures',

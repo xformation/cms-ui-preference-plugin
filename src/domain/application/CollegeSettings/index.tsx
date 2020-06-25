@@ -7,12 +7,16 @@ import BranchGrid from './branch/BranchGrid';
 import {LegalEntities} from './legalentity/LegalEntities';
 import MasterDataImport from './import/MasterDataImport';
 import PaymentInput from './payment/PaymentInput';
+import CloudSetup from './cloudconfig/CloudSetup';
+import CloudContextPath from './cloudconfig/CloudContextPath';
 import { withApollo } from 'react-apollo';
 import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST, GET_AUTHORIZED_SIGNATORY_LIST, GET_BANK_ACCOUNTS_LIST, GET_LEGAL_ENTITY_LIST,
-            GET_TABLE_LIST } from '../_queries';
+            GET_TABLE_LIST, GET_CLOUD_CONTEXT_PATH_LIST } from '../_queries';
 import {UserAgentApplication} from 'msal';
 import {azureConfig} from '../../../azureConfig';
 import axios from 'axios'; 
+import { jcrSettingsServices } from '../_services/jcrSettings.service';
+import {config} from '../config';
 
 export interface AcademicSettingsProps extends React.HTMLAttributes<HTMLElement>{
     [data: string]: any;
@@ -37,6 +41,7 @@ class CollegeSettings extends React.Component<any, any> {
             bankAccountsList: null,
             legalEntityList: null,
             tableList: null,
+            cloudContextPathList: null,
             userAgentApplication: this.props.userAgentApplication,
             azureUser: this.props.azureUser,
             accessToken: this.props.accessToken,
@@ -56,6 +61,7 @@ class CollegeSettings extends React.Component<any, any> {
         this.getLegalEntityList = this.getLegalEntityList.bind(this);
         this.getTableList = this.getTableList.bind(this);
         this.setPaymentPageActive = this.setPaymentPageActive.bind(this);
+        this.getCloudContextPathList = this.getCloudContextPathList.bind(this);
     }
 
     async componentDidMount(){
@@ -84,6 +90,8 @@ class CollegeSettings extends React.Component<any, any> {
             this.getLegalEntityList();
         }else if(tabNo === 3){
             this.getTableList();
+        }else if(tabNo === 5){
+            this.getCloudContextPathList(config.CMS_GET_CLOUD_CONTEXT_PATH);
         }
         const params = new URLSearchParams(location.search);
         if(params.get("txnRefNo") !== null){
@@ -191,9 +199,29 @@ class CollegeSettings extends React.Component<any, any> {
         });
     }
 
+    async getCloudContextPathList(url: any){
+        // const { data } = await this.props.client.query({
+        //     query: GET_CLOUD_CONTEXT_PATH_LIST,
+        //      fetchPolicy: 'no-cache'
+        // })
+        // this.setState({
+        //     cloudContextPathList : data
+        // });
+        // console.log("cloud context path list : ",data);
+        await jcrSettingsServices.getCloudContextPathList(url).then(
+            response => {
+              this.setState({
+                  cloudContextPathList: response,
+              });
+            }
+        );
+    }
+
+    
+
     render() {
         const { permissions, activeTab, branchList, stateDataList, cityDataList, authorizedSignatoryList, bankAccountsList, legalEntityList, 
-                    tableList, mcCloudParentId, accessToken, userAgentApplication } = this.state;
+                    tableList, mcCloudParentId, accessToken, userAgentApplication, cloudContextPathList } = this.state;
         return (
             <section className="tab-container row vertical-tab-container">
                 <Nav tabs className="pl-3 pl-3 mb-4 mt-4 col-sm-2">
@@ -277,6 +305,37 @@ class CollegeSettings extends React.Component<any, any> {
                         : null
                     }
 
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Cloud Setup"] === "Cloud Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 5 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(5); }} >
+                                    Cloud Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 5 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(5); }} >
+                                    Cloud Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
+
+                    {/* {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Cloud Setup"] === "Cloud Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 6 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(6); }} >
+                                    Cloud Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 6 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(6); }} >
+                                    Cloud Setup
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    } */}
                 </Nav>
                 <TabContent activeTab={activeTab} className="col-sm-9 border-left p-t-1">
                     {
@@ -404,6 +463,53 @@ class CollegeSettings extends React.Component<any, any> {
                          
                     }
 
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Cloud Setup"] === "Cloud Setup" ? 
+                            <TabPane tabId={5}>
+                                {
+                                    activeTab === 5 ?
+                                    (
+                                        cloudContextPathList !== null && (
+                                            <CloudSetup ctxList={cloudContextPathList}/>
+                                        )
+                                    )
+                                    : null  
+                                }
+                                
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={5}>
+                                {
+                                    activeTab === 5 ?
+                                    (
+                                        cloudContextPathList !== null && (
+                                            <CloudSetup ctxList={cloudContextPathList}/>
+                                        )
+                                    )
+                                    : null  
+                                }
+                            </TabPane>
+                        : null
+                    }
+
+                    {/* {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Cloud Setup"] === "Cloud Setup" ?                            
+                            <TabPane tabId={6}>
+                                {
+                                    // activeTab === 6 ?  <CloudSetup ctxList={cloudContextPathList.getCloudContextPathList}/> : null
+                                    cloudContextPathList !== null && (
+                                        <CloudSetup ctxList={cloudContextPathList.getCloudContextPathList}/>
+                                    )
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={6}>
+                                {
+                                    activeTab === 6 ? <CloudSetup ctxList={cloudContextPathList.getCloudContextPathList}/> : null
+                                }
+                            </TabPane>
+                        : null
+                    } */}
                 </TabContent>
             </section>
         );
