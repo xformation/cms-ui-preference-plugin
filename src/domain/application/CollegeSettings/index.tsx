@@ -208,7 +208,7 @@ class CollegeSettings extends React.Component<any, any> {
         //     cloudContextPathList : data
         // });
         // console.log("cloud context path list : ",data);
-        await jcrSettingsServices.getCloudContextPathList(url).then(
+        await jcrSettingsServices.getCloudInfoList(url).then(
             response => {
               this.setState({
                   cloudContextPathList: response,

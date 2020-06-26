@@ -3,7 +3,7 @@ import {commonFunctions} from '../_utilites/common.functions';
 
 export const jcrSettingsServices = {
   save,
-  getCloudContextPathList,
+  getCloudInfoList,
 };
 
 function save(url: any, data: any) {
@@ -15,7 +15,7 @@ function save(url: any, data: any) {
   return fetch(url, requestOptions).then(response => response.json());
 }
 
-function getCloudContextPathList(url: any) {
+function getCloudInfoList(url: any) {
   const requestOptions = commonFunctions.getRequestOptions('GET', {});
   return fetch(url, requestOptions).then(response => response.json());
 }

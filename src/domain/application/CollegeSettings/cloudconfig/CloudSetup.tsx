@@ -90,6 +90,22 @@ class CloudSetup extends React.Component<CloudProp, any> {
         if(name === "emsModules"){
             this.filterPath(value);
         }
+        if(name === "cloudServiceProvider"){
+            this.fetchCloudConfig(value);        
+        }
+    }
+
+    async fetchCloudConfig(value : any){
+        await jcrSettingsServices.getCloudInfoList(config.CMS_GET_CLOUD_PROVIDER_CONFIG).then(
+            response => {
+                console.log("cloud provider config : ",response[0]);
+              this.setState({
+                  accessKey: response[0].accessKey,
+                  secrateKey: response[0].secrateKey,
+                  endPoint: response[0].endPoint
+              });
+            }
+        );
     }
 
     filterPath(pluginName: any){
