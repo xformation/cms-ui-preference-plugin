@@ -6,8 +6,6 @@ import { jcrSettingsServices } from '../../_services/jcrSettings.service';
 
 import {config} from '../../config';
 import wsCmsBackendServiceSingletonClient from '../../../../wsCmsBackendServiceClient';
-import AmazonS3Setup from './AmazonS3Setup';
-import CloudContextPath from './CloudContextPath';
 import { GET_CLOUD_CONTEXT_PATH_LIST, SAVE_CLOUD_CONTEXT_PATH } from '../../_queries';
 
 const ERROR_MESSAGE_MANDATORY_FIELD_MISSING = "Mandatory fields missing";
