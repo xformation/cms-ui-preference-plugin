@@ -8,7 +8,8 @@ import {LegalEntities} from './legalentity/LegalEntities';
 import MasterDataImport from './import/MasterDataImport';
 import PaymentInput from './payment/PaymentInput';
 import CloudSetup from './cloudconfig/CloudSetup';
-import CloudContextPath from './cloudconfig/CloudContextPath';
+import DataGeneratorInput from './DataGenerator/DataGeneratorInput'
+
 import { withApollo } from 'react-apollo';
 import { GET_BRANCH_LIST, GET_STATE_LIST, GET_CITY_LIST, GET_AUTHORIZED_SIGNATORY_LIST, GET_BANK_ACCOUNTS_LIST, GET_LEGAL_ENTITY_LIST,
             GET_TABLE_LIST, GET_CLOUD_CONTEXT_PATH_LIST } from '../_queries';
@@ -320,6 +321,21 @@ class CollegeSettings extends React.Component<any, any> {
                             </NavItem>
                         : null
                     }
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["Cloud Setup"] === "Cloud Setup" ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 6 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(6); }} >
+                                    Cloud Setup
+                                </NavLink>
+                            </NavItem>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <NavItem className="cursor-pointer">
+                                <NavLink className={`vertical-nav-link ${activeTab === 6 ? 'side-active' : ''}`} onClick={() => { this.toggleTab(6); }} >
+                                    Custom Data Generator
+                                </NavLink>
+                            </NavItem>
+                        : null
+                    }
 
                     {/* {
                         this.LOGGED_IN_USER !== 'admin' && permissions["Cloud Setup"] === "Cloud Setup" ?
@@ -491,7 +507,26 @@ class CollegeSettings extends React.Component<any, any> {
                             </TabPane>
                         : null
                     }
-
+                    
+                    {
+                        this.LOGGED_IN_USER !== 'admin' && permissions["College Setup"] === "College Setup" ?
+                            <TabPane tabId={6}>
+                                {
+                                    activeTab === 6 ?
+                                        <DataGeneratorInput/>
+                                    : null
+                                }
+                            </TabPane>
+                        : this.LOGGED_IN_USER === 'admin' ?
+                            <TabPane tabId={6}>
+                                {
+                                    activeTab === 6 ?
+                                        <DataGeneratorInput/>
+                                    : null
+                                }
+                            </TabPane>
+                        : null
+                    }
                     {/* {
                         this.LOGGED_IN_USER !== 'admin' && permissions["Cloud Setup"] === "Cloud Setup" ?                            
                             <TabPane tabId={6}>

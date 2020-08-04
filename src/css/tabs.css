@@ -151,3 +151,26 @@
   margin-bottom: 10px;
   padding: 1.3rem 0.8rem;
 }
+.my-nav-item a {
+  float: left !important;
+}
+.kafka-topic-label {
+  margin-left: 152px;
+  font-size: 17px;
+}
+.input-json-file {
+  border: 0px solid #c4c4c4;
+  border-radius: 0px;
+  background-color: #fff;
+  padding: 3px 5px;
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
+}
+.div-width-50 {
+  float: left !important;
+  width: 50% !important;
+}
+.errorMsg {
+  color: red;
+  margin-left: 10px;
+  font-size: 14px;
+}
