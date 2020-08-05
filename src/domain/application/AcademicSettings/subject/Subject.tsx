@@ -362,7 +362,7 @@ class Subject<T = {[data: string]: any}> extends React.Component<SubjectProps, a
             for(let i=0; i<data.length;i++){
                 let item = data[i];
                 if(departmentId !== null && departmentId !== undefined){
-                    if(parseInt(item.cmsBranchVo.id,10) === parseInt(branchId,10) && parseInt(departmentId, 10) === parseInt(item.cmsDepartmentVo.id, 10)){
+                    if(parseInt(item.branchId,10) === parseInt(branchId,10) && parseInt(departmentId, 10) === parseInt(item.cmsDepartmentVo.id, 10)){
                         retData.push(
                             <option value={item[value]} key={item[key]}>{item[label]}</option>
                         );

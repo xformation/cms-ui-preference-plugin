@@ -556,8 +556,8 @@ class Staff extends React.Component<StaffProps, any> {
     const retVal = [];
     for (let i = 0; i < aryLength; i++) {
         const obj = objAry[i];
-        if(parseInt(obj.cmsBranchVo.id,10) === parseInt(branchId,10) &&
-              parseInt(obj.cmsDepartmentVo.id,10) === parseInt(departmentId,10)){
+        if(parseInt(obj.branchId,10) === parseInt(branchId,10) &&
+              parseInt(obj.departmentId,10) === parseInt(departmentId,10)){
                 retVal.push(
                   <tr key="teacher.id">
                         <td> <input type="checkbox" id={'chk'+obj.id} onClick={(e: any) => this.onClickCheckbox(i, e)}/> </td>
